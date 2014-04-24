@@ -14,10 +14,9 @@ module.exports = function(grunt){
         pkg      : grunt.file.readJSON('package.json'),
         banner   : '/*! Build: v<%= pkg.version %>; Author: <%= pkg.author.name %> */\n',
         bump     : {options: {files: ['package.json'], commit: false, push: false, createTag: false, updateConfigs: ['pkg', 'banner']}},
-        jshint   : {options: { jshintrc: './.jshintrc' }},
-        watch    : {options: {spawn: false}},
+        jshint   : {},
+        watch    : {}, //{options: {spawn: false}},
         concat   : {},
-        strip    : {},
         uglify   : {},
         sass     : {}
     };

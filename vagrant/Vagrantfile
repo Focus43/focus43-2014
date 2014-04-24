@@ -27,7 +27,8 @@ Vagrant.configure("2") do |config|
       :port_forwards => {
           80 => 8080, # Apache (ie, :80 in the VM -> :8080 on your machine)
           443 => 4433, # SSL
-          3306 => 3307 # MySQL
+          3306 => 3307, # MySQL
+          35729 => 35729
       }
   }
 
@@ -48,7 +49,7 @@ Vagrant.configure("2") do |config|
               :gruntjs => true,
               :bower => true,
               :npm => {
-                :auto_install_packages => false,
+                :auto_install_packages => true,
                 :package_json_location => '/home/vagrant/app' # defaults to ../build
               }
           },

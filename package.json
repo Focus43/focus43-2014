@@ -1,7 +1,7 @@
 {
     "name": "ConcreteApp",
     "description": "Concrete5 Application",
-    "version": "0.0.01",
+    "version": "0.0.2",
     "author": {
         "name": "Focus43"
     },
@@ -22,7 +22,6 @@
         "grunt-contrib-uglify": "latest",
         "grunt-contrib-watch": "latest",
         "grunt-newer": "latest",
-        "grunt-strip": "latest",
         "load-grunt-tasks": "latest",
         "time-grunt": "latest"
     }
