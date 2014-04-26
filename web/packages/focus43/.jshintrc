@@ -12,8 +12,8 @@
     "eqnull": true,
     "browser": true,
     "devel": true,
-    "jquery": false,
+    "jquery": true,
     "globals": {
-        "angular": true
+        "Modernizr": true
     }
 }

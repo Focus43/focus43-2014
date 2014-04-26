@@ -4,7 +4,7 @@
 	
 	    protected $pkgHandle 			= 'focus43';
 	    protected $appVersionRequired 	= '5.6.2.1';
-	    protected $pkgVersion 			= '0.01';
+	    protected $pkgVersion 			= '0.02';
 	
 		
 		/**
@@ -84,7 +84,7 @@
 		 * @return void
 		 */
 		private function installAndUpdate(){
-			$this->runUpgradeTasks( Package::getByHandle('toj')->getPackageVersion() )
+			$this->runUpgradeTasks( $this->pkgVersion )
 				 ->setupUserAttributes()
 				 ->setupTheme()
 				 ->setupPageTypes();

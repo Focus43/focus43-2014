@@ -11,9 +11,10 @@ module.exports = function(grunt, _configs){
 
     // theme
     _configs.concat.focus43.files[ pkgPath('js/application.js') ] = [
-        pkgPath('bower_components/gsap/src/uncompressed/TweenLite.js'),
-        pkgPath('bower_components/gsap/src/uncompressed/plugins/CSSPlugin.js'),
-        pkgPath('bower_components/gsap/src/uncompressed/easing/EasePack.js'),
+//        pkgPath('bower_components/gsap/src/uncompressed/TweenLite.js'),
+//        pkgPath('bower_components/gsap/src/uncompressed/plugins/CSSPlugin.js'),
+//        pkgPath('bower_components/gsap/src/uncompressed/easing/EasePack.js'),
+        pkgPath('js/src/modernizr.no-lint.js'),
         pkgPath('js/src/application.js')
     ];
 
@@ -27,7 +28,7 @@ module.exports = function(grunt, _configs){
     var _jsHintRcPath = pkgPath('.jshintrc');
     _configs.jshint.focus43 = {
         options: {jshintrc:_jsHintRcPath},
-        files: {src: [pkgPath('js/src/*.js')]}
+        files: {src: [pkgPath('js/src/*.js'), '!' + pkgPath('js/src/*.no-lint.js')]}
     };
 
 
