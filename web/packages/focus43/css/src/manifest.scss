@@ -32,16 +32,16 @@ a, a:hover, a:active {cursor:pointer;text-decoration:none;}
   .layers {position:relative;
     .layer {position:absolute;top:0;left:0;@include transform(translateZ(0) translateX(0));@include transition-property(all);@include transition-timing-function(ease);
       // all inner layers
-      .inner {width:percentage(1+(.2*($parallaxPages - 1)));background-position:0 100%;background-size:cover;background-repeat:no-repeat;}
+      .inner {width:percentage(1+(.2*($parallaxPages - 1)));background-size:cover;background-repeat:no-repeat;}
       // specific layer settings
       &.bg-butte {@include transition-duration(2.2s);
-        .inner {background-image:url('#{$imagePath}parallax/camp.jpg');@include transform(scale(1) translateZ(0));@include transition(all .6s ease);}
+        .inner {background-position:0 100%;background-image:url('#{$imagePath}parallax/camp.jpg');@include transform(scale(1) translateZ(0));@include transition(all .6s ease);}
       }
       &.bg-clouds {@include transition-duration(1.9s);@include transition-delay(.15s);
-        .inner {background-image:url('#{$imagePath}parallax/stars.png');}
+        .inner {background-position:0 100%;background-image:url('#{$imagePath}parallax/stars.png');}
       }
       &.bg-moon {@include transition-duration(3.2s);@include transition-delay(.25s);
-        .inner {background-image:url('#{$imagePath}parallax/moon.png');}
+        .inner {background-position:35% 100%;background-image:url('#{$imagePath}parallax/moon.png');}
       }
     }
   }
@@ -72,8 +72,8 @@ a, a:hover, a:active {cursor:pointer;text-decoration:none;}
 
 #page1 {font-weight:100;@include text-shadow(0 0 45px #c7254e);
   .container-auto {text-align:center;
-    h1 {margin:0;font-weight:inherit;color:#c7254e;font-size:800%;text-transform:uppercase;line-height:1;letter-spacing:-2px;}
-    p {font-size:240%;padding:20px 0;line-height:1em;margin-bottom:15px;}
+    h1 {margin:0;font-weight:inherit;color:#c7254e;font-size:400%;text-transform:uppercase;line-height:1;letter-spacing:-2px;}
+    p {font-size:200%;padding:20px 0;line-height:1em;margin-bottom:15px;}
     .made-here {color:lighten(#0e90d2, 10%);padding:10px;background:rgba(0,0,0,0.65);@include text-shadow(none);
       i {font-size:500%;}
       span {display:block;text-transform:uppercase;font-size:12px;letter-spacing:1px;}
@@ -113,7 +113,20 @@ body.nav-open {
  * .csstransitions, .fontface
  ***********************************************************************/
 @media screen and (min-width:$screen-sm){
+  #parallax .layers .layer {
+    &.bg-moon .inner {background-position:0 100%;}
+  }
   #pages-container {
     .container-auto {max-width:80%;}
+  }
+  #page1 {
+    .container-auto {
+      h1 {font-size:800%;}
+      p {font-size:240%;}
+//      .made-here {color:lighten(#0e90d2, 10%);padding:10px;background:rgba(0,0,0,0.65);@include text-shadow(none);
+//        i {font-size:500%;}
+//        span {display:block;text-transform:uppercase;font-size:12px;letter-spacing:1px;}
+//      }
+    }
   }
 }
