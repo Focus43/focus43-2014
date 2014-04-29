@@ -77,6 +77,23 @@
         toggleNavigation();
     });
 
+
+    /**
+     * Form Handler
+     * @type {{goto: Function}}
+     */
+    $(document).on('submit', '#frmContact', function(_ev){
+        _ev.preventDefault();
+        var $this = $(this),
+            _data = $this.serializeArray(),
+            _path = document.querySelector('[name="application-tools"]').getAttribute('content');
+        $this.addClass('sending');
+        $.post(_path + 'contact', _data, function(resp){
+            $this.addClass('sent');
+        }, 'json');
+    });
+
+
     window.controls = {
         goto: layersTo
     };
