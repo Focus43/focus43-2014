@@ -65,8 +65,8 @@ module.exports = function(grunt, _configs){
     }));
 
     _configs.watch.options = {
-        spawn: false,
-        interval: 5007
+        //spawn: false,
+        //interval: 5007
     }
 
     _configs.watch.f43_js = {

@@ -77,4 +77,8 @@
         toggleNavigation();
     });
 
+    window.controls = {
+        goto: layersTo
+    };
+
 })( Modernizr || {} );
