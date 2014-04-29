@@ -91,7 +91,7 @@ p {letter-spacing:0.055em;}
 }
 
 // Pages
-#pages-container {width:100%;overflow:hidden;position:static;z-index:2;opacity:1;@include transition(all .25s ease);
+#pages-container {width:100%;overflow:hidden;position:relative;z-index:11;opacity:1;@include transition(all .25s ease);
   .pages {width:percentage($parallaxPages);position:relative;left:0;white-space:nowrap;line-height:0;font-size:0;@include transform(translateZ(0) translateX(0));@include transition(all .5s ease);
     .page {width:percentage(1/$parallaxPages);display:inline-block;font-size:$font-size-base;line-height:$line-height-base;overflow:hidden;overflow-y:auto;//opacity:0;visibility:hidden;@include transition(all .5s ease);/*@include transform(scale(0.5));*/
       //&.active {opacity:1;visibility:visible;/*@include transform(scale(1));*/}
@@ -164,7 +164,7 @@ p {letter-spacing:0.055em;}
 }
 
 // Nav
-#navigation {position:fixed;top:0;left:0;
+#navigation {position:fixed;top:0;left:0;z-index:21;
   .trigger {font-size:150%;padding:10px 10px 10px 16px;
     .trigger-inner {position:relative;
       a {display:inline-block;color:#fff;padding:6px 12px;background:$magenta;@include transform(rotateX(0) rotateY(0));@include transition(all .35s ease);}
