@@ -2,9 +2,6 @@
 defined('C5_EXECUTE') or die('Access Denied.');
 
 $classes = array(
-	// @app_profiler
-	'ApplicationProfiler' => array('library', 'application_profiler'),
-	
 	'Log' => array('library','log'),
 	'Request' => array('library','request'),
 	'Localization' => array('library','localization'),
@@ -19,6 +16,9 @@ $classes = array(
 	'DatabaseItemList,DatabaseItemListColumnSet' => array('library','database_item_list'),
 	'Controller' => array('library','controller'),
 	'FileType,FileTypeList' => array('library','file/types'),
+	'FileTypeInspector' => array('library', 'file/inspector'),
+	'ImageFileTypeInspector' => array('library', 'file/types/image'),
+	'FlvFileTypeInspector' => array('library', 'file/types/flv'),
 	'FileImporter' => array('library', 'file/importer'),
 	'BlockView' => array('library','block_view'),
 	'MailImporter' => array('library','mail/importer'),
@@ -54,6 +54,7 @@ $classes = array(
 	'PageStatistics' => array('model', 'page_statistics'),
 	'UserStatistics' => array('model', 'user_statistics'),
 	'UsersFriends' => array('model', 'users_friends'),
+	'UserValidationHash' => array('model', 'user_validation_hash'),
 	'BlockType,BlockTypeList' => array('model','block_types'),
 	'Collection' => array('model','collection'),
 	'CollectionVersion' => array('model','collection_version'),
@@ -208,6 +209,7 @@ $classes = array(
 	'WorkflowRequest' => array('model','workflow/request/model'),
 	'PageWorkflowRequest' => array('model','workflow/request/categories/page'),
 	'ApprovePagePageWorkflowRequest' => array('model','workflow/request/requests/approve_page'),
+	'ApproveStackPageWorkflowRequest' => array('model','workflow/request/requests/approve_stack'),
 	'ChangePagePermissionsPageWorkflowRequest' => array('model','workflow/request/requests/change_page_permissions'),
 	'ChangePagePermissionsInheritancePageWorkflowRequest' => array('model','workflow/request/requests/change_page_permissions_inheritance'),
 	'ChangeSubpageDefaultsInheritancePageWorkflowRequest' => array('model','workflow/request/requests/change_subpage_defaults_inheritance'),
