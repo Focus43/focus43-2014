@@ -11,7 +11,10 @@
   ],
   "dependencies": {
     "bootstrap-sass": "twbs/bootstrap-sass#~3.1.1",
-    "components-font-awesome": "~4.0.3",
-    "gsap": "~1.11.6"
+    "gsap": "~1.11.6",
+    "font-awesome": "~4.1.0",
+    "angular": "~1.2.16",
+    "angular-resource": "~1.2.16",
+    "angular-route": "~1.2.16"
   }
 }
