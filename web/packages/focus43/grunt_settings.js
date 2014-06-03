@@ -9,13 +9,23 @@ module.exports = function(grunt, _configs){
     /////////////////////////////// CONCAT FILES ///////////////////////////////
     _configs.concat.focus43 = { files: {} };
 
+    // Angular and dependencies
+    _configs.concat.focus43.files[ pkgPath('js/core.js') ] = [
+        pkgPath('bower_components/angular/angular.js'),
+        pkgPath('bower_components/angular-resource/angular-resource.js'),
+        pkgPath('bower_components/angular-route/angular-route.js'),
+        pkgPath('js/3rd_party/*.js')
+    ];
+
     // theme
     _configs.concat.focus43.files[ pkgPath('js/application.js') ] = [
+        pkgPath('js/app-src/main-bootstrap.js'),
+        pkgPath('js/app-src/**/*.js')
 //        pkgPath('bower_components/gsap/src/uncompressed/TweenLite.js'),
 //        pkgPath('bower_components/gsap/src/uncompressed/plugins/CSSPlugin.js'),
 //        pkgPath('bower_components/gsap/src/uncompressed/easing/EasePack.js'),
-        pkgPath('js/src/modernizr.no-lint.js'),
-        pkgPath('js/src/application.js')
+//        pkgPath('js/src/modernizr.no-lint.js'),
+//        pkgPath('js/src/application.js')
     ];
 
     // modernizr
@@ -28,7 +38,7 @@ module.exports = function(grunt, _configs){
     var _jsHintRcPath = pkgPath('.jshintrc');
     _configs.jshint.focus43 = {
         options: {jshintrc:_jsHintRcPath},
-        files: {src: [pkgPath('js/src/*.js'), '!' + pkgPath('js/src/*.no-lint.js')]}
+        files: {src: [pkgPath('js/app-src/**/*.js')]}
     };
 
 

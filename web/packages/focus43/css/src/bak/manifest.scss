@@ -1,6 +1,5 @@
 // Custom vars
 $parallaxPages:               3;
-$fa-font-path:                '/packages/focus43/fonts/';
 $imagePath:                   '/packages/focus43/images/';
 $magenta:                     #c7254e;
 $magenta-step-down15:         darken($magenta, 15%);
@@ -56,17 +55,6 @@ p {letter-spacing:0.055em;}
 .tabular {width:100%;height:100%;display:table;
   .cellular {width:100%;height:100%;display:table-cell;vertical-align:middle;text-align:center;}
 }
-
-#pre-init {color:#2299ac;background:#222;
-  span {font-size:2.475rem;display:block;padding:floor($grid-gutter-width/2);}
-}
-
-#post-init {display:none;}
-body.loaded {
-  #post-init {display:block;}
-}
-
-
 
 
 // Parallax Background
