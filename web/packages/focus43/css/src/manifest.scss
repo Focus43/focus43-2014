@@ -47,7 +47,8 @@ $input-border-focus:          $magenta-step-up7_5;
 @import 'custom-mixins';
 
 // Base
-html, body, .height-100 {height:100% !important;}
+//html, body, .height-100 {height:100% !important;}
+html, body {font-size:$font-size-base;height:100%;}
 body {font-weight:100;}
 h1,h2,h3,h4,h5 {margin:0;text-transform:uppercase;text-align:center;line-height:1;}
 h1 {letter-spacing:-2px;}
@@ -57,50 +58,91 @@ p {letter-spacing:0.055em;}
   .cellular {width:100%;height:100%;display:table-cell;vertical-align:middle;text-align:center;}
 }
 
-#pre-init {color:#2299ac;background:#222;
+#pre-init {visibility:visible;opacity:1;color:#2299ac;background:#222;position:fixed;top:0;left:0;z-index:99;@include transition(all 0.5s ease);
   span {font-size:2.475rem;display:block;padding:floor($grid-gutter-width/2);}
 }
 
-#post-init {display:none;}
 body.loaded {
-  #post-init {display:block;}
+  #pre-init {visibility:hidden;opacity:0;z-index:-1;}
 }
 
 
+#parallax, #parallax .inner, #parallax .layer {width:100%;height:100%;}
+#parallax {position:fixed;top:0;left:0;z-index:1;
+  .inner {position:relative;overflow:hidden;
+    .layer {position:absolute;top:0;left:0;width:200%;background-size:cover;background-repeat:no-repeat;@include transform(translateZ(0) translateX(0));@include transition-property(all);@include transition-timing-function(ease);
+      &#layer-butte {@include transition-duration(1.8s);background-position:0 100%;background-image:url('#{$imagePath}parallax/camp.jpg');}
+      &#layer-clouds {@include transition-duration(4.25s);background-position:0 100%;background-image:url('#{$imagePath}parallax/stars.png');}
+      &#layer-moon {@include transition-duration(2.7s);background-position:35% 100%;background-image:url('#{$imagePath}parallax/moon.png');}
+    }
+  }
+}
+
+#content {position:absolute;top:0;left:0;width:100%;height:calc(100%*5);z-index:2;
+  section {height:20%;padding:40px;font-size:2rem;color:#fff;}
+}
+
+nav {position:fixed;top:15px;right:15px;z-index:3;
+  ul {font-size:0;
+    li {position:relative;top:0;background:#c7254e;font-size:1rem;@include transform(translateZ(0));@include cubify(darken(#c7254e, 8%), 8px);@include transition(top 0.18s ease);
+      a {display:block;padding:.5rem;}
+      &:nth-child(1) {z-index:5;}
+      &:nth-child(2) {z-index:4;}
+      &:nth-child(3) {z-index:3;}
+      &:nth-child(4) {z-index:2;}
+      &:nth-child(5) {z-index:1;}
+      &:hover, &.active {top:5px;background:darken(#c7254e, 5%);@include box-shadow(-8px 8px 18px rgba(0,0,0,0.5));@include cubify(darken(#c7254e, 11%), 8px);}
+    }
+  }
+}
+
+#stacked {position:relative;max-width:750px;margin:0 auto;
+  h1 {background:$lime-green;@include cubify(darken($lime-green, 10%), 10px);}
+  span {padding:8px 25px;display:inline-block;background:$magenta;@include cubify(darken($magenta, 10%), 10px);
+    &:nth-child(1){z-index:2;}
+    &:nth-child(2){z-index:1;}
+  }
+}
+
+//#animations {position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;
+//  .inner {margin:0 auto;text-align:center;padding:200px;
+//    .node {width:100px;height:100px;display:inline-block;background:rgba(255,255,255,0.65);}
+//  }
+//}
 
 
 // Parallax Background
-#parallax, .layers, .layer {width:100%;}
-#parallax {position:fixed;top:0;left:0;overflow:hidden;
-  .layers {position:relative;
-    .layer {position:absolute;top:0;left:0;@include transform(translateZ(0) translateX(0));@include transition-property(all);@include transition-timing-function(ease);
-      // all inner layers
-      .inner {width:percentage(1+(.2*($parallaxPages - 1)));background-size:cover;background-repeat:no-repeat;}
-      // specific layer settings
-      &.bg-butte {@include transition-duration(1.8s);
-        .inner {background-position:0 100%;background-image:url('#{$imagePath}parallax/camp.jpg');@include transform(scale(1) translateZ(0));@include transition(all .6s ease);}
-      }
-      &.bg-clouds {@include transition-duration(4.25s);@include transition-delay(0.3s);
-        .inner {background-position:0 100%;background-image:url('#{$imagePath}parallax/stars.png');}
-      }
-      &.bg-moon {@include transition-duration(2.7s);@include transition-delay(0.15s);
-        .inner {background-position:35% 100%;background-image:url('#{$imagePath}parallax/moon.png');}
-      }
-    }
-  }
-  // radial gradient masker for better text legibility
-  .masquerade {position:absolute;top:0;right:0;bottom:0;left:0;z-index:3;
-    /* IE9 SVG, needs conditional override of 'filter' to 'none' */
-    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPHJhZGlhbEdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNzUlIj4KICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwMDAwMDAiIHN0b3Atb3BhY2l0eT0iMC42NSIvPgogICAgPHN0b3Agb2Zmc2V0PSI4NyUiIHN0b3AtY29sb3I9IiMwMDAwMDAiIHN0b3Atb3BhY2l0eT0iMCIvPgogICAgPHN0b3Agb2Zmc2V0PSI4OSUiIHN0b3AtY29sb3I9IiMwMDAwMDAiIHN0b3Atb3BhY2l0eT0iMCIvPgogIDwvcmFkaWFsR3JhZGllbnQ+CiAgPHJlY3QgeD0iLTUwIiB5PSItNTAiIHdpZHRoPSIxMDEiIGhlaWdodD0iMTAxIiBmaWxsPSJ1cmwoI2dyYWQtdWNnZy1nZW5lcmF0ZWQpIiAvPgo8L3N2Zz4=);
-    background: -moz-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 87%, rgba(0,0,0,0) 89%); /* FF3.6+ */
-    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(0,0,0,0.65)), color-stop(87%,rgba(0,0,0,0)), color-stop(89%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
-    background: -webkit-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 87%,rgba(0,0,0,0) 89%); /* Chrome10+,Safari5.1+ */
-    background: -o-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 87%,rgba(0,0,0,0) 89%); /* Opera 12+ */
-    background: -ms-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 87%,rgba(0,0,0,0) 89%); /* IE10+ */
-    background: radial-gradient(ellipse at center,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 87%,rgba(0,0,0,0) 89%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=1 ); /* IE6-8 fallback on horizontal gradient */
-  }
-}
+//#parallax, .layers, .layer {width:100%;}
+//#parallax {position:fixed;top:0;left:0;overflow:hidden;
+//  .layers {position:relative;
+//    .layer {position:absolute;top:0;left:0;@include transform(translateZ(0) translateX(0));@include transition-property(all);@include transition-timing-function(ease);
+//      // all inner layers
+//      .inner {width:percentage(1+(.2*($parallaxPages - 1)));background-size:cover;background-repeat:no-repeat;}
+//      // specific layer settings
+//      &.bg-butte {@include transition-duration(1.8s);
+//        .inner {background-position:0 100%;background-image:url('#{$imagePath}parallax/camp.jpg');@include transform(scale(1) translateZ(0));@include transition(all .6s ease);}
+//      }
+//      &.bg-clouds {@include transition-duration(4.25s);@include transition-delay(0.3s);
+//        .inner {background-position:0 100%;background-image:url('#{$imagePath}parallax/stars.png');}
+//      }
+//      &.bg-moon {@include transition-duration(2.7s);@include transition-delay(0.15s);
+//        .inner {background-position:35% 100%;background-image:url('#{$imagePath}parallax/moon.png');}
+//      }
+//    }
+//  }
+//  // radial gradient masker for better text legibility
+//  .masquerade {position:absolute;top:0;right:0;bottom:0;left:0;z-index:3;
+//    /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+//    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPHJhZGlhbEdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY3g9IjUwJSIgY3k9IjUwJSIgcj0iNzUlIj4KICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwMDAwMDAiIHN0b3Atb3BhY2l0eT0iMC42NSIvPgogICAgPHN0b3Agb2Zmc2V0PSI4NyUiIHN0b3AtY29sb3I9IiMwMDAwMDAiIHN0b3Atb3BhY2l0eT0iMCIvPgogICAgPHN0b3Agb2Zmc2V0PSI4OSUiIHN0b3AtY29sb3I9IiMwMDAwMDAiIHN0b3Atb3BhY2l0eT0iMCIvPgogIDwvcmFkaWFsR3JhZGllbnQ+CiAgPHJlY3QgeD0iLTUwIiB5PSItNTAiIHdpZHRoPSIxMDEiIGhlaWdodD0iMTAxIiBmaWxsPSJ1cmwoI2dyYWQtdWNnZy1nZW5lcmF0ZWQpIiAvPgo8L3N2Zz4=);
+//    background: -moz-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 87%, rgba(0,0,0,0) 89%); /* FF3.6+ */
+//    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(0,0,0,0.65)), color-stop(87%,rgba(0,0,0,0)), color-stop(89%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+//    background: -webkit-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 87%,rgba(0,0,0,0) 89%); /* Chrome10+,Safari5.1+ */
+//    background: -o-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 87%,rgba(0,0,0,0) 89%); /* Opera 12+ */
+//    background: -ms-radial-gradient(center, ellipse cover,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 87%,rgba(0,0,0,0) 89%); /* IE10+ */
+//    background: radial-gradient(ellipse at center,  rgba(0,0,0,0.65) 0%,rgba(0,0,0,0) 87%,rgba(0,0,0,0) 89%); /* W3C */
+//    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=1 ); /* IE6-8 fallback on horizontal gradient */
+//  }
+//}
 
 // Pages
 #pages-container {width:100%;overflow:hidden;position:relative;z-index:4;opacity:1;@include transition(all .25s ease);

@@ -15,6 +15,9 @@
     "jquery": true,
     "globals": {
         "Modernizr": true,
-        "angular": true
+        "angular": true,
+        "Linear": true,
+        "Expo": true,
+        "Power2": true
     }
 }

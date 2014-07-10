@@ -1,8 +1,7 @@
 /**
- * Injectable service and directive for preloading image files.
+ * Directive for preloading image files.
  */
 angular.module('focus-43').
-
 
     /**
      * DOM binding to queue up preloading
@@ -10,7 +9,6 @@ angular.module('focus-43').
     directive('preload', ['$rootScope', '$q', function( $rootScope, $q ){
 
         var queued = [];
-
 
         function preloadImage( imageSource ){
             // Create Defer and image object
@@ -26,20 +24,16 @@ angular.module('focus-43').
             return deferred.promise;
         }
 
-
-        function broadcast(data){
-            $rootScope.$emit('PRELOAD_UPDATE', data);
-        }
-
         return {
             restrict:   'A',
             scope: false,
             link: function($scope, element, attrs){
+                // Add to the queue
                 queued.push(attrs.preload);
-
+                // Trigger preloading of the image
                 preloadImage(attrs.preload).then(function(data){
                     queued.splice(queued.indexOf(attrs.preload), 1);
-                    broadcast(queued);
+                    $rootScope.$emit('PRELOAD_UPDATE', queued);
                 });
             }
         };

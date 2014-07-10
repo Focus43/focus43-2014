@@ -14,13 +14,19 @@ module.exports = function(grunt, _configs){
         pkgPath('bower_components/angular/angular.js'),
         pkgPath('bower_components/angular-resource/angular-resource.js'),
         pkgPath('bower_components/angular-route/angular-route.js'),
+        pkgPath('bower_components/gsap/src/uncompressed/TweenLite.js'),
+        pkgPath('bower_components/gsap/src/uncompressed/TimelineLite.js'),
+        pkgPath('bower_components/gsap/src/uncompressed/easing/EasePack.js'),
+        pkgPath('bower_components/gsap/src/uncompressed/plugins/CSSPlugin.js'),
+        pkgPath('bower_components/gsap/src/uncompressed/plugins/ScrollToPlugin.js'),
         pkgPath('js/3rd_party/*.js')
     ];
 
     // theme
     _configs.concat.focus43.files[ pkgPath('js/application.js') ] = [
-        pkgPath('js/app-src/main-bootstrap.js'),
-        pkgPath('js/app-src/**/*.js')
+        //pkgPath('js/app-src/main-bootstrap.js'),
+        pkgPath('js/app-src/**/*.js'),
+        pkgPath('js/app-src/main-bootstrap.js')
 //        pkgPath('bower_components/gsap/src/uncompressed/TweenLite.js'),
 //        pkgPath('bower_components/gsap/src/uncompressed/plugins/CSSPlugin.js'),
 //        pkgPath('bower_components/gsap/src/uncompressed/easing/EasePack.js'),

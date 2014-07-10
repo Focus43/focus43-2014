@@ -6,25 +6,31 @@
     /**
      * 'focus-43' module declaration.
      */
-    angular.module('focus-43', ['ngRoute', 'ngResource']).
+    angular.module('f43', ['ngRoute', 'ngResource', 'f43.common', 'f43.navigation']).
 
         /**
          * Focus-43 module configuration.
          */
-        config(['$routeProvider', function( $routeProvider ){
+        config(['$routeProvider', '$locationProvider', '$httpProvider', function( $routeProvider, $locationProvider, $httpProvider ){
+            // Use html5 location methods
+            $locationProvider.html5Mode(true).hashPrefix('!');
+
+            // http config
+            $httpProvider.defaults.headers.common['x-angularized'] = true;
+
+            // Dynamic routing for top level pages; so $routeChanges{event}s get issued
+            $routeProvider
+                .when('/:section', {})
+                .when('/experiments/:post', {templateUrl: '/experiments'});
 
         }]).
 
         /**
          * App initialization: *post* configuration and angular bootstrapping.
          */
-        run(['$rootScope', '$location', '$timeout', function( $rootScope, $location, $timeout ){
-//            $timeout(function(){
-//                console.log($rootScope.preloadQueue.length);
-//            }, 1000);
-
+        run(['$rootScope', '$location', '$timeout', function( $rootScope ){
             $rootScope.$on('PRELOAD_UPDATE', function(event, data){
-                console.log('$on\'d event', data);
+                $rootScope.loaded = (data.length === 0);
             });
         }]);
 

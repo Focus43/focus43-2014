@@ -1,6 +1,6 @@
 /*!
- * VERSION: 1.11.6
- * DATE: 2014-03-26
+ * VERSION: 1.12.1
+ * DATE: 2014-06-26
  * UPDATES AND DOCS AT: http://www.greensock.com
  *
  * @license Copyright (c) 2008-2014, GreenSock. All rights reserved.
@@ -31,7 +31,7 @@
 			
 		p.constructor = TimelineMax;
 		p.kill()._gc = false;
-		TimelineMax.version = "1.11.6";
+		TimelineMax.version = "1.12.1";
 		
 		p.invalidate = function() {
 			this._yoyo = (this.vars.yoyo === true);
@@ -65,7 +65,7 @@
 		
 		p.tweenTo = function(position, vars) {
 			vars = vars || {};
-			var copy = {ease:_easeNone, overwrite:2, useFrames:this.usesFrames(), immediateRender:false},
+			var copy = {ease:_easeNone, overwrite:(vars.delay ? 2 : 1), useFrames:this.usesFrames(), immediateRender:false},//note: set overwrite to 1 (true/all) by default unless there's a delay so that we avoid a racing situation that could happen if, for example, an onmousemove creates the same tweenTo() over and over again.
 				duration, p, t;
 			for (p in vars) {
 				copy[p] = vars[p];
@@ -276,7 +276,6 @@
 						} else {
 							tween.render(((!tween._dirty) ? tween._totalDuration : tween.totalDuration()) - ((time - tween._startTime) * tween._timeScale), suppressEvents, force);
 						}
-						
 					}
 					tween = next;
 				}
@@ -478,6 +477,7 @@
 			_isSelector = TweenLite._internals.isSelector,
 			_isArray = TweenLite._internals.isArray,
 			_blankArray = [],
+			_globals = window._gsDefine.globals,
 			_copy = function(vars) {
 				var copy = {}, p;
 				for (p in vars) {
@@ -494,20 +494,22 @@
 			_slice = _blankArray.slice,
 			p = TimelineLite.prototype = new SimpleTimeline();
 
-		TimelineLite.version = "1.11.6";
+		TimelineLite.version = "1.12.1";
 		p.constructor = TimelineLite;
 		p.kill()._gc = false;
 
 		p.to = function(target, duration, vars, position) {
-			return duration ? this.add( new TweenLite(target, duration, vars), position) : this.set(target, vars, position);
+			var Engine = (vars.repeat && _globals.TweenMax) || TweenLite;
+			return duration ? this.add( new Engine(target, duration, vars), position) : this.set(target, vars, position);
 		};
 
 		p.from = function(target, duration, vars, position) {
-			return this.add( TweenLite.from(target, duration, vars), position);
+			return this.add( ((vars.repeat && _globals.TweenMax) || TweenLite).from(target, duration, vars), position);
 		};
 
 		p.fromTo = function(target, duration, fromVars, toVars, position) {
-			return duration ? this.add( TweenLite.fromTo(target, duration, fromVars, toVars), position) : this.set(target, toVars, position);
+			var Engine = (toVars.repeat && _globals.TweenMax) || TweenLite;
+			return duration ? this.add( Engine.fromTo(target, duration, fromVars, toVars), position) : this.set(target, toVars, position);
 		};
 
 		p.staggerTo = function(targets, duration, vars, stagger, position, onCompleteAll, onCompleteAllParams, onCompleteAllScope) {
@@ -810,13 +812,11 @@
 					if (this._paused && !prevPaused) { //in case a tween pauses the timeline when rendering
 						break;
 					} else if (tween._active || (tween._startTime <= this._time && !tween._paused && !tween._gc)) {
-
 						if (!tween._reversed) {
 							tween.render((time - tween._startTime) * tween._timeScale, suppressEvents, force);
 						} else {
 							tween.render(((!tween._dirty) ? tween._totalDuration : tween.totalDuration()) - ((time - tween._startTime) * tween._timeScale), suppressEvents, force);
 						}
-
 					}
 					tween = next;
 				}
@@ -827,13 +827,11 @@
 					if (this._paused && !prevPaused) { //in case a tween pauses the timeline when rendering
 						break;
 					} else if (tween._active || (tween._startTime <= prevTime && !tween._paused && !tween._gc)) {
-
 						if (!tween._reversed) {
 							tween.render((time - tween._startTime) * tween._timeScale, suppressEvents, force);
 						} else {
 							tween.render(((!tween._dirty) ? tween._totalDuration : tween.totalDuration()) - ((time - tween._startTime) * tween._timeScale), suppressEvents, force);
 						}
-
 					}
 					tween = next;
 				}
@@ -894,14 +892,22 @@
 		};
 
 		p.getTweensOf = function(target, nested) {
-			var tweens = TweenLite.getTweensOf(target),
-				i = tweens.length,
+			var disabled = this._gc,
 				a = [],
-				cnt = 0;
+				cnt = 0,
+				tweens, i;
+			if (disabled) {
+				this._enabled(true, true); //getTweensOf() filters out disabled tweens, and we have to mark them as _gc = true when the timeline completes in order to allow clean garbage collection, so temporarily re-enable the timeline here.
+			}
+			tweens = TweenLite.getTweensOf(target);
+			i = tweens.length;
 			while (--i > -1) {
 				if (tweens[i].timeline === this || (nested && this._contains(tweens[i]))) {
 					a[cnt++] = tweens[i];
 				}
+			}
+			if (disabled) {
+				this._enabled(false, true);
 			}
 			return a;
 		};
