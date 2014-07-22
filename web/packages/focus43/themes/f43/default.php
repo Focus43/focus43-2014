@@ -19,12 +19,10 @@
         <section id="section-home">
             <div class="tabular">
                 <div class="cellular">
-
                     <div id="stacked" animations>
                         <h1>Focus43</h1>
                         <span>One</span><span>Two</span>
                     </div>
-
                 </div>
             </div>
         </section>
@@ -47,34 +45,6 @@
         </section>
     </div>
 
-    <!--<div id="animations" animations>
-        <div class="inner">
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div><div class="node"></div><div class="node"></div>
-            <div class="node"></div><div class="node"></div><div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-            <div class="node"></div>
-        </div>
-    </div>-->
-
     <div ng-view></div>
 
     <nav>
@@ -86,22 +56,6 @@
             <li><a href="/contact">Contact</a></li>
         </ul>
     </nav>
-
-    <!--<div id="parallax" class="height-100">
-        <div class="layers height-100">
-            <div class="layer bg-butte height-100" preload="<?php echo FOCUS43_IMAGE_PATH; ?>parallax/camp.jpg">
-                <div class="inner height-100"></div>
-            </div>
-            <div class="layer bg-clouds height-100" preload="<?php echo FOCUS43_IMAGE_PATH; ?>parallax/stars.png">
-                <div class="inner height-100"></div>
-            </div>
-            <div class="layer bg-moon height-100" preload="<?php echo FOCUS43_IMAGE_PATH; ?>parallax/moon.png">
-                <div class="inner height-100"></div>
-            </div>
-        </div>
-        <div class="masquerade"></div>
-    </div>-->
-
 
 <?php Loader::element('footer_required'); // REQUIRED BY C5 // ?>
 </body>
