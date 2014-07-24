@@ -18,6 +18,7 @@
         "angular": true,
         "Linear": true,
         "Expo": true,
-        "Power2": true
+        "Power2": true,
+        "Draggable": true
     }
 }
