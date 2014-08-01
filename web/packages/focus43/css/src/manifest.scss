@@ -49,7 +49,7 @@ $input-border-focus:          $magenta-step-up7_5;
 $pageSections:5;
 
 // Base
-html, body {font-weight:100;font-size:$font-size-base;height:100%;overflow:hidden;}
+html, body {font-weight:100;font-size:$font-size-base;height:100%;}
 //body {/*height:calc(100% * #{$pageSections});*/}
 h1,h2,h3,h4,h5 {margin:0;text-transform:uppercase;text-align:center;line-height:1;}
 h1 {letter-spacing:-2px;}
@@ -59,7 +59,7 @@ p {letter-spacing:0.055em;}
   .cellular {width:100%;height:100%;display:table-cell;vertical-align:middle;text-align:center;}
 }
 
-#falseTrack {position:relative;z-index:-1;height:400%;}
+#falseTrack {display:none;/*position:relative;z-index:-1;height:400%;*/}
 
 // Horizontal parallax
 #parallax, #parallax .inner, #parallax .layer {width:100%;height:100%;}
@@ -73,7 +73,7 @@ p {letter-spacing:0.055em;}
   }
 }
 
-#content {position:fixed;top:0;left:0;width:100%;height:100%;z-index:2;
+#content {/*position:fixed;top:0;left:0;width:100%;height:100%;*/height:100%;z-index:2;
   #track {position:relative;height:calc(100%*5);
     section {height:calc(100%/5);}
   }

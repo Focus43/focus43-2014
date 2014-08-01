@@ -15,15 +15,21 @@ angular.module('f43.common')
                 parallaxLayers  = document.querySelectorAll('#parallax .layer'),
                 sections        = document.querySelectorAll('section'),
                 timelineMaster  = new TimelineLite({
-                    paused:true
+                    paused:true,
+                    data: {section: 1},
+                    onStart: function(){
+                        console.log('started');
+                    }
                     //smoothChildTiming:true
                 }),
                 winH, winW, trackH, trackW;
 
+            var watchScrollPosition = true;
+
             function processDimensions(){
                 winH = document.documentElement.clientHeight;
                 winW = document.body.clientWidth;
-                trackH = elFalseTrack.clientHeight;
+                trackH = elTrack.clientHeight;
                 trackW = winW;
             }
 
@@ -41,7 +47,8 @@ angular.module('f43.common')
              */
             function timelineSection1(){
                 return tlInstance()
-                    .to(elTrack, 0, {y:0});
+                    //.to(elTrack, 0, {y:0});
+                    .to($window, 0, {scrollTo:{y:0}, ease:Power2.easeOut});
             }
 
             /**
@@ -49,7 +56,8 @@ angular.module('f43.common')
              */
             function timelineSection2(){
                 return tlInstance()
-                    .to(elTrack, 1, {y:-(winH)});
+                    //.to(elTrack, 1, {y:-(winH)});
+                    .to($window, 1, {scrollTo:{y:winH}, ease:Power2.easeOut});
 
 //                TweenLite.set(sections[1].querySelector('.inside-track'), {
 //                    transformOrigin:'50% 100%'
@@ -73,7 +81,9 @@ angular.module('f43.common')
 
             function timelineSection3(){
                 return tlInstance()
-                    .to(elTrack, 1, {y:-(winH*2)});
+//                    .to(elTrack, 1, {y:-(winH*2)});
+                    .to($window, 1, {scrollTo:{y:(winH*2)}, ease:Power2.easeOut});
+
 //                var _timeline = (new TimelineLite()).
 //                    to(elTrack, 1, {y:-(winH*2), ease:Power2.easeIn, roundProps:"y"}, 0).
 //                    fromTo(sections[2].querySelector('.rotated'), 2, {left:'-100%'}, {left:0, ease:Power2.easeInOut});
@@ -99,10 +109,10 @@ angular.module('f43.common')
             function buildTimelines(){
                 // Nest the timelines into the master
                 timelineMaster
-                    .add(timelineSection1(), 'section1')
-                    .add(timelineSection2(), 'section2')//.addPause()
-                    .add(timelineSection3(), 'section3')//.addPause()
-                    .add(timelineSection4(), 'section4');//.addPause();
+                    .add(timelineSection1(), 'section1').addPause()
+                    .add(timelineSection2(), 'section2').addPause()
+                    .add(timelineSection3(), 'section3').addPause();
+                    //.add(timelineSection4(), 'section4').addPause();
 //                    .add(timelineSection4(), 'section4')
 //                    .add(timelineSection5(), 'section5');
 
@@ -113,18 +123,67 @@ angular.module('f43.common')
                 processDimensions();
                 buildTimelines();
 
-                var _hammer = new Hammer(document.documentElement);
-                _hammer.get('pan').set({direction: Hammer.DIRECTION_VERTICAL});
+                angular.element($window)
+                    .on('scroll', function(){
+                        timelineMaster.data.section = (function(position){
+                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 5 ){
+                                return 5;
+                            }
+                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 4 ){
+                                return 4;
+                            }
+                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 3 ){
+                                return 3;
+                            }
+                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 2 ){
+                                return 2;
+                            }
+                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 1 ){
+                                return 1;
+                            }
+                            return 1;
+                        })(window.scrollY);
+                    });
 
+                var lastSection = timelineMaster.data.section;
+                setInterval(function(){
+                    if( lastSection !== timelineMaster.data.section ){
+                        TweenLite.to($window, 1, {scrollTo:{y: (winH*timelineMaster.data.section)}, ease:Power2.easeOut});
+                        lastSection = timelineMaster.data.section;
+                    }
+                }, 250);
 
-                var lastMove = 0,
-                    trackY   = 0,
-                    duration = timelineMaster.totalDuration(),
-                    notch    = duration / trackH;
+//                setInterval(function(){
+//                    if( watchScrollPosition ){
+//
+//                        if( window.scrollY > (sections[0].clientHeight * 0.75) ){
+//                            TweenLite.to($window, 1, {scrollTo:{y:winH}, ease:Power2.easeOut});
+//                            //timelineMaster.gotoAndPlay('section2');
+//                            return;
+//                        }
+//
+//                    }
+//                }, 250);
 
-                ThrowPropsPlugin.track(elTrack, 'y');
+//                angular.element($window).on('scroll', function(){
+//                    manualScroll = true;
+//                });
 
-                _hammer.on('pan', function(event){
+//                (function draw(){
+//                    //requestAnimationFrame(draw);
+//                })();
+
+//                var _hammer = new Hammer(document.documentElement);
+//                _hammer.get('pan').set({direction: Hammer.DIRECTION_VERTICAL});
+//
+//                var lastMove = 0,
+//                    trackY   = 0,
+//                    duration = timelineMaster.totalDuration(),
+//                    notch    = duration / trackH;
+
+                //ThrowPropsPlugin.track(elTrack, 'y');
+
+                //_hammer.on('pan', function(event){
                     console.log(event);
 //                    if( event.timeStamp - lastMove > 200 ){
 //                        console.log(event.deltaY);
@@ -166,13 +225,14 @@ angular.module('f43.common')
 ////                        );
 //                        //timelineMaster.totalTime(_scroll * timelineMaster.totalDuration());
 //                    }
-                });
+                //});
 
 
 
-                document.addEventListener('touchmove', function(e){
-                    e.preventDefault();
-                }, false);
+                // Prevents overscrolling on iOS!
+//                document.addEventListener('touchmove', function(e){
+//                    e.preventDefault();
+//                }, false);
 
 //                (function _draw(){
 //                    //console.log(window.scrollY, 'ON ANIMATION FRAME');
