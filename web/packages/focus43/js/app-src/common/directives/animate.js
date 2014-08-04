@@ -1,4 +1,4 @@
-/* global requestAnimationFrame */
+    /* global requestAnimationFrame */
 /* global ThrowPropsPlugin */
 /* global Hammer */
 
@@ -106,10 +106,10 @@ angular.module('f43.common')
 
             function buildTimelines(){
                 // Nest the timelines into the master
-                timelineMaster
-                    .add(timelineSection1(), 'section1').addPause()
-                    .add(timelineSection2(), 'section2').addPause()
-                    .add(timelineSection3(), 'section3').addPause();
+//                timelineMaster
+//                    .add(timelineSection1(), 'section1').addPause()
+//                    .add(timelineSection2(), 'section2').addPause()
+//                    .add(timelineSection3(), 'section3').addPause();
                     //.add(timelineSection4(), 'section4').addPause();
 //                    .add(timelineSection4(), 'section4')
 //                    .add(timelineSection5(), 'section5');
@@ -121,35 +121,48 @@ angular.module('f43.common')
                 processDimensions();
                 buildTimelines();
 
-                angular.element($window)
-                    .on('scroll', function(){
-                        timelineMaster.data.section = (function(position){
-                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 5 ){
-                                return 5;
-                            }
-                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 4 ){
-                                return 4;
-                            }
-                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 3 ){
-                                return 3;
-                            }
-                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 2 ){
-                                return 2;
-                            }
-                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 1 ){
-                                return 1;
-                            }
-                            return 1;
-                        })(window.scrollY);
-                    });
+//                document.addEventListener('touchmove', function(e){
+//                    e.preventDefault();
+//                }, false);
+//
+//                Draggable.create('#track', {
+//                    type:'scrollTop',
+//                    edgeResistance:0.8,
+//                    throwProps:true,
+//                    onDrag: function(){
+//                        console.log( this.endY);
+//                    }
+//                });
 
-                var lastSection = timelineMaster.data.section;
-                setInterval(function(){
-                    if( lastSection !== timelineMaster.data.section ){
-                        TweenLite.to($window, 1, {scrollTo:{y: (winH*timelineMaster.data.section)}, ease:Power2.easeOut});
-                        lastSection = timelineMaster.data.section;
-                    }
-                }, 250);
+//                angular.element($window)
+//                    .on('scroll', function(){
+//                        timelineMaster.data.section = (function(position){
+//                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 5 ){
+//                                return 5;
+//                            }
+//                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 4 ){
+//                                return 4;
+//                            }
+//                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 3 ){
+//                                return 3;
+//                            }
+//                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 2 ){
+//                                return 2;
+//                            }
+//                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 1 ){
+//                                return 1;
+//                            }
+//                            return 1;
+//                        })(window.scrollY);
+//                    });
+//
+//                var lastSection = timelineMaster.data.section;
+//                setInterval(function(){
+//                    if( lastSection !== timelineMaster.data.section ){
+//                        TweenLite.to($window, 1, {scrollTo:{y: (winH*timelineMaster.data.section)}, ease:Power2.easeOut});
+//                        lastSection = timelineMaster.data.section;
+//                    }
+//                }, 250);
 
 //                setInterval(function(){
 //                    if( watchScrollPosition ){
@@ -182,7 +195,7 @@ angular.module('f43.common')
                 //ThrowPropsPlugin.track(elTrack, 'y');
 
                 //_hammer.on('pan', function(event){
-                    console.log(event);
+                    //console.log(event);
 //                    if( event.timeStamp - lastMove > 200 ){
 //                        console.log(event.deltaY);
 //                        lastMove = event.timeStamp;
@@ -295,8 +308,9 @@ angular.module('f43.common')
                      * @param int verticalOffset
                      */
                     self.progressTo = function( verticalOffset ){
-                        var _scroll = (verticalOffset / (trackH - winH)),
-                            _moveX  = _scroll * winW;
+//                        var _scroll = (verticalOffset / (trackH - winH)),
+//                            _moveX  = _scroll * winW;
+
                         //TweenLite.set(parallaxLayers, {x:-_moveX});
                         //timelineMaster.progress(_scroll);
 

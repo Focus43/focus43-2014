@@ -5,9 +5,7 @@
 <?php Loader::element('header_required'); // REQUIRED BY C5 // ?>
 </head>
 
-<body animate>
-
-    <div id="falseTrack"><!-- just to control the height! --></div>
+<body alive>
 
     <div id="parallax">
         <div class="inner">

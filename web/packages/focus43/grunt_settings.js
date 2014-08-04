@@ -11,6 +11,7 @@ module.exports = function(grunt, _configs){
 
     // Angular and dependencies
     _configs.concat.focus43.files[ pkgPath('js/core.js') ] = [
+        pkgPath('bower_components/fastclick/lib/fastclick.js'),
         pkgPath('bower_components/angular/angular.js'),
         pkgPath('bower_components/angular-resource/angular-resource.js'),
         pkgPath('bower_components/angular-route/angular-route.js'),

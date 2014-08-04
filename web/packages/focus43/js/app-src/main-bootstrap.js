@@ -1,12 +1,11 @@
-/**
- * Main application entry
- */
+/* global FastClick */
+
 ;(function(window, angular, undefined){ 'use strict';
 
     /**
      * 'focus-43' module declaration.
      */
-    angular.module('f43', ['ngRoute', 'ngResource', 'f43.common', 'f43.navigation']).
+    angular.module('f43', ['ngRoute', 'ngResource', 'f43.common']).
 
         /**
          * Focus-43 module configuration.
@@ -29,9 +28,8 @@
          * App initialization: *post* configuration and angular bootstrapping.
          */
         run(['$rootScope', '$location', '$timeout', function( $rootScope ){
-            $rootScope.$on('PRELOAD_UPDATE', function(event, data){
-                $rootScope.loaded = (data.length === 0);
-            });
+            // Attach FastClick
+            FastClick.attach(document.body);
         }]);
 
 })( window, window.angular );

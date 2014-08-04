@@ -59,7 +59,6 @@ p {letter-spacing:0.055em;}
   .cellular {width:100%;height:100%;display:table-cell;vertical-align:middle;text-align:center;}
 }
 
-#falseTrack {display:none;/*position:relative;z-index:-1;height:400%;*/}
 
 // Horizontal parallax
 #parallax, #parallax .inner, #parallax .layer {width:100%;height:100%;}
@@ -73,8 +72,9 @@ p {letter-spacing:0.055em;}
   }
 }
 
+
 #content {/*position:fixed;top:0;left:0;width:100%;height:100%;*/height:100%;z-index:2;
-  #track {position:relative;height:calc(100%*5);
+  #track {height:calc(100%*5);
     section {height:calc(100%/5);}
   }
 }
