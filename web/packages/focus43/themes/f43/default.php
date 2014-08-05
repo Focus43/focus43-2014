@@ -17,12 +17,10 @@
 
     <div id="content">
         <div id="track">
-            <section id="section-home">
+            <section id="section-home" class="active">
                 <div class="tabular">
                     <div class="cellular" style="position:relative;">
-                        <h1>
-                            focus43
-                        </h1>
+                        <img src="<?php echo FOCUS43_IMAGE_PATH; ?>3d-logo-lighter.png" />
                     </div>
                 </div>
             </section>
@@ -31,7 +29,11 @@
                 <div class="tabular">
                     <div class="cellular">
                         <h2>Focus43 Oh Yea</h2>
-                        <img src="<?php echo FOCUS43_IMAGE_PATH; ?>screenshot.png" class="img-responsive" />
+                        <img src="<?php echo FOCUS43_IMAGE_PATH; ?>screenshot.png" />
+                        <h2>Focus43 Oh Yea</h2>
+                        <img src="<?php echo FOCUS43_IMAGE_PATH; ?>screenshot.png" />
+                        <h2>Focus43 Oh Yea</h2>
+                        <img src="<?php echo FOCUS43_IMAGE_PATH; ?>screenshot.png" />
                     </div>
                 </div>
             </section>
@@ -56,10 +58,22 @@
             <section id="section-contact">
                 <div class="tabular">
                     <div class="cellular">
-                        <p>COntact Us</p>
+                        <p>Contact Us</p>
                     </div>
                 </div>
             </section>
+        </div>
+
+        <!-- arrows -->
+        <div class="arrow left">
+            <div class="inner">
+                <a><img src="<?php echo FOCUS43_IMAGE_PATH; ?>arrow.svg" alt="" /></a>
+            </div>
+        </div>
+        <div class="arrow right">
+            <div class="inner">
+                <a><img src="<?php echo FOCUS43_IMAGE_PATH; ?>arrow.svg" alt="" /></a>
+            </div>
         </div>
     </div>
 

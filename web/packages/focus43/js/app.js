@@ -1,3 +1,39 @@
+/* global FastClick */
+
+;(function(window, angular, undefined){ 'use strict';
+
+    /**
+     * 'focus-43' module declaration.
+     */
+    angular.module('f43', ['ngRoute', 'ngResource', 'f43.common']).
+
+        /**
+         * Focus-43 module configuration.
+         */
+        config(['$routeProvider', '$locationProvider', '$httpProvider', function( $routeProvider, $locationProvider, $httpProvider ){
+            // Use html5 location methods
+            $locationProvider.html5Mode(true).hashPrefix('!');
+
+            // http config
+            $httpProvider.defaults.headers.common['x-angularized'] = true;
+
+            // Dynamic routing for top level pages; so $routeChanges{event}s get issued
+            $routeProvider
+                .when('/:section', {})
+                .when('/experiments/:post', {templateUrl: '/experiments'});
+
+        }]).
+
+        /**
+         * App initialization: *post* configuration and angular bootstrapping.
+         */
+        run(['$rootScope', '$location', '$timeout', function( $rootScope ){
+            // Attach FastClick
+            FastClick.attach(document.body);
+        }]);
+
+})( window, window.angular );
+
 angular.module('f43.common', []);
 
 angular.module('f43.common')
@@ -5,20 +41,40 @@ angular.module('f43.common')
     .directive('alive', ['$window', 'TweenLite', 'TimelineLite',
         function( $window, TweenLite, TimelineLite ){
 
-            var $track  = angular.element(document.querySelector('#track')),
-                $layers = angular.element(document.querySelectorAll('#parallax .layer')),
+            var $track      = angular.element(document.querySelector('#track')),
+                $sections   = angular.element(document.querySelectorAll('section')),
+                $layers     = angular.element(document.querySelectorAll('#parallax .layer')),
+                $arrows     = angular.element(document.querySelectorAll('#content .arrow')),
                 winW, winH, trackH;
+
+
+            function parallaxTo( index ){
+                var _percent = index === 0 ? 0 : (index+1)/$sections.length,
+                    _moveX   = winW * _percent,
+                    _moveY   = index * winH;
+                TweenLite.set($layers, {x:-(_moveX)});
+                TweenLite.to($track, 0.45, {y:-(_moveY), ease: Power2.easeOut});
+            }
+
 
             function _linker( scope, $element, attrs ){
                 winW = document.body.clientWidth;
                 winH = document.documentElement.clientHeight;
                 trackH = $track[0].clientHeight;
 
-                angular.element($window).on('scroll', function(ev){
-                    var percent = (window.scrollY / (trackH - winH)),
-                        moveX   = percent * winW;
-                    TweenLite.set($layers, {x:-(moveX)});
+                $arrows.on('click', function(){
+                    var _sections   = ($sections.length - 1),
+                        _current    = [].indexOf.call($sections, document.querySelector('section.active')),
+                        _next       = (angular.element(this).hasClass('left')) ? (_current === 0 ? 0 : (_current - 1)) : (_current === _sections ? _sections : (_current + 1));
+                    $sections.removeClass('active').eq(_next).addClass('active');
+                    parallaxTo(_next);
                 });
+
+//                angular.element($window).on('scroll', function(ev){
+//                    var percent = (window.scrollY / (trackH - winH)),
+//                        moveX   = percent * winW;
+//                    TweenLite.set($layers, {x:-(moveX)});
+//                });
             }
 
             return {
@@ -391,38 +447,3 @@ angular.module('f43.common').
             }
         ];
     });
-/* global FastClick */
-
-;(function(window, angular, undefined){ 'use strict';
-
-    /**
-     * 'focus-43' module declaration.
-     */
-    angular.module('f43', ['ngRoute', 'ngResource', 'f43.common']).
-
-        /**
-         * Focus-43 module configuration.
-         */
-        config(['$routeProvider', '$locationProvider', '$httpProvider', function( $routeProvider, $locationProvider, $httpProvider ){
-            // Use html5 location methods
-            $locationProvider.html5Mode(true).hashPrefix('!');
-
-            // http config
-            $httpProvider.defaults.headers.common['x-angularized'] = true;
-
-            // Dynamic routing for top level pages; so $routeChanges{event}s get issued
-            $routeProvider
-                .when('/:section', {})
-                .when('/experiments/:post', {templateUrl: '/experiments'});
-
-        }]).
-
-        /**
-         * App initialization: *post* configuration and angular bootstrapping.
-         */
-        run(['$rootScope', '$location', '$timeout', function( $rootScope ){
-            // Attach FastClick
-            FastClick.attach(document.body);
-        }]);
-
-})( window, window.angular );

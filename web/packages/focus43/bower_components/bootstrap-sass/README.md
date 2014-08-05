@@ -188,7 +188,7 @@ In `application.sass`, replace `@import 'bootstrap'` with:
 ### Javascript
 
 We have a helper that includes all Bootstrap javascripts. If you use Rails (or Sprockets separately),
-put this in your Javascript manifest (usually in `application.js`) to load the files in the [correct order](/vendor/assets/javascripts/bootstrap.js):
+put this in your Javascript manifest (usually in `app.js`) to load the files in the [correct order](/vendor/assets/javascripts/bootstrap.js):
 
 ```js
 // Loads all Bootstrap javascripts

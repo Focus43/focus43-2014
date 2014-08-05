@@ -74,10 +74,10 @@
             //$pageController->addHeaderItem( $this->getHelper('html')->javascript('modernizr.js', self::PACKAGE_HANDLE) );
             // JS
             $pageController->addFooterItem( $this->getHelper('html')->javascript('core.js', self::PACKAGE_HANDLE) );
-            $pageController->addFooterItem( $this->getHelper('html')->javascript('application.js', self::PACKAGE_HANDLE) );
+            $pageController->addFooterItem( $this->getHelper('html')->javascript('app.js', self::PACKAGE_HANDLE) );
             // Include live reload for for grunt watch *if* VAGRANT_VM
             if(isset($_SERVER['VAGRANT_VM']) && ((bool) $_SERVER['VAGRANT_VM'] === true)){
-                $this->addFooterItem('<script src="http://localhost:35729/livereload.js"></script>');
+                //$this->addFooterItem('<script src="http://localhost:35729/livereload.js"></script>');
             }
         }
 
