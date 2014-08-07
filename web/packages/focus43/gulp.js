@@ -13,7 +13,8 @@ module.exports = function( gulp ){
         concat  = require('gulp-concat'),
         uglify  = require('gulp-uglify'),
         sass    = require('gulp-ruby-sass'),
-        jshint  = require('gulp-jshint');
+        jshint  = require('gulp-jshint'),
+        livereload = require('gulp-livereload');
 
 
     var sourcePaths = {
@@ -24,6 +25,7 @@ module.exports = function( gulp ){
                 _packagePath('bower_components/angular/angular.js'),
                 _packagePath('bower_components/angular-resource/angular-resource.js'),
                 _packagePath('bower_components/angular-route/angular-route.js'),
+                _packagePath('bower_components/angular-animate/angular-animate.js'),
                 _packagePath('bower_components/gsap/src/uncompressed/TweenLite.js'),
                 _packagePath('bower_components/gsap/src/uncompressed/TimelineLite.js'),
                 _packagePath('bower_components/gsap/src/uncompressed/easing/EasePack.js'),
@@ -53,7 +55,8 @@ module.exports = function( gulp ){
                 utils.log(utils.colors.red(err.toString()));
                 this.emit('end');
             })
-            .pipe(gulp.dest(_packagePath('css/')));
+            .pipe(gulp.dest(_packagePath('css/')))
+            .pipe(livereload({auto:false}));
     }
 
 
@@ -112,6 +115,7 @@ module.exports = function( gulp ){
      * Watch tasks
      */
     gulp.task('watch', function(){
+        livereload.listen();
         gulp.watch(_packagePath('css/src/**/*.scss'), ['sass:dev']);
         gulp.watch(_packagePath('js/src/**/*.js'), ['js:app:dev']);
     });

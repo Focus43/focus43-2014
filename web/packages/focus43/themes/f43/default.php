@@ -5,7 +5,11 @@
 <?php Loader::element('header_required'); // REQUIRED BY C5 // ?>
 </head>
 
-<body alive>
+<body animator ng-class="{'sidebar-open':sidebar.open}">
+
+    <script type="text/ng-template" id="/experiments">
+        <h1>This is an expiremnt template!</h1>
+    </script>
 
     <div id="parallax">
         <div class="inner">
@@ -17,10 +21,11 @@
 
     <div id="content">
         <div id="track">
-            <section id="section-home" class="active">
+            <section id="section-home">
                 <div class="tabular">
                     <div class="cellular" style="position:relative;">
-                        <img src="<?php echo FOCUS43_IMAGE_PATH; ?>3d-logo-lighter.png" />
+                        <!--<img src="<?php echo FOCUS43_IMAGE_PATH; ?>3d-logo-lighter.png" />-->
+                        <h1>We build web & iOS applications</h1>
                     </div>
                 </div>
             </section>
@@ -64,6 +69,22 @@
             </section>
         </div>
 
+        <!-- nav (sidebar) -->
+        <nav>
+            <div class="inner">
+                <a class="trigger">
+                    <i class="fa fa-bars"></i>
+                </a>
+                <ul class="list-unstyled section-nav">
+                    <li class="active"><a href="/">Home</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/work">Work</a></li>
+                    <li><a href="/experiments">Experiments</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+
         <!-- arrows -->
         <div class="arrow left">
             <div class="inner">
@@ -77,17 +98,7 @@
         </div>
     </div>
 
-    <div ng-view></div>
-
-    <nav>
-        <ul class="list-inline">
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/work">Work</a></li>
-            <li><a href="/experiments">Experiments</a></li>
-            <li><a href="/contact">Contact</a></li>
-        </ul>
-    </nav>
+    <div id="ngviewer" class="custom-view" ng-view></div>
 
 <?php Loader::element('footer_required'); // REQUIRED BY C5 // ?>
 </body>

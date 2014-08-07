@@ -5,7 +5,7 @@
     /**
      * 'focus-43' module declaration.
      */
-    angular.module('f43', ['ngRoute', 'ngResource', 'f43.common']).
+    angular.module('f43', ['ngRoute', 'ngResource', 'ngAnimate', 'f43.common']).
 
         /**
          * Focus-43 module configuration.
@@ -20,7 +20,9 @@
             // Dynamic routing for top level pages; so $routeChanges{event}s get issued
             $routeProvider
                 .when('/:section', {})
-                .when('/experiments/:post', {templateUrl: '/experiments'});
+                .when('/:section/:level1', {templateUrl: function( params ){
+                    return '/' + params.section;
+                }});
 
         }]).
 
@@ -30,60 +32,57 @@
         run(['$rootScope', '$location', '$timeout', function( $rootScope ){
             // Attach FastClick
             FastClick.attach(document.body);
+
+            // Sidebar settings available on the rootscope
+            $rootScope.sidebar = {
+                open: false
+            };
+        }]).
+
+        animation('.sidebar-open', ['TweenLite', 'Modernizr', function(TweenLite, Modernizr){
+
+            //console.log(alert(JSON.stringify(Modernizr)));
+
+            return {
+
+            };
+
+//            return {
+//                enter: function(element, done){
+//                    console.log('entered');
+//                },
+//                leave: function(element, done){
+//                    console.log('left');
+//                },
+//                beforeAddClass: function(element, className, done){
+//                    //TweenLite.to('#content', 0.5, {x:-(document.body.clientWidth)});
+//                    console.log('prior');
+//                    done();
+//                },
+//                addClass: function(element, className, done){
+//                    console.log('class added');
+//                },
+//                beforeRemoveClass: function(element, className, done){
+//                    //TweenLite.to('#content',0.25,{x:0});
+//                }
+//            };
         }]);
+
+//        animation('.custom-view', ['TweenLite', function(TweenLite){
+//            return {
+//                enter: function(element, done){
+//                    TweenLite.to(element, 0.58, {x:0, ease:Power2.easeOut, onComplete: done});
+//                },
+//                leave: function(element, done){
+//                    TweenLite.to(element, 0.58, {x:-(document.body.clientWidth), ease:Power2.easeOut, onComplete: done});
+//                }
+//            };
+//        }]);
 
 })( window, window.angular );
 
 angular.module('f43.common', []);
 
-angular.module('f43.common')
-
-    .directive('alive', ['$window', 'TweenLite', 'TimelineLite',
-        function( $window, TweenLite, TimelineLite ){
-
-            var $track      = angular.element(document.querySelector('#track')),
-                $sections   = angular.element(document.querySelectorAll('section')),
-                $layers     = angular.element(document.querySelectorAll('#parallax .layer')),
-                $arrows     = angular.element(document.querySelectorAll('#content .arrow')),
-                winW, winH, trackH;
-
-
-            function parallaxTo( index ){
-                var _percent = index === 0 ? 0 : (index+1)/$sections.length,
-                    _moveX   = winW * _percent,
-                    _moveY   = index * winH;
-                TweenLite.set($layers, {x:-(_moveX)});
-                TweenLite.to($track, 0.45, {y:-(_moveY), ease: Power2.easeOut});
-            }
-
-
-            function _linker( scope, $element, attrs ){
-                winW = document.body.clientWidth;
-                winH = document.documentElement.clientHeight;
-                trackH = $track[0].clientHeight;
-
-                $arrows.on('click', function(){
-                    var _sections   = ($sections.length - 1),
-                        _current    = [].indexOf.call($sections, document.querySelector('section.active')),
-                        _next       = (angular.element(this).hasClass('left')) ? (_current === 0 ? 0 : (_current - 1)) : (_current === _sections ? _sections : (_current + 1));
-                    $sections.removeClass('active').eq(_next).addClass('active');
-                    parallaxTo(_next);
-                });
-
-//                angular.element($window).on('scroll', function(ev){
-//                    var percent = (window.scrollY / (trackH - winH)),
-//                        moveX   = percent * winW;
-//                    TweenLite.set($layers, {x:-(moveX)});
-//                });
-            }
-
-            return {
-                restrict: 'A',
-                scope: false,
-                link: _linker
-            };
-        }
-    ]);
     /* global requestAnimationFrame */
 /* global ThrowPropsPlugin */
 /* global Hammer */
@@ -413,6 +412,153 @@ angular.module('f43.common')
             };
         }
     ]);
+angular.module('f43.common')
+
+    .directive('animator', ['$window', 'TweenLite', 'TimelineLite',
+        function( $window, TweenLite, TimelineLite ){
+
+            var $track      = angular.element(document.querySelector('#track')),
+                $sections   = angular.element(document.querySelectorAll('section')),
+                $layers     = angular.element(document.querySelectorAll('#parallax .layer')),
+                winW, winH, trackH;
+
+
+            function parallaxTo( index ){
+                var _percent = index === 0 ? 0 : (index+1)/$sections.length,
+                    _moveX   = winW * _percent,
+                    _moveY   = index * winH;
+                TweenLite.set($layers, {x:-(_moveX)});
+                TweenLite.to($track, 0.45, {y:-(_moveY), ease: Power2.easeOut});
+            }
+
+
+            function _linker( scope, $element, attrs ){
+                winW = document.body.clientWidth;
+                winH = document.documentElement.clientHeight;
+                trackH = $track[0].clientHeight;
+
+                angular.element($window).on('resize', function(){
+                    winW = document.body.clientWidth;
+                    winH = document.documentElement.clientHeight;
+                    trackH = $track[0].clientHeight;
+                    parallaxTo( angular.element(document.querySelector('nav')).data('$navController').activeIndex() );
+                });
+            }
+
+
+            return {
+                restrict: 'A',
+                scope: false,
+                link: _linker,
+                controller: ['$scope', function( $scope ){
+
+                    // Publicly accessible method of the controller
+                    this.parallaxTo = parallaxTo;
+
+                }]
+            };
+        }
+    ]);
+angular.module('f43.common').
+    directive('nav', ['$rootScope', '$location', function factory( $rootScope, $location ){
+
+        var $arrows = angular.element(document.querySelectorAll('#content .arrow')),
+            $trigger, $listItems, $navLinks;
+
+
+        function setActiveByIndex( index ){
+            $listItems.removeClass('active').eq(index).addClass('active');
+        }
+
+
+        function _linker( scope, $element, attrs, AnimatorController ){
+            $trigger   = angular.element(document.querySelector('nav .trigger'));
+            $listItems = $element.find('li');
+            $navLinks  = angular.element(document.querySelectorAll('.section-nav a'));
+
+
+            // Instead of listening for clicks on the <a> tags in the nav list, just
+            // let the $routeChangeSuccess event update the active index to trigger this
+            scope.$watch('activeIndex', function( _index, _prevIndex ){
+                if( _index === _prevIndex ){
+                    return;
+                }
+                setActiveByIndex(_index || 0);
+                AnimatorController.parallaxTo(_index);
+            });
+
+            // Nav trigger (toggle open/close)
+            $trigger.on('click', function( event ){
+                scope.$apply(function(){
+                    $rootScope.sidebar.open = !$rootScope.sidebar.open;
+                });
+            });
+
+            // If sidebar is open, bind a one-time click listener on the track when its masked
+            $rootScope.$watch('sidebar.open', function( status ){
+                if( status === true ){
+                    angular.element(document.querySelector('#track')).one('click', function(){
+                        $rootScope.sidebar.open = false;
+                    });
+                }
+            });
+
+            // Arrow clicks; instead of updating just the active index, we update the
+            // *route* (by finding the prev/next <a> tag and getting its href) so that the
+            // $routeChangeStart event gets triggered accordingly.
+            $arrows.on('click', function(){
+                if( angular.element(this).hasClass('left') && scope.activeIndex > 0 ){
+                    scope.$apply(function(){
+                        $location.path($navLinks.eq(scope.activeIndex-1).attr('href'));
+                        //scope.activeIndex--;
+                    });
+                }
+
+                if( angular.element(this).hasClass('right') && scope.activeIndex < ($listItems.length - 1) ){
+                    scope.$apply(function(){
+                        $location.path($navLinks.eq(scope.activeIndex+1).attr('href'));
+                        //scope.activeIndex++;
+                    });
+                }
+            });
+        }
+
+
+        return {
+            restrict: 'E',
+            require:  '^animator',
+            scope:    true,
+            link:     _linker,
+            controller: ['$rootScope', '$scope', function( $rootScope, $scope ){
+                // Default activeIndex of 0 = home section
+                $scope.activeIndex = 0;
+
+                /**
+                 * Get the current activeIndex
+                 * @returns {number}
+                 */
+                this.activeIndex = function(){
+                    return $scope.activeIndex;
+                };
+
+                /**
+                 * Watch for route changes and update the scope's active index - which triggers
+                 * all subsequent navigation stuff.
+                 */
+                $scope.$on('$routeChangeStart', function(event, current){
+                    var href = '/';
+                    if( angular.isDefined(current) && angular.isDefined(current.params.section) ){
+                        href += current.params.section;
+                    }
+                    $scope.activeIndex = Array.prototype.indexOf.call($listItems, document.querySelector('nav [href="'+href+'"]').parentNode);
+                    $rootScope.sidebar.open = false;
+                });
+
+            }]
+        };
+    }]);
+
+
 angular.module('f43.common').
 
     /**
