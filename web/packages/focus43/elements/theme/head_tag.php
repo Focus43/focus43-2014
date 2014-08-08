@@ -6,5 +6,5 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 <meta name="apple-mobile-web-app-capable" content="no" />
-<meta name="application-tools" content="<?php echo FOCUS43_TOOLS_PATH; ?>" />
-<meta name="application-images" content="<?php echo FOCUS43_IMAGE_PATH; ?>" />
+<meta name="app-tools" content="<?php echo FOCUS43_TOOLS_PATH; ?>" />
+<meta name="app-images" content="<?php echo FOCUS43_IMAGE_PATH; ?>" />

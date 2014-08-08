@@ -17,7 +17,7 @@ $light-blue:                  #2299ac;
 $lime-green:                  #219161;
 // Bootstrap vars
 $link-color:                  #fff;
-$grid-gutter-width:           16px;
+//$grid-gutter-width:           16px;
 $font-size-base:              19px;
 $font-size-h1:                315%;//floor(($font-size-base * 5.6));
 $font-size-h2:                285%;//floor(($font-size-base * 3.5));
@@ -64,6 +64,13 @@ img {@extend .img-responsive;display:inline-block;}
   .cellular {width:100%;height:100%;display:table-cell;vertical-align:middle;text-align:center;}
 }
 
+// Cubed styles; by default, includes a dark magenta cube w/ *no* background settings
+.cubify {margin-bottom:16px;@include cubify(darken($magenta,30%),($grid-gutter-width/4));@include box-shadow(0 10px 20px rgba(0,0,0,.5));
+  &.cubify-magenta {background:$magenta;@include cubify(darken($magenta,30%),($grid-gutter-width/4));}
+  &.cubify-blue {background:$light-blue;@include cubify(darken($light-blue,20%),($grid-gutter-width/4));}
+  &.cubify-green {background:$lime-green;@include cubify(darken($lime-green,20%),($grid-gutter-width/4));}
+  &.cubify-orange {background:#df8505;@include cubify(darken(#df8505,20%),($grid-gutter-width/4));}
+}
 
 // Horizontal parallax
 #parallax, #parallax .inner, #parallax .layer {width:100%;height:100%;}
@@ -82,15 +89,41 @@ img {@extend .img-responsive;display:inline-block;}
 #content {position:relative;top:0;left:0;width:100%;height:100%;z-index:2;}
 
 // Sections container
-#track {position:relative;height:percentage($pageSections);
+#track {position:relative;height:100%;//percentage($pageSections);
   // Mask element when sidebar is open
-  &:before {display:block;content:'';background:rgba(0,0,0,0.8);position:absolute;top:0;left:0;right:0;bottom:0;z-index:2;visibility:hidden;opacity:0;@include transition(all 0.45s ease);}
+  &:before {display:block;content:'';background:rgba(0,0,0,0.8);position:absolute;top:0;left:0;right:0;bottom:0;z-index:9;visibility:hidden;opacity:0;@include transition(all 0.45s ease);}
   // Sections
-  section {height:percentage(1/$pageSections);@include scrollOverflow;
-    &#section-home {
-      h1 {max-width:80%;display:inline-block;font-size:8rem;color:$magenta;font-weight:bold;@include text-shadow(0 0 80px #000);}
+  section {opacity:0;padding:1rem 0;position:absolute;height:100%;width:100%;top:0;left:0;/*percentage(1/$pageSections);*/@include scrollOverflow;}
+}
+
+// Individual sections
+.section-home {
+  h1 {max-width:80%;display:inline-block;font-size:8rem;color:$magenta;font-weight:bold;@include text-shadow(0 0 80px #000);}
+}
+
+.section-about {
+
+}
+
+.section-contact {
+  .tabular {position:relative;z-index:2;}
+
+  #frmContact {max-width:800px;
+    .subheader {background:$magenta-step-up7_5;
+      h2 {margin:0;padding:15px;text-align:center;background:$magenta-step-down15;}
+      p {text-align:left;margin:0;padding:$grid-gutter-width/2;}
+    }
+    .form-body {padding:0 $grid-gutter-width/2;margin:0 -($grid-gutter-width/2);
+      .btn {@include button-variant(#fff, $magenta-step-up7_5, $magenta-step-up7_5);padding-left:0.5rem;padding-right:0.5rem;white-space:normal;
+        i {display:none;}
+        &.processing i {display:inline-block;}
+      }
+      &.sent {overflow:hidden;}
     }
   }
+//  .map-back {position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;
+//    .gmap {width:100%;height:100%;}
+//  }
 }
 
 // Navigation (ie. sidebar)
@@ -109,7 +142,7 @@ nav {position:absolute;top:0;bottom:0;height:100%;left:100%;width:calc(100% - 3r
 }
 
 // Prev/Next navigation arrows
-.arrow {position:fixed;bottom:0;height:auto;top:auto;z-index:3;background:transparent;@include transition(all 0.25s ease);
+.arrow {display:none;position:fixed;bottom:0;height:auto;top:auto;z-index:3;background:transparent;@include transition(all 0.25s ease);
   .inner {display:table;height:100%;}
   a {padding:15px;display:table-cell;position:relative;height:100%;vertical-align:middle;text-align:center;}
   img {position:relative;width:28px;@include transition(all 0.15s ease);}

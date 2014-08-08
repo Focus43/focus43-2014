@@ -1,7 +1,7 @@
 /************************************************************
  * 3D drop-box styles
  ***********************************************************/
-@mixin cubify($color, $size){
+@mixin cubify($color, $size){ $size: floor($size); // round down if decimal
   position:relative;
   // left depth
   &:before {content:"";display:block;width:$size;height:100%;position:absolute;top:0;bottom:0;left:-$size;background:lighten($color, 2.5%);@include transform(skewY(-45deg) translateY($size/2));}

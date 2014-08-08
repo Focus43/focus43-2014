@@ -28,7 +28,7 @@
 		 * @return void
 		 */
 	    public function on_start(){
-	        define('FOCUS43_TOOLS_PATH', BASE_URL . REL_DIR_FILES_TOOLS_PACKAGES . '/' . $this->pkgHandle . '/');
+	        define('FOCUS43_TOOLS_PATH', REL_DIR_FILES_TOOLS_PACKAGES . '/' . $this->pkgHandle . '/');
 			define('FOCUS43_IMAGE_PATH', DIR_REL . '/packages/' . $this->pkgHandle . '/images/');
 
 			// Autoload classes

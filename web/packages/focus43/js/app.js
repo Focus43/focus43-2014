@@ -5,12 +5,19 @@
     /**
      * 'focus-43' module declaration.
      */
-    angular.module('f43', ['ngRoute', 'ngResource', 'ngAnimate', 'f43.common']).
+    angular.module('f43', [
+        'ngRoute',
+        'ngResource',
+        'ngAnimate',
+        'f43.common',
+        'f43.sections',
+        'f43.googlemap'
+    ]).
 
         /**
          * Focus-43 module configuration.
          */
-        config(['$routeProvider', '$locationProvider', '$httpProvider', function( $routeProvider, $locationProvider, $httpProvider ){
+        config(['$provide', '$routeProvider', '$locationProvider', '$httpProvider', function( $provide, $routeProvider, $locationProvider, $httpProvider ){
             // Use html5 location methods
             $locationProvider.html5Mode(true).hashPrefix('!');
 
@@ -24,12 +31,22 @@
                     return '/' + params.section;
                 }});
 
+            // Provide constants
+            $provide.factory('Ajax', function factory(){
+                return {
+                    toolsBasePath: document.querySelector('meta[name="app-tools"]').getAttribute('content'),
+                    toolsHandler: function( _path ){
+                        return this.toolsBasePath + _path;
+                    }
+                };
+            });
+
         }]).
 
         /**
          * App initialization: *post* configuration and angular bootstrapping.
          */
-        run(['$rootScope', '$location', '$timeout', function( $rootScope ){
+        run(['$rootScope', 'GoogleMaps', function( $rootScope, GoogleMaps ){
             // Attach FastClick
             FastClick.attach(document.body);
 
@@ -37,52 +54,25 @@
             $rootScope.sidebar = {
                 open: false
             };
-        }]).
 
-        animation('.sidebar-open', ['TweenLite', 'Modernizr', function(TweenLite, Modernizr){
-
-            //console.log(alert(JSON.stringify(Modernizr)));
-
-            return {
-
+            $rootScope.mapOptions = {
+                center: new GoogleMaps.LatLng(43.479634, -110.760234)
             };
-
-//            return {
-//                enter: function(element, done){
-//                    console.log('entered');
-//                },
-//                leave: function(element, done){
-//                    console.log('left');
-//                },
-//                beforeAddClass: function(element, className, done){
-//                    //TweenLite.to('#content', 0.5, {x:-(document.body.clientWidth)});
-//                    console.log('prior');
-//                    done();
-//                },
-//                addClass: function(element, className, done){
-//                    console.log('class added');
-//                },
-//                beforeRemoveClass: function(element, className, done){
-//                    //TweenLite.to('#content',0.25,{x:0});
-//                }
-//            };
         }]);
 
-//        animation('.custom-view', ['TweenLite', function(TweenLite){
-//            return {
-//                enter: function(element, done){
-//                    TweenLite.to(element, 0.58, {x:0, ease:Power2.easeOut, onComplete: done});
-//                },
-//                leave: function(element, done){
-//                    TweenLite.to(element, 0.58, {x:-(document.body.clientWidth), ease:Power2.easeOut, onComplete: done});
-//                }
+//        factory('$exceptionHandler', function(){
+//            return function(exception, cause){
+//                console.log('Caught!', exception);
 //            };
-//        }]);
+//        }).
 
 })( window, window.angular );
 
 angular.module('f43.common', []);
 
+angular.module('f43.googlemap', []);
+
+angular.module('f43.sections', []);
     /* global requestAnimationFrame */
 /* global ThrowPropsPlugin */
 /* global Hammer */
@@ -420,15 +410,43 @@ angular.module('f43.common')
             var $track      = angular.element(document.querySelector('#track')),
                 $sections   = angular.element(document.querySelectorAll('section')),
                 $layers     = angular.element(document.querySelectorAll('#parallax .layer')),
-                winW, winH, trackH;
+                winW, winH, trackH, masterTimeline;
+
+
+            function buildMasterTimeline(){
+                masterTimeline = new TimelineLite({paused:true});
+
+                angular.forEach($sections, function( node, index ){
+                    var sectionTimeline = new TimelineLite(),
+                        sectionEnter    = new TimelineLite({
+                            onComplete: function(){ masterTimeline.pause(); },
+                            onStart: function(){ TweenLite.set($layers, {x:-(((index+1)/$sections.length) * winW)}); }
+                        }),
+                        sectionLeave    = new TimelineLite();
+
+                    sectionTimeline.add(sectionEnter, 'enter');
+                    sectionTimeline.add(sectionLeave, 'leave');
+
+                    // Add built timeline onto master
+                    masterTimeline.add(sectionTimeline, 'section-' + index);
+
+//                    sectionEnter.fromTo($sections[index], 1, {opacity:0,scale:0.6,rotationZ:-72}, {opacity:1,scale:1,rotationZ:0});
+//                    sectionLeave.to($sections[index], 0.5, {rotationZ:180,opacity:0,delay:0.25});
+//                    sectionTimeline.add(sectionEnter, 'enter');
+//                    sectionTimeline.add(sectionLeave, 'leave');
+//                    masterTimeline.add(sectionTimeline, 'section-' + index);
+                });
+
+                return masterTimeline;
+            }
 
 
             function parallaxTo( index ){
-                var _percent = index === 0 ? 0 : (index+1)/$sections.length,
-                    _moveX   = winW * _percent,
-                    _moveY   = index * winH;
-                TweenLite.set($layers, {x:-(_moveX)});
-                TweenLite.to($track, 0.45, {y:-(_moveY), ease: Power2.easeOut});
+//                var _percent = index === 0 ? 0 : (index+1)/$sections.length,
+//                    _moveX   = winW * _percent,
+//                    _moveY   = index * winH;
+//                TweenLite.set($layers, {x:-(_moveX)});
+//                TweenLite.to($track, 0.45, {y:-(_moveY), ease: Power2.easeOut});
             }
 
 
@@ -436,12 +454,13 @@ angular.module('f43.common')
                 winW = document.body.clientWidth;
                 winH = document.documentElement.clientHeight;
                 trackH = $track[0].clientHeight;
+                buildMasterTimeline();
 
                 angular.element($window).on('resize', function(){
-                    winW = document.body.clientWidth;
-                    winH = document.documentElement.clientHeight;
-                    trackH = $track[0].clientHeight;
-                    parallaxTo( angular.element(document.querySelector('nav')).data('$navController').activeIndex() );
+//                    winW = document.body.clientWidth;
+//                    winH = document.documentElement.clientHeight;
+//                    trackH = $track[0].clientHeight;
+//                    parallaxTo( angular.element(document.querySelector('nav')).data('$navController').activeIndex() );
                 });
             }
 
@@ -460,6 +479,7 @@ angular.module('f43.common')
         }
     ]);
 angular.module('f43.common').
+
     directive('nav', ['$rootScope', '$location', function factory( $rootScope, $location ){
 
         var $arrows = angular.element(document.querySelectorAll('#content .arrow')),
@@ -498,7 +518,9 @@ angular.module('f43.common').
             $rootScope.$watch('sidebar.open', function( status ){
                 if( status === true ){
                     angular.element(document.querySelector('#track')).one('click', function(){
-                        $rootScope.sidebar.open = false;
+                        scope.$apply(function(){
+                            $rootScope.sidebar.open = false;
+                        });
                     });
                 }
             });
@@ -550,7 +572,8 @@ angular.module('f43.common').
                     if( angular.isDefined(current) && angular.isDefined(current.params.section) ){
                         href += current.params.section;
                     }
-                    $scope.activeIndex = Array.prototype.indexOf.call($listItems, document.querySelector('nav [href="'+href+'"]').parentNode);
+                    var navElement = document.querySelector('nav [href="'+href+'"]');
+                    $scope.activeIndex = navElement ? Array.prototype.indexOf.call($listItems, navElement.parentNode) : 0;
                     $rootScope.sidebar.open = false;
                 });
 
@@ -593,3 +616,147 @@ angular.module('f43.common').
             }
         ];
     });
+angular.module('f43.googlemap').
+
+    directive('googlemap', ['GoogleMaps', function( GoogleMaps ){
+
+        // If GoogleMaps not available, don't initialize the directive
+        if( ! GoogleMaps ){ return {}; }
+
+        var _defaults = {
+            zoom: 12,
+            mapTypeId: GoogleMaps.MapTypeId.ROADMAP,
+            disableDefaultUI: true,
+            styles:
+            // Snazzy
+            // [{"featureType":"water","elementType":"geometry","stylers":[{"color":"#333739"}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#2ecc71"}]},{"featureType":"poi","stylers":[{"color":"#2ecc71"},{"lightness":-7}]},{"featureType":"road.highway","elementType":"geometry","stylers":[{"color":"#2ecc71"},{"lightness":-28}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#2ecc71"},{"visibility":"on"},{"lightness":-15}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#2ecc71"},{"lightness":-18}]},{"elementType":"labels.text.fill","stylers":[{"color":"#ffffff"}]},{"elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#2ecc71"},{"lightness":-34}]},{"featureType":"administrative","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#333739"},{"weight":0.8}]},{"featureType":"poi.park","stylers":[{"color":"#2ecc71"}]},{"featureType":"road","elementType":"geometry.stroke","stylers":[{"color":"#333739"},{"weight":0.3},{"lightness":10}]}]
+            // Cobalt
+            [{"featureType":"all","elementType":"all","stylers":[{"invert_lightness":true},{"saturation":10},{"lightness":30},{"gamma":0.5},{"hue":"#435158"}]}]
+        };
+
+        return {
+            restrict: 'A',
+            scope: {
+                mapOptions: '=googlemap',
+                mapInstance: '=?'
+            },
+            replace: true,
+            template: '<div></div>',
+            link: function( scope, $element, attrs ){
+                scope.mapInstance = new GoogleMaps.Map(
+                    $element[0],
+                    angular.extend(_defaults, (scope.mapOptions || {}))
+                );
+
+                // Enable weather layer on the map?
+                if( angular.isDefined(attrs.weather) ){
+                    var weatherLayer = new GoogleMaps.weather.WeatherLayer({
+                        temperatureUnits: GoogleMaps.weather.TemperatureUnit.FAHRENHEIT
+                    });
+                    weatherLayer.setMap(scope.mapInstance);
+                }
+
+                // Enable cloud layer?
+                if( angular.isDefined(attrs.clouds) ){
+                    var cloudLayer = new GoogleMaps.weather.CloudLayer();
+                    cloudLayer.setMap(scope.mapInstance);
+                }
+
+            }
+        };
+    }]);
+angular.module('f43.googlemap').
+
+    provider('GoogleMaps', function(){
+        this.$get = ['$window', '$log',
+            function( $window, $log ){
+                if( angular.isDefined($window['google']) ){
+                    return $window['google']['maps'];
+                }
+
+                return ($log.warn('GoogleMaps unavailable!'), false);
+            }
+        ];
+    });
+
+/* global Power2 */
+
+angular.module('f43.sections').
+
+    directive('sectionAbout', ['$animate', 'TimelineLite', function( $animate, TimelineLite ){
+
+        function _linker( scope, $element, attrs ){
+
+        }
+
+        return {
+            restrict: 'C',
+            scope:    true,
+            link:     _linker,
+            controller: ['$scope', function( $scope ){
+
+            }]
+        };
+    }]);
+/* global Power2 */
+
+angular.module('f43.sections').
+
+    /**
+     * Handler specifically for contact section.
+     */
+    directive('sectionContact', ['$animate', function factory( $animate ){
+
+        function _linker( scope, $element, attrs ){
+            scope.$watch('response', function( _response ){
+                if( angular.isObject(_response) && _response.ok === true ){
+                    $animate.addClass($element[0].querySelector('.form-body'), 'form-sent');
+                }
+            });
+        }
+
+        /**
+         * Scope properties: contactForm, form_data, processing, response {ok:'',msg:''}
+         */
+        return {
+            restrict: 'C',
+            scope:    true,
+            link:     _linker,
+            controller: ['$scope', '$http', 'Ajax', function( $scope, $http, Ajax ){
+                $scope.processing = false;
+
+                $scope.isValid = function(){
+                    return $scope.contactForm.$invalid;
+                };
+
+                $scope.submit = function(){
+                    $scope.processing = true;
+                    // POST the form data
+                    $http.post(Ajax.toolsHandler('contact'), $scope.form_data)
+                        .success(function( response ){
+                            $scope.processing = false;
+                            $scope.response   = response;
+                        });
+                };
+            }]
+        };
+    }]).
+
+    /**
+     * Animation handler for when the form is sent successfully.
+     */
+    animation('.form-sent', ['TimelineLite', function( TimelineLite ){
+        return {
+            addClass: function( $element, className, done ){
+                // Create a new timeline and run it right away
+                (new TimelineLite())
+                    .set($element, {overflow:'hidden'})
+                    .staggerTo($element[0].querySelectorAll('.row'), 0.35, {y:-500, opacity:0, scale:0.8, ease:Power2.easeOut}, 0.15)
+                    .to($element, 0.45, {height:0, ease:Power2.easeOut})
+                    .eventCallback('onComplete', function(){
+                        done();
+                        this.kill();
+                    });
+            }
+        };
+    }]);

@@ -1,4 +1,5 @@
 angular.module('f43.common').
+
     directive('nav', ['$rootScope', '$location', function factory( $rootScope, $location ){
 
         var $arrows = angular.element(document.querySelectorAll('#content .arrow')),
@@ -37,7 +38,9 @@ angular.module('f43.common').
             $rootScope.$watch('sidebar.open', function( status ){
                 if( status === true ){
                     angular.element(document.querySelector('#track')).one('click', function(){
-                        $rootScope.sidebar.open = false;
+                        scope.$apply(function(){
+                            $rootScope.sidebar.open = false;
+                        });
                     });
                 }
             });
@@ -89,7 +92,8 @@ angular.module('f43.common').
                     if( angular.isDefined(current) && angular.isDefined(current.params.section) ){
                         href += current.params.section;
                     }
-                    $scope.activeIndex = Array.prototype.indexOf.call($listItems, document.querySelector('nav [href="'+href+'"]').parentNode);
+                    var navElement = document.querySelector('nav [href="'+href+'"]');
+                    $scope.activeIndex = navElement ? Array.prototype.indexOf.call($listItems, navElement.parentNode) : 0;
                     $rootScope.sidebar.open = false;
                 });
 

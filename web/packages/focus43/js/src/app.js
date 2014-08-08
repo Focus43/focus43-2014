@@ -5,12 +5,19 @@
     /**
      * 'focus-43' module declaration.
      */
-    angular.module('f43', ['ngRoute', 'ngResource', 'ngAnimate', 'f43.common']).
+    angular.module('f43', [
+        'ngRoute',
+        'ngResource',
+        'ngAnimate',
+        'f43.common',
+        'f43.sections',
+        'f43.googlemap'
+    ]).
 
         /**
          * Focus-43 module configuration.
          */
-        config(['$routeProvider', '$locationProvider', '$httpProvider', function( $routeProvider, $locationProvider, $httpProvider ){
+        config(['$provide', '$routeProvider', '$locationProvider', '$httpProvider', function( $provide, $routeProvider, $locationProvider, $httpProvider ){
             // Use html5 location methods
             $locationProvider.html5Mode(true).hashPrefix('!');
 
@@ -24,12 +31,22 @@
                     return '/' + params.section;
                 }});
 
+            // Provide constants
+            $provide.factory('Ajax', function factory(){
+                return {
+                    toolsBasePath: document.querySelector('meta[name="app-tools"]').getAttribute('content'),
+                    toolsHandler: function( _path ){
+                        return this.toolsBasePath + _path;
+                    }
+                };
+            });
+
         }]).
 
         /**
          * App initialization: *post* configuration and angular bootstrapping.
          */
-        run(['$rootScope', '$location', '$timeout', function( $rootScope ){
+        run(['$rootScope', 'GoogleMaps', function( $rootScope, GoogleMaps ){
             // Attach FastClick
             FastClick.attach(document.body);
 
@@ -37,46 +54,16 @@
             $rootScope.sidebar = {
                 open: false
             };
-        }]).
 
-        animation('.sidebar-open', ['TweenLite', 'Modernizr', function(TweenLite, Modernizr){
-
-            //console.log(alert(JSON.stringify(Modernizr)));
-
-            return {
-
+            $rootScope.mapOptions = {
+                center: new GoogleMaps.LatLng(43.479634, -110.760234)
             };
-
-//            return {
-//                enter: function(element, done){
-//                    console.log('entered');
-//                },
-//                leave: function(element, done){
-//                    console.log('left');
-//                },
-//                beforeAddClass: function(element, className, done){
-//                    //TweenLite.to('#content', 0.5, {x:-(document.body.clientWidth)});
-//                    console.log('prior');
-//                    done();
-//                },
-//                addClass: function(element, className, done){
-//                    console.log('class added');
-//                },
-//                beforeRemoveClass: function(element, className, done){
-//                    //TweenLite.to('#content',0.25,{x:0});
-//                }
-//            };
         }]);
 
-//        animation('.custom-view', ['TweenLite', function(TweenLite){
-//            return {
-//                enter: function(element, done){
-//                    TweenLite.to(element, 0.58, {x:0, ease:Power2.easeOut, onComplete: done});
-//                },
-//                leave: function(element, done){
-//                    TweenLite.to(element, 0.58, {x:-(document.body.clientWidth), ease:Power2.easeOut, onComplete: done});
-//                }
+//        factory('$exceptionHandler', function(){
+//            return function(exception, cause){
+//                console.log('Caught!', exception);
 //            };
-//        }]);
+//        }).
 
 })( window, window.angular );

@@ -21,29 +21,24 @@
 
     <div id="content">
         <div id="track">
-            <section id="section-home">
+            <section class="section-home">
                 <div class="tabular">
                     <div class="cellular" style="position:relative;">
-                        <!--<img src="<?php echo FOCUS43_IMAGE_PATH; ?>3d-logo-lighter.png" />-->
-                        <h1>We build web & iOS applications</h1>
+                        <img src="<?php echo FOCUS43_IMAGE_PATH; ?>3d-logo-lighter.png" />
+                        <!--<h1>We build web & iOS applications</h1>-->
                     </div>
                 </div>
             </section>
 
-            <section id="section-about">
+            <section class="section-about">
                 <div class="tabular">
                     <div class="cellular">
-                        <h2>Focus43 Oh Yea</h2>
-                        <img src="<?php echo FOCUS43_IMAGE_PATH; ?>screenshot.png" />
-                        <h2>Focus43 Oh Yea</h2>
-                        <img src="<?php echo FOCUS43_IMAGE_PATH; ?>screenshot.png" />
-                        <h2>Focus43 Oh Yea</h2>
-                        <img src="<?php echo FOCUS43_IMAGE_PATH; ?>screenshot.png" />
+                        <?php Loader::packageElement('section_partials/about', 'focus43', array('c' => $c)); ?>
                     </div>
                 </div>
             </section>
 
-            <section id="section-work">
+            <section class="section-work">
                 <div class="tabular">
                     <div class="cellular">
                         this be the work section
@@ -51,7 +46,7 @@
                 </div>
             </section>
 
-            <section id="section-experiments">
+            <section class="section-experiments">
                 <div class="tabular">
                     <div class="cellular">
                         <p>Experiments</p>
@@ -60,10 +55,14 @@
                 </div>
             </section>
 
-            <section id="section-contact">
+            <section class="section-contact">
+                <!--<div class="map-back">
+                    <div class="gmap" googlemap="mapOptions"></div>
+                </div>-->
+
                 <div class="tabular">
                     <div class="cellular">
-                        <p>Contact Us</p>
+                        <?php Loader::packageElement('section_partials/contact', 'focus43', array('c' => $c)); ?>
                     </div>
                 </div>
             </section>
