@@ -27,7 +27,7 @@ module.exports = function( gulp ){
                 _packagePath('bower_components/angular-route/angular-route.js'),
                 _packagePath('bower_components/angular-animate/angular-animate.js'),
                 _packagePath('bower_components/gsap/src/uncompressed/TweenLite.js'),
-                _packagePath('bower_components/gsap/src/uncompressed/TimelineLite.js'),
+                _packagePath('bower_components/gsap/src/uncompressed/TimelineMax.js'),
                 _packagePath('bower_components/gsap/src/uncompressed/easing/EasePack.js'),
                 _packagePath('bower_components/gsap/src/uncompressed/plugins/CSSPlugin.js'),
                 _packagePath('bower_components/gsap/src/uncompressed/plugins/ScrollToPlugin.js'),

@@ -22,6 +22,14 @@ angular.module('f43.common').
         ];
     }).
 
+    provider('TimelineMax', function(){
+        this.$get = ['$window', '$log',
+            function( $window, $log ){
+                return $window['TimelineMax'] || ($log.warn('TimelineMax unavailable!'), false);
+            }
+        ];
+    }).
+
     /**
      * Wrap TweenLite library for dependency injection
      */

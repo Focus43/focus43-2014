@@ -404,44 +404,56 @@ angular.module('f43.common')
     ]);
 angular.module('f43.common')
 
-    .directive('animator', ['$window', 'TweenLite', 'TimelineLite',
-        function( $window, TweenLite, TimelineLite ){
+    .directive('animator-bak', ['$window', 'TweenLite', 'TimelineMax',
+        function( $window, TweenLite, TimelineMax ){
 
             var $track      = angular.element(document.querySelector('#track')),
                 $sections   = angular.element(document.querySelectorAll('section')),
-                $layers     = angular.element(document.querySelectorAll('#parallax .layer')),
-                winW, winH, trackH, masterTimeline;
+                $layers     = angular.element(document.querySelectorAll('#parallax .layer'));
+                //winW, winH, trackH,
+                //masterTimeline = new TimelineLite({paused:true});
 
 
-            function buildMasterTimeline(){
-                masterTimeline = new TimelineLite({paused:true});
+//            function sectionTimeline( _index ){
+//                var tl    = new TimelineLite({data:{index:_index}}),
+//                    enter = new TimelineLite({
+//                        onComplete: function(){ masterTimeline.pause(); },
+//                        onStart: function(){ TweenLite.set($layers, {x:-(((_index+1)/$sections.length) * winW)}); }
+//                    }),
+//                    leave = new TimelineLite();
+//                tl.add(enter, 'enter');
+//                tl.add(leave, 'leave');
+//                return tl;
+//            }
 
-                angular.forEach($sections, function( node, index ){
-                    var sectionTimeline = new TimelineLite(),
-                        sectionEnter    = new TimelineLite({
-                            onComplete: function(){ masterTimeline.pause(); },
-                            onStart: function(){ TweenLite.set($layers, {x:-(((index+1)/$sections.length) * winW)}); }
-                        }),
-                        sectionLeave    = new TimelineLite();
 
-                    sectionTimeline.add(sectionEnter, 'enter');
-                    sectionTimeline.add(sectionLeave, 'leave');
-
-                    // Add built timeline onto master
-                    masterTimeline.add(sectionTimeline, 'section-' + index);
-
-//                    sectionEnter.fromTo($sections[index], 1, {opacity:0,scale:0.6,rotationZ:-72}, {opacity:1,scale:1,rotationZ:0});
-//                    sectionLeave.to($sections[index], 0.5, {rotationZ:180,opacity:0,delay:0.25});
-//                    sectionTimeline.add(sectionEnter, 'enter');
-//                    sectionTimeline.add(sectionLeave, 'leave');
-//                    masterTimeline.add(sectionTimeline, 'section-' + index);
-                });
-
-                return masterTimeline;
-            }
+//            function buildMasterTimeline(){
+//                if( ! angular.isObject(masterTimeline) ){
+//                    masterTimeline = new TimelineLite({paused:true});
+//
+//                    angular.forEach($sections, function( node, index ){
+//                        var sectionTimeline = new TimelineLite({data:{index:index}}),
+//                            sectionEnter    = new TimelineLite({
+//                                onComplete: function(){ masterTimeline.pause(); },
+//                                onStart: function(){ TweenLite.set($layers, {x:-(((index+1)/$sections.length) * winW)}); }
+//                            }),
+//                            sectionLeave    = new TimelineLite();
+//
+//                        sectionTimeline.add(sectionEnter, 'enter');
+//                        sectionTimeline.add(sectionLeave, 'leave');
+//
+//                        angular.element(node).data('timeline', sectionTimeline);
+//                    });
+//
+//                    $window['tl'] = masterTimeline;
+//                }
+//
+//                return masterTimeline;
+//            }
 
 
             function parallaxTo( index ){
+                console.log(index);
 //                var _percent = index === 0 ? 0 : (index+1)/$sections.length,
 //                    _moveX   = winW * _percent,
 //                    _moveY   = index * winH;
@@ -451,10 +463,9 @@ angular.module('f43.common')
 
 
             function _linker( scope, $element, attrs ){
-                winW = document.body.clientWidth;
-                winH = document.documentElement.clientHeight;
-                trackH = $track[0].clientHeight;
-                buildMasterTimeline();
+//                winW = document.body.clientWidth;
+//                winH = document.documentElement.clientHeight;
+//                trackH = $track[0].clientHeight;
 
                 angular.element($window).on('resize', function(){
 //                    winW = document.body.clientWidth;
@@ -470,14 +481,73 @@ angular.module('f43.common')
                 scope: false,
                 link: _linker,
                 controller: ['$scope', function( $scope ){
+                    $scope.timelineMaster = new TimelineMax({paused:true, smoothChildTiming:true});
+                    $window['tl'] = $scope.timelineMaster;
 
                     // Publicly accessible method of the controller
                     this.parallaxTo = parallaxTo;
+
+                    this._timeline = $scope.timelineMaster;
+
+                    // Master timeline
+                    //this._timeline = buildMasterTimeline();
+
+//                    this.addSectionTimeline = function( $element, _callback ){
+//                        var index     = Array.prototype.indexOf.call(document.querySelectorAll('section'), $element[0]),
+//                            sectionTl = _callback.apply(undefined, [index]);
+//                        masterTimeline.add(sectionTl, 'section-' + index);
+//                    };
 
                 }]
             };
         }
     ]);
+angular.module('f43.common')
+
+    .directive('animator', ['$window', '$animate',
+        function( $window, $animate ){
+
+            var $track      = angular.element(document.querySelector('#track')),
+                $sections   = angular.element(document.querySelectorAll('section')),
+                $layers     = angular.element(document.querySelectorAll('#parallax .layer'));
+
+
+            function _linker( scope, $element, attrs ){
+                scope.$watch('sectionIndex', function( _index, _prevIndex ){
+                    $animate.removeClass($sections[_prevIndex], 'section-active');
+                    $animate.addClass($sections[_index], 'section-active');
+                });
+            }
+
+
+            return {
+                restrict: 'A',
+                scope: true,
+                link: _linker,
+                controller: ['$scope', function( $scope ){
+                    // Publicly accessible method of the controller
+                    this.parallaxTo = function( index ){
+                        $scope.sectionIndex = index;
+                    };
+                }]
+            };
+        }
+    ]).
+
+    animation('.section-active', function(){
+        return {
+            addClass: function( $element, className, done ){
+                if( $element.data('timeline') ){
+                    $element.data('timeline').tweenFromTo(0, 'enter');
+                }
+            },
+            removeClass: function( $element, className, done ){
+                if( $element.data('timeline') ){
+                    $element.data('timeline').tweenFromTo('enter', 'leave');
+                }
+            }
+        };
+    });
 angular.module('f43.common').
 
     directive('nav', ['$rootScope', '$location', function factory( $rootScope, $location ){
@@ -606,6 +676,14 @@ angular.module('f43.common').
         ];
     }).
 
+    provider('TimelineMax', function(){
+        this.$get = ['$window', '$log',
+            function( $window, $log ){
+                return $window['TimelineMax'] || ($log.warn('TimelineMax unavailable!'), false);
+            }
+        ];
+    }).
+
     /**
      * Wrap TweenLite library for dependency injection
      */
@@ -683,19 +761,27 @@ angular.module('f43.googlemap').
 
 angular.module('f43.sections').
 
-    directive('sectionAbout', ['$animate', 'TimelineLite', function( $animate, TimelineLite ){
+    directive('sectionAbout', ['$animate', 'TweenLite', 'TimelineMax', 'TimelineLite', function( $animate, TweenLite, TimelineMax, TimelineLite ){
 
-        function _linker( scope, $element, attrs ){
+        function _linker( scope, $element, attrs, AnimatorController ){
+            var tlMaster = new TimelineMax({paused:true}),
+                tlEnter  = new TimelineLite(),
+                tlLeave  = new TimelineLite();
 
+            tlEnter.fromTo($element, 1, {opacity:0,scale:0.6,rotationZ:-72}, {opacity:1,scale:1,rotationZ:0});
+
+            tlLeave.to($element, 1, {opacity:0,rotationZ:-70});
+
+            tlMaster.add(tlEnter, 'enter').add(tlLeave, 'leave');
+
+            $element.data('timeline', tlMaster);
         }
 
         return {
             restrict: 'C',
             scope:    true,
-            link:     _linker,
-            controller: ['$scope', function( $scope ){
-
-            }]
+            require:  '^animator',
+            link:     _linker
         };
     }]);
 /* global Power2 */
@@ -758,5 +844,68 @@ angular.module('f43.sections').
                         this.kill();
                     });
             }
+        };
+    }]);
+/* global Power2 */
+
+angular.module('f43.sections').
+
+    directive('sectionHome', ['$animate', 'TweenLite', 'TimelineMax', 'TimelineLite', function( $animate, TweenLite, TimelineMax, TimelineLite ){
+
+        function _linker( scope, $element, attrs, AnimatorController ){
+            var tlMaster = new TimelineMax({paused:true}),
+                tlEnter  = new TimelineLite(),
+                tlLeave  = new TimelineLite();
+
+            tlEnter.fromTo($element, 1, {opacity:0,scale:0.6,rotationZ:-72}, {opacity:1,scale:1,rotationZ:0});
+
+            tlLeave.to($element, 1, {opacity:0,rotationZ:-70});
+
+            tlMaster.add(tlEnter, 'enter').add(tlLeave, 'leave');
+
+            $element.data('timeline', tlMaster);
+
+//            var tlEnter = new TimelineLite({paused:true});
+//            tlEnter.fromTo($element, 1, {opacity:0,scale:0.6,rotationZ:-72}, {opacity:1,scale:1,rotationZ:0});
+//            $element.data('enter', tlEnter);
+//
+//            var tlLeave = new TimelineLite({paused:true});
+//            tlLeave.to($element, 1, {opacity:0,rotationZ:-70});
+//            $element.data('leave', tlLeave);
+
+
+//            AnimatorController.addSectionTimeline($element, function(index){
+//                var tl = new TimelineLite();
+//                tl.fromTo($element, 1, {opacity:0,scale:0.6,rotationZ:-72}, {opacity:1,scale:1,rotationZ:0});
+//                tl.to($element, 0.5, {rotationZ:180,opacity:0});
+//
+//                return tl;
+//            });
+
+//            var masterTimeline  = AnimatorController._timeline,
+//                sectionTimeline = new TimelineLite(),
+//                sectionEnter    = new TimelineLite(),
+//                sectionLeave    = new TimelineLite();
+//
+//            sectionEnter.fromTo($element, 1, {opacity:0,scale:0.6,rotationZ:-72}, {opacity:1,scale:1,rotationZ:0});
+//
+//            sectionTimeline.add(sectionEnter).add(sectionLeave);
+//            masterTimeline.add(sectionTimeline);
+
+//            var tlSection = $element.data('timeline'),
+//                tlEnter   = tlSection.getChildren(false,false,true)[0],
+//                tlLeave   = tlSection.getChildren(false,false,true)[1];
+//
+//            tlEnter.fromTo($element, 1, {opacity:0,scale:0.6,rotationZ:-72}, {opacity:1,scale:1,rotationZ:0});
+//            tlLeave.to($element, 0.5, {rotationZ:180,opacity:0,delay:1});
+//
+//            AnimatorController._timeline.add(tlSection, 'section-' + tlSection.data.index);
+        }
+
+        return {
+            restrict: 'C',
+            scope:    true,
+            require:  '^animator',
+            link:     _linker
         };
     }]);
