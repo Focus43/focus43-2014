@@ -72,7 +72,7 @@
             // CSS + Modernizr
             $pageController->addHeaderItem( $this->getHelper('html')->css('application.css', self::PACKAGE_HANDLE) );
             // JS
-            $pageController->addFooterItem( $this->getHelper('html')->javascript('https://maps.googleapis.com/maps/api/js?key=AIzaSyANFxVJuAgO4-wqXOeQnIfq38x7xmhMZXY&sensor=TRUE&libraries=weather') );
+            //$pageController->addFooterItem( $this->getHelper('html')->javascript('https://maps.googleapis.com/maps/api/js?key=AIzaSyANFxVJuAgO4-wqXOeQnIfq38x7xmhMZXY&sensor=TRUE&libraries=weather') );
             $pageController->addFooterItem( $this->getHelper('html')->javascript('core.js', self::PACKAGE_HANDLE) );
             $pageController->addFooterItem( $this->getHelper('html')->javascript('app.js', self::PACKAGE_HANDLE) );
             // Include live reload for for grunt watch *if* VAGRANT_VM

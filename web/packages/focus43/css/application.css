@@ -3830,16 +3830,14 @@ img {
 
 #content {
   position: relative;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   z-index: 2; }
 
-#track {
+#content-l2 {
   position: relative;
   height: 100%; }
-  #track:before {
+  #content-l2:before {
     display: block;
     content: '';
     background: rgba(0, 0, 0, 0.8);
@@ -3854,70 +3852,64 @@ img {
     -webkit-transition: all 0.45s ease;
     -o-transition: all 0.45s ease;
     transition: all 0.45s ease; }
-  #track section {
-    opacity: 0;
-    padding: 1rem 0;
+  #content-l2 .page {
+    visibility: hidden;
     position: absolute;
-    height: 100%;
-    width: 100%;
     top: 0;
     left: 0;
-    /*percentage(1/$pageSections);*/
+    width: 100%;
+    height: 100%; }
+  #content-l2 section {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    padding: 15px 0;
     overflow-x: hidden;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch; }
 
-.section-home h1 {
-  max-width: 80%;
-  display: inline-block;
-  font-size: 8rem;
-  color: #c7254e;
-  font-weight: bold;
-  text-shadow: 0 0 80px black; }
-
-.section-contact .tabular {
-  position: relative;
-  z-index: 2; }
-.section-contact #frmContact {
+.page.page-contact form {
   max-width: 800px; }
-  .section-contact #frmContact .subheader {
+  .page.page-contact form .subheader {
     background: #a71f41; }
-    .section-contact #frmContact .subheader h2 {
+    .page.page-contact form .subheader h2 {
       margin: 0;
       padding: 15px;
       text-align: center;
       background: #861935; }
-    .section-contact #frmContact .subheader p {
+    .page.page-contact form .subheader p {
       text-align: left;
       margin: 0;
       padding: 15px; }
-  .section-contact #frmContact .form-body {
+  .page.page-contact form .form-body {
     padding: 0 15px;
-    margin: -15px; }
-    .section-contact #frmContact .form-body .btn {
+    margin: 0;
+    margin-left: -15px;
+    margin-right: -15px; }
+    .page.page-contact form .form-body .btn {
       color: white;
       background-color: #a71f41;
       border-color: #a71f41;
       padding-left: 0.5rem;
       padding-right: 0.5rem;
       white-space: normal; }
-      .section-contact #frmContact .form-body .btn:hover, .section-contact #frmContact .form-body .btn:focus, .section-contact #frmContact .form-body .btn:active, .section-contact #frmContact .form-body .btn.active, .open > .section-contact #frmContact .form-body .btn.dropdown-toggle {
+      .page.page-contact form .form-body .btn:hover, .page.page-contact form .form-body .btn:focus, .page.page-contact form .form-body .btn:active, .page.page-contact form .form-body .btn.active, .open > .page.page-contact form .form-body .btn.dropdown-toggle {
         color: white;
         background-color: #7c1731;
         border-color: #73152d; }
-      .section-contact #frmContact .form-body .btn:active, .section-contact #frmContact .form-body .btn.active, .open > .section-contact #frmContact .form-body .btn.dropdown-toggle {
+      .page.page-contact form .form-body .btn:active, .page.page-contact form .form-body .btn.active, .open > .page.page-contact form .form-body .btn.dropdown-toggle {
         background-image: none; }
-      .section-contact #frmContact .form-body .btn.disabled, .section-contact #frmContact .form-body .btn.disabled:hover, .section-contact #frmContact .form-body .btn.disabled:focus, .section-contact #frmContact .form-body .btn.disabled:active, .section-contact #frmContact .form-body .btn.disabled.active, .section-contact #frmContact .form-body .btn[disabled], .section-contact #frmContact .form-body .btn[disabled]:hover, .section-contact #frmContact .form-body .btn[disabled]:focus, .section-contact #frmContact .form-body .btn[disabled]:active, .section-contact #frmContact .form-body .btn[disabled].active, fieldset[disabled] .section-contact #frmContact .form-body .btn, fieldset[disabled] .section-contact #frmContact .form-body .btn:hover, fieldset[disabled] .section-contact #frmContact .form-body .btn:focus, fieldset[disabled] .section-contact #frmContact .form-body .btn:active, fieldset[disabled] .section-contact #frmContact .form-body .btn.active {
+      .page.page-contact form .form-body .btn.disabled, .page.page-contact form .form-body .btn.disabled:hover, .page.page-contact form .form-body .btn.disabled:focus, .page.page-contact form .form-body .btn.disabled:active, .page.page-contact form .form-body .btn.disabled.active, .page.page-contact form .form-body .btn[disabled], .page.page-contact form .form-body .btn[disabled]:hover, .page.page-contact form .form-body .btn[disabled]:focus, .page.page-contact form .form-body .btn[disabled]:active, .page.page-contact form .form-body .btn[disabled].active, fieldset[disabled] .page.page-contact form .form-body .btn, fieldset[disabled] .page.page-contact form .form-body .btn:hover, fieldset[disabled] .page.page-contact form .form-body .btn:focus, fieldset[disabled] .page.page-contact form .form-body .btn:active, fieldset[disabled] .page.page-contact form .form-body .btn.active {
         background-color: #a71f41;
         border-color: #a71f41; }
-      .section-contact #frmContact .form-body .btn .badge {
+      .page.page-contact form .form-body .btn .badge {
         color: #a71f41;
         background-color: white; }
-      .section-contact #frmContact .form-body .btn i {
+      .page.page-contact form .form-body .btn i {
         display: none; }
-      .section-contact #frmContact .form-body .btn.processing i {
+      .page.page-contact form .form-body .btn.processing i {
         display: inline-block; }
-    .section-contact #frmContact .form-body.sent {
+    .page.page-contact form .form-body.sent {
       overflow: hidden; }
 
 nav {
@@ -3962,56 +3954,6 @@ nav {
     nav ul li:hover a {
       background: #861935; }
 
-.arrow {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  height: auto;
-  top: auto;
-  z-index: 3;
-  background: transparent;
-  -webkit-transition: all 0.25s ease;
-  -o-transition: all 0.25s ease;
-  transition: all 0.25s ease; }
-  .arrow .inner {
-    display: table;
-    height: 100%; }
-  .arrow a {
-    padding: 15px;
-    display: table-cell;
-    position: relative;
-    height: 100%;
-    vertical-align: middle;
-    text-align: center; }
-  .arrow img {
-    position: relative;
-    width: 28px;
-    -webkit-transition: all 0.15s ease;
-    -o-transition: all 0.15s ease;
-    transition: all 0.15s ease; }
-  .arrow.left {
-    left: 0; }
-    .arrow.left img {
-      -webkit-transform: rotateZ(180deg);
-      -moz-transform: rotateZ(180deg);
-      -ms-transform: rotateZ(180deg);
-      -o-transform: rotateZ(180deg);
-      transform: rotateZ(180deg); }
-  .arrow.right {
-    right: 0; }
-  .arrow:hover {
-    background: rgba(0, 0, 0, 0.35); }
-
-@media screen and (min-width: 992px) {
-  #content .arrow {
-    height: 70%;
-    top: 15%; }
-    #content .arrow img {
-      width: 30px; }
-    #content .arrow:hover a {
-      cursor: url("/packages/focus43/images/arrow_32.svg"), auto; }
-      #content .arrow:hover a img {
-        width: 50px; } }
 ::-webkit-scrollbar {
   width: 6px;
   background-color: rgba(9, 41, 28, 0.12); }
@@ -4025,14 +3967,6 @@ nav {
   background-color: rgba(33, 145, 97, 0.85); }
   ::-webkit-scrollbar-thumb:hover {
     background-color: #219161; }
-
-.custom-view {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.55); }
 
 #parallax, #content {
   -webkit-transform: translateX(0);
@@ -4050,7 +3984,7 @@ body.sidebar-open #parallax, body.sidebar-open #content {
   -ms-transform: translateX(calc(-100% + 3rem));
   -o-transform: translateX(calc(-100% + 3rem));
   transform: translateX(calc(-100% + 3rem)); }
-body.sidebar-open #track:before {
+body.sidebar-open #content-l2:before {
   visibility: visible;
   opacity: 1; }
 

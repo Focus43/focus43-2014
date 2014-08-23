@@ -21,15 +21,15 @@
             // Use html5 location methods
             $locationProvider.html5Mode(true).hashPrefix('!');
 
-            // http config
+            // Http config
             $httpProvider.defaults.headers.common['x-angularized'] = true;
 
             // Dynamic routing for top level pages; so $routeChanges{event}s get issued
             $routeProvider
-                .when('/:section', {})
-                .when('/:section/:level1', {templateUrl: function( params ){
+                .when('/:section', {templateUrl: function( params ){
                     return '/' + params.section;
-                }});
+                }}).
+                otherwise({templateUrl: '/home'});
 
             // Provide constants
             $provide.factory('Ajax', function factory(){
@@ -41,29 +41,24 @@
                 };
             });
 
+            $provide.constant('SIDEBAR_ANIMATE_TIME', 150);
         }]).
 
         /**
          * App initialization: *post* configuration and angular bootstrapping.
          */
-        run(['$rootScope', 'GoogleMaps', function( $rootScope, GoogleMaps ){
+        run(['$rootScope', 'GoogleMaps', '$route', function( $rootScope, GoogleMaps, $route ){
             // Attach FastClick
             FastClick.attach(document.body);
 
-            // Sidebar settings available on the rootscope
-            $rootScope.sidebar = {
-                open: false
-            };
-
-            $rootScope.mapOptions = {
-                center: new GoogleMaps.LatLng(43.479634, -110.760234)
-            };
-        }]);
-
-//        factory('$exceptionHandler', function(){
-//            return function(exception, cause){
-//                console.log('Caught!', exception);
+//            $rootScope.mapOptions = {
+//                center: new GoogleMaps.LatLng(43.479634, -110.760234)
 //            };
-//        }).
+
+            // Set the class on ng-view to the "view-{route}"
+            $rootScope.$on('$viewContentLoaded', function(){
+                $rootScope.pageClass = 'page-' + ($route.current.params.section || 'home');
+            });
+        }]);
 
 })( window, window.angular );

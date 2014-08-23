@@ -21,15 +21,15 @@
             // Use html5 location methods
             $locationProvider.html5Mode(true).hashPrefix('!');
 
-            // http config
+            // Http config
             $httpProvider.defaults.headers.common['x-angularized'] = true;
 
             // Dynamic routing for top level pages; so $routeChanges{event}s get issued
             $routeProvider
-                .when('/:section', {})
-                .when('/:section/:level1', {templateUrl: function( params ){
+                .when('/:section', {templateUrl: function( params ){
                     return '/' + params.section;
-                }});
+                }}).
+                otherwise({templateUrl: '/home'});
 
             // Provide constants
             $provide.factory('Ajax', function factory(){
@@ -41,30 +41,25 @@
                 };
             });
 
+            $provide.constant('SIDEBAR_ANIMATE_TIME', 150);
         }]).
 
         /**
          * App initialization: *post* configuration and angular bootstrapping.
          */
-        run(['$rootScope', 'GoogleMaps', function( $rootScope, GoogleMaps ){
+        run(['$rootScope', 'GoogleMaps', '$route', function( $rootScope, GoogleMaps, $route ){
             // Attach FastClick
             FastClick.attach(document.body);
 
-            // Sidebar settings available on the rootscope
-            $rootScope.sidebar = {
-                open: false
-            };
-
-            $rootScope.mapOptions = {
-                center: new GoogleMaps.LatLng(43.479634, -110.760234)
-            };
-        }]);
-
-//        factory('$exceptionHandler', function(){
-//            return function(exception, cause){
-//                console.log('Caught!', exception);
+//            $rootScope.mapOptions = {
+//                center: new GoogleMaps.LatLng(43.479634, -110.760234)
 //            };
-//        }).
+
+            // Set the class on ng-view to the "view-{route}"
+            $rootScope.$on('$viewContentLoaded', function(){
+                $rootScope.pageClass = 'page-' + ($route.current.params.section || 'home');
+            });
+        }]);
 
 })( window, window.angular );
 
@@ -73,584 +68,112 @@ angular.module('f43.common', []);
 angular.module('f43.googlemap', []);
 
 angular.module('f43.sections', []);
-    /* global requestAnimationFrame */
-/* global ThrowPropsPlugin */
-/* global Hammer */
-
 angular.module('f43.common')
 
-    .directive('animate', ['$window', 'TweenLite', 'TimelineLite',
-        function( $window, TweenLite, TimelineLite ){
+    .directive('animator', ['$window', 'TweenLite', function factory( $window, TweenLite ){
 
-            var elContent       = document.querySelector('#content'),
-                elFalseTrack    = document.querySelector('#falseTrack'),
-                elTrack         = document.querySelector('#track'),
-                parallaxLayers  = document.querySelectorAll('#parallax .layer'),
-                sections        = document.querySelectorAll('section'),
-                timelineMaster  = new TimelineLite({
-                    paused:true,
-                    data: {section: 1},
-                    onStart: function(){
-                        console.log('started');
-                    }
-                    //smoothChildTiming:true
-                }),
-                winH, winW, trackH, trackW;
+        var pageCount = document.querySelectorAll('nav li').length,
+            $layers   = document.querySelectorAll('#parallax .layer'),
+            winW      = document.body.clientWidth;
 
-            var watchScrollPosition = true;
+        function updateLayers( _index ){
+            var _percent = (_index === 0) ? 0 : (_index+1)/pageCount,
+                _moveX   = winW * _percent;
+            TweenLite.set($layers, {x:-(_moveX)});
+        }
 
-            function processDimensions(){
-                winH = document.documentElement.clientHeight;
+        function _link( scope ){
+            // If window gets resized, reset the winW
+            angular.element($window).on('resize', function(){
                 winW = document.body.clientWidth;
-                trackH = elTrack.clientHeight;
-                trackW = winW;
-            }
+                updateLayers(scope.parallaxIndex);
+            });
 
-            function random(min, max){
-                return Math.floor(Math.random() * (max - min + 1)) + min;
-            }
-
-            function tlInstance(_params){
-                return new TimelineLite(_params);
-            }
-
-
-            /**
-             * @returns TimelineLite
-             */
-            function timelineSection1(){
-                return tlInstance()
-                    //.to(elTrack, 0, {y:0});
-                    .to($window, 0, {scrollTo:{y:0}, ease:Power2.easeOut});
-            }
-
-            /**
-             * @returns TimelineLite
-             */
-            function timelineSection2(){
-                return tlInstance()
-                    //.to(elTrack, 1, {y:-(winH)});
-                    .to($window, 1, {scrollTo:{y:winH}, ease:Power2.easeOut});
-
-//                TweenLite.set(sections[1].querySelector('.inside-track'), {
-//                    transformOrigin:'50% 100%'
-//                });
-//
-//                var _timeline = (new TimelineLite()).
-//                    to(elTrack, 1, {y:-(winH), ease:Power2.easeIn, roundProps:"y"}, 0).
-//                    fromTo(sections[1].querySelector('.pane'), 1, {top:'100%'}, {top:0}).
-//                    to(sections[1].querySelector('.node:nth-child(1)'), 0.5, {opacity:1, backgroundColor:'rgba(255,255,255,0.5)'}).
-//                    to(sections[1].querySelector('.inside-track'), 2, {left:'-=100%', delay:1}).
-//                    to(sections[1].querySelector('.node:nth-child(1)'), 0.5, {opacity:0}).
-//                    to(sections[1].querySelector('.node:nth-child(2)'), 0.5, {opacity:1, backgroundColor:'rgba(15,15,79,0.8)'}, '-=0.5').
-//                    to(sections[1].querySelector('.inside-track'), 2, {left:'-=100%'}).
-//                    to(sections[1], 1, {rotationX:20, rotationY:20, scale:0.7}).
-//                    to(sections[1].querySelector('.subscroller'), 1, {z: 10}).
-//                    to(sections[1].querySelector('.inside-track'), 1, {z: 50, rotationX: 90});
-//
-//
-//                return _timeline;
-            }
-
-            function timelineSection3(){
-                return tlInstance()
-//                    .to(elTrack, 1, {y:-(winH*2)});
-                    .to($window, 1, {scrollTo:{y:(winH*2)}, ease:Power2.easeOut});
-
-//                var _timeline = (new TimelineLite()).
-//                    to(elTrack, 1, {y:-(winH*2), ease:Power2.easeIn, roundProps:"y"}, 0).
-//                    fromTo(sections[2].querySelector('.rotated'), 2, {left:'-100%'}, {left:0, ease:Power2.easeInOut});
-//
-//                return _timeline;
-            }
-
-            function timelineSection4(){
-                return tlInstance()
-                    .to(elTrack, 1, {y:-(winH*3)});
-//                var _timeline = (new TimelineLite())
-//                    .to(elTrack, 1, {y:-(winH*3), ease:Power2.easeIn, roundProps:"y"}, 0);
-//                return _timeline;
-            }
-
-            function timelineSection5(){
-                return tlInstance();
-//                var _timeline = (new TimelineLite())
-//                    .to(elTrack, 1, {y:-(winH*4), ease:Power2.easeIn, roundProps:"y"}, 0);
-//                return _timeline;
-            }
-
-            function buildTimelines(){
-                // Nest the timelines into the master
-//                timelineMaster
-//                    .add(timelineSection1(), 'section1').addPause()
-//                    .add(timelineSection2(), 'section2').addPause()
-//                    .add(timelineSection3(), 'section3').addPause();
-                    //.add(timelineSection4(), 'section4').addPause();
-//                    .add(timelineSection4(), 'section4')
-//                    .add(timelineSection5(), 'section5');
-
-                $window['tlMaster'] = timelineMaster;
-            }
-
-            function _linkFn( scope, $element, attrs, Controller ){
-                processDimensions();
-                buildTimelines();
-
-//                document.addEventListener('touchmove', function(e){
-//                    e.preventDefault();
-//                }, false);
-//
-//                Draggable.create('#track', {
-//                    type:'scrollTop',
-//                    edgeResistance:0.8,
-//                    throwProps:true,
-//                    onDrag: function(){
-//                        console.log( this.endY);
-//                    }
-//                });
-
-//                angular.element($window)
-//                    .on('scroll', function(){
-//                        timelineMaster.data.section = (function(position){
-//                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 5 ){
-//                                return 5;
-//                            }
-//                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 4 ){
-//                                return 4;
-//                            }
-//                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 3 ){
-//                                return 3;
-//                            }
-//                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 2 ){
-//                                return 2;
-//                            }
-//                            if( position >= Math.ceil((sections[0].clientHeight * 0.75)) * 1 ){
-//                                return 1;
-//                            }
-//                            return 1;
-//                        })(window.scrollY);
-//                    });
-//
-//                var lastSection = timelineMaster.data.section;
-//                setInterval(function(){
-//                    if( lastSection !== timelineMaster.data.section ){
-//                        TweenLite.to($window, 1, {scrollTo:{y: (winH*timelineMaster.data.section)}, ease:Power2.easeOut});
-//                        lastSection = timelineMaster.data.section;
-//                    }
-//                }, 250);
-
-//                setInterval(function(){
-//                    if( watchScrollPosition ){
-//
-//                        if( window.scrollY > (sections[0].clientHeight * 0.75) ){
-//                            TweenLite.to($window, 1, {scrollTo:{y:winH}, ease:Power2.easeOut});
-//                            //timelineMaster.gotoAndPlay('section2');
-//                            return;
-//                        }
-//
-//                    }
-//                }, 250);
-
-//                angular.element($window).on('scroll', function(){
-//                    manualScroll = true;
-//                });
-
-//                (function draw(){
-//                    //requestAnimationFrame(draw);
-//                })();
-
-//                var _hammer = new Hammer(document.documentElement);
-//                _hammer.get('pan').set({direction: Hammer.DIRECTION_VERTICAL});
-//
-//                var lastMove = 0,
-//                    trackY   = 0,
-//                    duration = timelineMaster.totalDuration(),
-//                    notch    = duration / trackH;
-
-                //ThrowPropsPlugin.track(elTrack, 'y');
-
-                //_hammer.on('pan', function(event){
-                    //console.log(event);
-//                    if( event.timeStamp - lastMove > 200 ){
-//                        console.log(event.deltaY);
-//                        lastMove = event.timeStamp;
-//                        trackY = trackY + (event.deltaY * (notch*100));
-//                        TweenLite.to(elTrack, 0.25, {
-//                            y: trackY,
-//                            ease: Power2.easeOut
-//                        });
-//                    }
-
-                    //ThrowPropsPlugin.track(elTrack, 'y');
-//                    TweenLite.to(elTrack, 0.1, {
-//                        y: trackY,
-//                        ease: Power2.easeOut
-//                    });
-
-//                    if( (event.timeStamp - lastMove) > 200 ){
-//                        lastMove = event.timeStamp;
-//                        trackY   = trackY - (event.velocityY * 100);
-//                        TweenLite.to(elTrack, 0.5, {y: trackY, ease:Power2.easeOut});
-//
-//                        //console.log(event.velocityY, timelineMaster.totalTime() + (timelineMaster.totalTime() * event.velocityY));
-//
-////                        TweenLite.to(timelineMaster, 0.2, {
-////                            time: event.velocityY * duration //((event.velocityY * 5)/100) + timelineMaster.progress()
-////                        });
-//
-////                        console.log('playTo', (notch / (1 - event.velocityY))*duration );
-////                        TweenLite.to(timelineMaster, 0.2, {
-////                            progress: timelineMaster.progress() + (1-event.velocityY)
-////                        });
-//
-////                        TweenLite.to(timelineMaster, 0.2,
-////                            {progress: timelineMaster.progress() + event.velocityY}
-////                            //{time: timelineMaster.totalTime() + (timelineMaster.totalTime() * event.velocityY)}
-////                            //{time: (window.scrollY / (trackH - winH)) * timelineMaster.totalDuration()}
-////                            //{ThrowProps: {time: timelineMaster.totalDuration() + _to}}
-////                        );
-//                        //timelineMaster.totalTime(_scroll * timelineMaster.totalDuration());
-//                    }
-                //});
-
-
-
-                // Prevents overscrolling on iOS!
-//                document.addEventListener('touchmove', function(e){
-//                    e.preventDefault();
-//                }, false);
-
-//                (function _draw(){
-//                    //console.log(window.scrollY, 'ON ANIMATION FRAME');
-//                    //Controller.progressTo(window.scrollY);
-//                    requestAnimationFrame(_draw);
-//                })();
-
-//                $window.addEventListener('touchmove', function(ev){
-//                    event.preventDefault();
-//                    console.log(ev);
-//                }, false);
-
-//                Draggable.create(document.body, {
-//                    type: 'scrollTop',
-//                    edgeResistance: 0.5
-//                });
-
-//                Draggable.create(elTrack, {
-//                    type:'scrollTop',
-//                    throwProps:true,
-//                    edgeResistance: 0.85,
-//                    onThrowUpdate: function(){
-//                        console.log(this);
-//                    }
-//                });
-
-
-                //ThrowPropsPlugin.track(timelineMaster, 'time');
-
-//                angular.element($window)
-//                    .on('scroll', function(ev){
-//                        console.log('scroll event triggered!', window.scrollY);
-//                        //Controller.progressTo(window.scrollY);
-//                    })
-//                    .on('mousewheel', function(ev){
-//                        //console.log(ev.deltaY);
-//                        //Controller.progressTo( (window.scrollY) )
-//                        //console.log( (window.scrollY) );
-//                        //var _to = timelineMaster.totalDuration() * (ev.deltaY/1000);
-//
-////                        TweenLite.to(timelineMaster, 0.25,
-////                            {time: (window.scrollY / (trackH - winH)) * timelineMaster.totalDuration()}
-////                            //{ThrowProps: {time: timelineMaster.totalDuration() + _to}}
-////                        );
-//                        //timelineMaster.totalTime(_scroll * timelineMaster.totalDuration());
-//
-//                        //console.log(ev);
-//                    });
-            }
-
-            return {
-                restrict: 'A',
-                scope:    false,
-                link:     _linkFn,
-                controller: ['$rootScope', '$q', function( $rootScope, $q ){
-
-                    var self = this;
-
-                    /**
-                     * Call this method to set the progress to a certain point; modifies
-                     * the parallax backgrounds then the timelineMaster independently.
-                     * @param int verticalOffset
-                     */
-                    self.progressTo = function( verticalOffset ){
-//                        var _scroll = (verticalOffset / (trackH - winH)),
-//                            _moveX  = _scroll * winW;
-
-                        //TweenLite.set(parallaxLayers, {x:-_moveX});
-                        //timelineMaster.progress(_scroll);
-
-//                        TweenLite.to(timelineMaster, 0.75,
-//                            //{time: _scroll * timelineMaster.totalDuration()}
-//                            {ThrowProps: {time: _scroll * timelineMaster.totalDuration()}}
-//                        );
-
-//                        ThrowPropsPlugin.track(timelineMaster, 'time');
-//                        timelineMaster.totalTime(_scroll * timelineMaster.totalDuration());
-                    };
-
-                }]
-            };
+            // Watch for changes to the parallaxIndex
+            scope.$watch('parallaxIndex', function( _index ){
+                if( angular.isDefined(_index) ){
+                    updateLayers(_index);
+                }
+            });
         }
-    ]);
-angular.module('f43.common')
 
-    .directive('animator-bak', ['$window', 'TweenLite', 'TimelineMax',
-        function( $window, TweenLite, TimelineMax ){
-
-            var $track      = angular.element(document.querySelector('#track')),
-                $sections   = angular.element(document.querySelectorAll('section')),
-                $layers     = angular.element(document.querySelectorAll('#parallax .layer'));
-                //winW, winH, trackH,
-                //masterTimeline = new TimelineLite({paused:true});
-
-
-//            function sectionTimeline( _index ){
-//                var tl    = new TimelineLite({data:{index:_index}}),
-//                    enter = new TimelineLite({
-//                        onComplete: function(){ masterTimeline.pause(); },
-//                        onStart: function(){ TweenLite.set($layers, {x:-(((_index+1)/$sections.length) * winW)}); }
-//                    }),
-//                    leave = new TimelineLite();
-//                tl.add(enter, 'enter');
-//                tl.add(leave, 'leave');
-//                return tl;
-//            }
-
-
-//            function buildMasterTimeline(){
-//                if( ! angular.isObject(masterTimeline) ){
-//                    masterTimeline = new TimelineLite({paused:true});
-//
-//                    angular.forEach($sections, function( node, index ){
-//                        var sectionTimeline = new TimelineLite({data:{index:index}}),
-//                            sectionEnter    = new TimelineLite({
-//                                onComplete: function(){ masterTimeline.pause(); },
-//                                onStart: function(){ TweenLite.set($layers, {x:-(((index+1)/$sections.length) * winW)}); }
-//                            }),
-//                            sectionLeave    = new TimelineLite();
-//
-//                        sectionTimeline.add(sectionEnter, 'enter');
-//                        sectionTimeline.add(sectionLeave, 'leave');
-//
-//                        angular.element(node).data('timeline', sectionTimeline);
-//                    });
-//
-//                    $window['tl'] = masterTimeline;
-//                }
-//
-//                return masterTimeline;
-//            }
-
-
-            function parallaxTo( index ){
-                console.log(index);
-//                var _percent = index === 0 ? 0 : (index+1)/$sections.length,
-//                    _moveX   = winW * _percent,
-//                    _moveY   = index * winH;
-//                TweenLite.set($layers, {x:-(_moveX)});
-//                TweenLite.to($track, 0.45, {y:-(_moveY), ease: Power2.easeOut});
-            }
-
-
-            function _linker( scope, $element, attrs ){
-//                winW = document.body.clientWidth;
-//                winH = document.documentElement.clientHeight;
-//                trackH = $track[0].clientHeight;
-
-                angular.element($window).on('resize', function(){
-//                    winW = document.body.clientWidth;
-//                    winH = document.documentElement.clientHeight;
-//                    trackH = $track[0].clientHeight;
-//                    parallaxTo( angular.element(document.querySelector('nav')).data('$navController').activeIndex() );
-                });
-            }
-
-
-            return {
-                restrict: 'A',
-                scope: false,
-                link: _linker,
-                controller: ['$scope', function( $scope ){
-                    $scope.timelineMaster = new TimelineMax({paused:true, smoothChildTiming:true});
-                    $window['tl'] = $scope.timelineMaster;
-
-                    // Publicly accessible method of the controller
-                    this.parallaxTo = parallaxTo;
-
-                    this._timeline = $scope.timelineMaster;
-
-                    // Master timeline
-                    //this._timeline = buildMasterTimeline();
-
-//                    this.addSectionTimeline = function( $element, _callback ){
-//                        var index     = Array.prototype.indexOf.call(document.querySelectorAll('section'), $element[0]),
-//                            sectionTl = _callback.apply(undefined, [index]);
-//                        masterTimeline.add(sectionTl, 'section-' + index);
-//                    };
-
-                }]
-            };
-        }
-    ]);
-angular.module('f43.common')
-
-    .directive('animator', ['$window', '$animate',
-        function( $window, $animate ){
-
-            var $track      = angular.element(document.querySelector('#track')),
-                $sections   = angular.element(document.querySelectorAll('section')),
-                $layers     = angular.element(document.querySelectorAll('#parallax .layer'));
-
-
-            function _linker( scope, $element, attrs ){
-                scope.$watch('sectionIndex', function( _index, _prevIndex ){
-                    $animate.removeClass($sections[_prevIndex], 'section-active');
-                    $animate.addClass($sections[_index], 'section-active');
-                });
-            }
-
-
-            return {
-                restrict: 'A',
-                scope: true,
-                link: _linker,
-                controller: ['$scope', function( $scope ){
-                    // Publicly accessible method of the controller
-                    this.parallaxTo = function( index ){
-                        $scope.sectionIndex = index;
-                    };
-                }]
-            };
-        }
-    ]).
-
-    animation('.section-active', function(){
         return {
-            addClass: function( $element, className, done ){
-                if( $element.data('timeline') ){
-                    $element.data('timeline').tweenFromTo(0, 'enter');
-                }
-            },
-            removeClass: function( $element, className, done ){
-                if( $element.data('timeline') ){
-                    $element.data('timeline').tweenFromTo('enter', 'leave');
-                }
-            }
+            restrict: 'A',
+            link: _link,
+            controller: ['$scope', function( $scope ){
+                this.parallaxTo = function( _index ){
+                    $scope.parallaxIndex = _index;
+                };
+            }]
         };
-    });
+    }]);
 angular.module('f43.common').
 
-    directive('nav', ['$rootScope', '$location', function factory( $rootScope, $location ){
+    /**
+     * @sets $rootScope.sidebar
+     */
+    directive('nav', ['$rootScope', function factory( $rootScope ){
 
-        var $arrows = angular.element(document.querySelectorAll('#content .arrow')),
-            $trigger, $listItems, $navLinks;
+        function _link( scope, $element, attrs, AnimatorController ){
 
+            // Elements
+            var $trigger    = angular.element($element[0].querySelector('.trigger')),
+                $listItems  = angular.element($element[0].querySelectorAll('li')),
+                $track      = angular.element(document.querySelector('#content-l2'));
 
-        function setActiveByIndex( index ){
-            $listItems.removeClass('active').eq(index).addClass('active');
-        }
-
-
-        function _linker( scope, $element, attrs, AnimatorController ){
-            $trigger   = angular.element(document.querySelector('nav .trigger'));
-            $listItems = $element.find('li');
-            $navLinks  = angular.element(document.querySelectorAll('.section-nav a'));
-
-
-            // Instead of listening for clicks on the <a> tags in the nav list, just
-            // let the $routeChangeSuccess event update the active index to trigger this
-            scope.$watch('activeIndex', function( _index, _prevIndex ){
-                if( _index === _prevIndex ){
-                    return;
-                }
-                setActiveByIndex(_index || 0);
-                AnimatorController.parallaxTo(_index);
-            });
-
-            // Nav trigger (toggle open/close)
-            $trigger.on('click', function( event ){
+            // Click handler on the nav
+            $trigger.on('click', function(){
                 scope.$apply(function(){
-                    $rootScope.sidebar.open = !$rootScope.sidebar.open;
+                    scope.status.open = !scope.status.open;
                 });
             });
 
-            // If sidebar is open, bind a one-time click listener on the track when its masked
-            $rootScope.$watch('sidebar.open', function( status ){
+            scope.$watch('status.open', function( status ){
+                // Set sidebar status on the rootScope
+                $rootScope.sidebar = status;
+
+                // If sidebar is open, bind a one-time click listener on the track when its masked
                 if( status === true ){
-                    angular.element(document.querySelector('#track')).one('click', function(){
+                    $track.one('click', function(){
                         scope.$apply(function(){
-                            $rootScope.sidebar.open = false;
+                            scope.status.open = false;
                         });
                     });
                 }
             });
 
-            // Arrow clicks; instead of updating just the active index, we update the
-            // *route* (by finding the prev/next <a> tag and getting its href) so that the
-            // $routeChangeStart event gets triggered accordingly.
-            $arrows.on('click', function(){
-                if( angular.element(this).hasClass('left') && scope.activeIndex > 0 ){
-                    scope.$apply(function(){
-                        $location.path($navLinks.eq(scope.activeIndex-1).attr('href'));
-                        //scope.activeIndex--;
-                    });
-                }
-
-                if( angular.element(this).hasClass('right') && scope.activeIndex < ($listItems.length - 1) ){
-                    scope.$apply(function(){
-                        $location.path($navLinks.eq(scope.activeIndex+1).attr('href'));
-                        //scope.activeIndex++;
-                    });
-                }
+            // Route change (handles setting current route to active and closing sidebar)
+            scope.$on('$routeChangeStart', function( event, current ){
+                var href    = current && angular.isDefined(current.params.section) ? '/' + current.params.section : '/',
+                    element = $element[0].querySelector('[href="'+href+'"]'),
+                    index   = Array.prototype.indexOf.call($listItems, element.parentNode); //_active ? Array.prototype.indexOf.call($listItems, _active.parentNode) : 0;
+                $listItems.removeClass('active').eq(index).addClass('active');
+                AnimatorController.parallaxTo(index);
+                scope.status.open = false;
             });
         }
 
-
         return {
             restrict: 'E',
-            require:  '^animator',
-            scope:    true,
-            link:     _linker,
-            controller: ['$rootScope', '$scope', function( $rootScope, $scope ){
-                // Default activeIndex of 0 = home section
-                $scope.activeIndex = 0;
-
-                /**
-                 * Get the current activeIndex
-                 * @returns {number}
-                 */
-                this.activeIndex = function(){
-                    return $scope.activeIndex;
+            link: _link,
+            scope: true,
+            require: '^animator',
+            controller: ['$scope', function( $scope ){
+                // Initialize scope (nav) status as open = false
+                $scope.status = {
+                    open: false
                 };
 
-                /**
-                 * Watch for route changes and update the scope's active index - which triggers
-                 * all subsequent navigation stuff.
-                 */
-                $scope.$on('$routeChangeStart', function(event, current){
-                    var href = '/';
-                    if( angular.isDefined(current) && angular.isDefined(current.params.section) ){
-                        href += current.params.section;
-                    }
-                    var navElement = document.querySelector('nav [href="'+href+'"]');
-                    $scope.activeIndex = navElement ? Array.prototype.indexOf.call($listItems, navElement.parentNode) : 0;
-                    $rootScope.sidebar.open = false;
-                });
-
+                // Publicly accessible methods on the controller
+                this.toggle = function(){
+                    $scope.$apply(function(){
+                        $scope.status.open = !$scope.status.open;
+                    });
+                };
             }]
         };
     }]);
-
+/* global TimelineLite */
 
 angular.module('f43.common').
 
@@ -694,6 +217,28 @@ angular.module('f43.common').
             }
         ];
     });
+angular.module('f43.common').
+
+    factory('TimelineHelpers', ['TimelineLite', function factory( TimelineLite ){
+        return {
+            // Return a random integer between min-max
+            randomInt: function(min, max){
+                return Math.floor(Math.random() * (max-min+1)+min);
+            },
+
+            // Automatically sets up the onComplete function to kill the instance
+            // after its done running, *and* optionally takes a done callback from
+            // angulars animation functions
+            suicidal: function( done ){
+                return new TimelineLite({
+                    onComplete: function(){
+                        this.kill();
+                        if( angular.isFunction(done) ){ done(); }
+                    }
+                });
+            }
+        };
+    }]);
 angular.module('f43.googlemap').
 
     directive('googlemap', ['GoogleMaps', function( GoogleMaps ){
@@ -761,27 +306,30 @@ angular.module('f43.googlemap').
 
 angular.module('f43.sections').
 
-    directive('sectionAbout', ['$animate', 'TweenLite', 'TimelineMax', 'TimelineLite', function( $animate, TweenLite, TimelineMax, TimelineLite ){
+    directive('sectionAbout', [function(){
 
-        function _linker( scope, $element, attrs, AnimatorController ){
-            var tlMaster = new TimelineMax({paused:true}),
-                tlEnter  = new TimelineLite(),
-                tlLeave  = new TimelineLite();
+        function _link( scope, $element ){
 
-            tlEnter.fromTo($element, 1, {opacity:0,scale:0.6,rotationZ:-72}, {opacity:1,scale:1,rotationZ:0});
-
-            tlLeave.to($element, 1, {opacity:0,rotationZ:-70});
-
-            tlMaster.add(tlEnter, 'enter').add(tlLeave, 'leave');
-
-            $element.data('timeline', tlMaster);
         }
 
         return {
-            restrict: 'C',
-            scope:    true,
-            require:  '^animator',
-            link:     _linker
+            restrict: 'A',
+            scope: true,
+            link: _link
+        };
+    }]).
+
+    /**
+     * Animation handler for the page entering/leaving
+     */
+    animation('.page-about', ['TweenLite', function( TweenLite ){
+        return {
+            enter: function($element, done){
+                TweenLite.fromTo($element, 0.5, {scale:0.8, opacity:0}, {scale:1, opacity:1, onComplete:done});
+            },
+            leave: function($element, done){
+                TweenLite.to($element, 0.5, {scale:0.8, opacity:0, onComplete:done});
+            }
         };
     }]);
 /* global Power2 */
@@ -805,7 +353,7 @@ angular.module('f43.sections').
          * Scope properties: contactForm, form_data, processing, response {ok:'',msg:''}
          */
         return {
-            restrict: 'C',
+            restrict: 'A',
             scope:    true,
             link:     _linker,
             controller: ['$scope', '$http', 'Ajax', function( $scope, $http, Ajax ){
@@ -829,83 +377,100 @@ angular.module('f43.sections').
     }]).
 
     /**
+     * Animation handler for the page entering/leaving
+     */
+    animation('.page-contact', ['SIDEBAR_ANIMATE_TIME', 'TimelineHelpers', function( SIDEBAR_ANIMATE_TIME, TimelineHelpers ){
+        return {
+            enter: function($element, done){
+                setTimeout(function(){
+                    var _rows = $element[0].querySelectorAll('.row');
+                    TimelineHelpers.suicidal(done)
+                        .set($element, {visibility:'visible'})
+                        .set(_rows, {y:'100%', opacity:0})
+                        .staggerTo(_rows, 0.25, {y:0, opacity:1}, 0.15);
+                }, SIDEBAR_ANIMATE_TIME);
+            },
+            leave: function($element, done){
+                var _rows = Array.prototype.slice.call($element[0].querySelectorAll('.row')).reverse();
+                TimelineHelpers.suicidal(done)
+                    .staggerTo(_rows, 0.25, {y:500, opacity:0}, 0.1);
+            }
+        };
+    }]).
+
+    /**
      * Animation handler for when the form is sent successfully.
      */
-    animation('.form-sent', ['TimelineLite', function( TimelineLite ){
+    animation('.form-sent', ['TimelineHelpers', function( TimelineHelpers ){
         return {
             addClass: function( $element, className, done ){
+                var _rows = $element[0].querySelectorAll('.row');
                 // Create a new timeline and run it right away
-                (new TimelineLite())
+                TimelineHelpers.suicidal(done)
                     .set($element, {overflow:'hidden'})
-                    .staggerTo($element[0].querySelectorAll('.row'), 0.35, {y:-500, opacity:0, scale:0.8, ease:Power2.easeOut}, 0.15)
-                    .to($element, 0.45, {height:0, ease:Power2.easeOut})
-                    .eventCallback('onComplete', function(){
-                        done();
-                        this.kill();
-                    });
+                    .staggerTo(_rows, 0.25, {y:-500, opacity:0, scale:0.8, ease:Power2.easeOut}, 0.15)
+                    .to($element, 0.35, {height:0, ease:Power2.easeOut});
             }
         };
     }]);
-/* global Power2 */
-
 angular.module('f43.sections').
 
-    directive('sectionHome', ['$animate', 'TweenLite', 'TimelineMax', 'TimelineLite', function( $animate, TweenLite, TimelineMax, TimelineLite ){
+    directive('sectionHome', [function(){
 
-        function _linker( scope, $element, attrs, AnimatorController ){
-            var tlMaster = new TimelineMax({paused:true}),
-                tlEnter  = new TimelineLite(),
-                tlLeave  = new TimelineLite();
+        function _link( scope, $element ){
 
-            tlEnter.fromTo($element, 1, {opacity:0,scale:0.6,rotationZ:-72}, {opacity:1,scale:1,rotationZ:0});
-
-            tlLeave.to($element, 1, {opacity:0,rotationZ:-70});
-
-            tlMaster.add(tlEnter, 'enter').add(tlLeave, 'leave');
-
-            $element.data('timeline', tlMaster);
-
-//            var tlEnter = new TimelineLite({paused:true});
-//            tlEnter.fromTo($element, 1, {opacity:0,scale:0.6,rotationZ:-72}, {opacity:1,scale:1,rotationZ:0});
-//            $element.data('enter', tlEnter);
-//
-//            var tlLeave = new TimelineLite({paused:true});
-//            tlLeave.to($element, 1, {opacity:0,rotationZ:-70});
-//            $element.data('leave', tlLeave);
-
-
-//            AnimatorController.addSectionTimeline($element, function(index){
-//                var tl = new TimelineLite();
-//                tl.fromTo($element, 1, {opacity:0,scale:0.6,rotationZ:-72}, {opacity:1,scale:1,rotationZ:0});
-//                tl.to($element, 0.5, {rotationZ:180,opacity:0});
-//
-//                return tl;
-//            });
-
-//            var masterTimeline  = AnimatorController._timeline,
-//                sectionTimeline = new TimelineLite(),
-//                sectionEnter    = new TimelineLite(),
-//                sectionLeave    = new TimelineLite();
-//
-//            sectionEnter.fromTo($element, 1, {opacity:0,scale:0.6,rotationZ:-72}, {opacity:1,scale:1,rotationZ:0});
-//
-//            sectionTimeline.add(sectionEnter).add(sectionLeave);
-//            masterTimeline.add(sectionTimeline);
-
-//            var tlSection = $element.data('timeline'),
-//                tlEnter   = tlSection.getChildren(false,false,true)[0],
-//                tlLeave   = tlSection.getChildren(false,false,true)[1];
-//
-//            tlEnter.fromTo($element, 1, {opacity:0,scale:0.6,rotationZ:-72}, {opacity:1,scale:1,rotationZ:0});
-//            tlLeave.to($element, 0.5, {rotationZ:180,opacity:0,delay:1});
-//
-//            AnimatorController._timeline.add(tlSection, 'section-' + tlSection.data.index);
         }
 
         return {
-            restrict: 'C',
-            scope:    true,
-            require:  '^animator',
-            link:     _linker
+            restrict: 'A',
+            scope: true,
+            link: _link
+        };
+    }]).
+
+    /**
+     * Animation handler for the page entering/leaving
+     */
+    animation('.page-home', ['SIDEBAR_ANIMATE_TIME', 'TimelineHelpers', function( SIDEBAR_ANIMATE_TIME, TimelineHelpers ){
+        return {
+            enter: function($element, done){
+                setTimeout(function(){
+                    TimelineHelpers.suicidal(done)
+                        //.set($element, {visibility:'visible'})
+                        .fromTo($element, 1, {scale:0.8, opacity:0}, {scale:1, opacity:1, visibility: 'visible'});
+                }, SIDEBAR_ANIMATE_TIME);
+            },
+            leave: function($element, done){
+                TimelineHelpers.suicidal(done)
+                    .to($element, 0.5, {scale:0.8, opacity:0});
+            }
+        };
+    }]);
+angular.module('f43.sections').
+
+    directive('sectionWork', [function(){
+
+        function _link( scope, $element ){
+
+        }
+
+        return {
+            restrict: 'A',
+            scope: true,
+            link: _link
+        };
+    }]).
+
+    /**
+     * Animation handler for the page entering/leaving
+     */
+    animation('.page-work', ['TweenLite', function( TweenLite ){
+        return {
+            enter: function($element, done){
+                TweenLite.fromTo($element, 1, {rotation:180, opacity:0}, {rotation:0, opacity:1, delay:1, onComplete: done}, 1);
+            },
+            leave: function($element, done){
+                TweenLite.to($element, 1, {rotation:180, onComplete: done});
+            }
         };
     }]);

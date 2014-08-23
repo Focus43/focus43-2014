@@ -51,7 +51,7 @@ $font-family-base:            'Rokkitt', serif;
 @import '../../bower_components/font-awesome/scss/font-awesome';
 @import 'custom-mixins';
 
-$pageSections:5;
+$gutterWidthHalf: ($grid-gutter-width / 2);
 
 // Base
 html, body {font-weight:100;font-size:$font-size-base;height:100%;overflow:hidden;}
@@ -86,44 +86,37 @@ img {@extend .img-responsive;display:inline-block;}
 
 
 // Main content container
-#content {position:relative;top:0;left:0;width:100%;height:100%;z-index:2;}
+#content {position:relative;width:100%;height:100%;z-index:2;}
 
 // Sections container
-#track {position:relative;height:100%;//percentage($pageSections);
+#content-l2 {position:relative;height:100%;
   // Mask element when sidebar is open
   &:before {display:block;content:'';background:rgba(0,0,0,0.8);position:absolute;top:0;left:0;right:0;bottom:0;z-index:9;visibility:hidden;opacity:0;@include transition(all 0.45s ease);}
-  // Sections
-  section {opacity:0;padding:1rem 0;position:absolute;height:100%;width:100%;top:0;left:0;/*percentage(1/$pageSections);*/@include scrollOverflow;}
+  // Pages (ng-view!)
+  .page {visibility:hidden;position:absolute;top:0;left:0;width:100%;height:100%;}
+  // Sections (ie, wrapper for all templates)
+  section {height:100%;width:100%;position:relative;padding:$gutterWidthHalf 0;@include scrollOverflow;}
 }
 
-// Individual sections
-.section-home {
-  h1 {max-width:80%;display:inline-block;font-size:8rem;color:$magenta;font-weight:bold;@include text-shadow(0 0 80px #000);}
-}
+// Individual pages
+.page {
 
-.section-about {
-
-}
-
-.section-contact {
-  .tabular {position:relative;z-index:2;}
-
-  #frmContact {max-width:800px;
-    .subheader {background:$magenta-step-up7_5;
-      h2 {margin:0;padding:15px;text-align:center;background:$magenta-step-down15;}
-      p {text-align:left;margin:0;padding:$grid-gutter-width/2;}
-    }
-    .form-body {padding:0 $grid-gutter-width/2;margin:0 -($grid-gutter-width/2);
-      .btn {@include button-variant(#fff, $magenta-step-up7_5, $magenta-step-up7_5);padding-left:0.5rem;padding-right:0.5rem;white-space:normal;
-        i {display:none;}
-        &.processing i {display:inline-block;}
+  // Contact page
+  &.page-contact {
+    form {max-width:800px;
+      .subheader {background:$magenta-step-up7_5;
+        h2 {margin:0;padding:15px;text-align:center;background:$magenta-step-down15;}
+        p {text-align:left;margin:0;padding:$grid-gutter-width/2;}
       }
-      &.sent {overflow:hidden;}
+      .form-body {padding:0 $grid-gutter-width/2;margin:0;margin-left:-($gutterWidthHalf);margin-right:-($gutterWidthHalf);
+        .btn {@include button-variant(#fff, $magenta-step-up7_5, $magenta-step-up7_5);padding-left:0.5rem;padding-right:0.5rem;white-space:normal;
+          i {display:none;}
+          &.processing i {display:inline-block;}
+        }
+        &.sent {overflow:hidden;}
+      }
     }
   }
-//  .map-back {position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;
-//    .gmap {width:100%;height:100%;}
-//  }
 }
 
 // Navigation (ie. sidebar)
@@ -141,33 +134,8 @@ nav {position:absolute;top:0;bottom:0;height:100%;left:100%;width:calc(100% - 3r
   }
 }
 
-// Prev/Next navigation arrows
-.arrow {display:none;position:fixed;bottom:0;height:auto;top:auto;z-index:3;background:transparent;@include transition(all 0.25s ease);
-  .inner {display:table;height:100%;}
-  a {padding:15px;display:table-cell;position:relative;height:100%;vertical-align:middle;text-align:center;}
-  img {position:relative;width:28px;@include transition(all 0.15s ease);}
-  &.left {left:0;
-    img {@include transform(rotateZ(180deg));}
-  }
-  &.right {right:0;}
-  &:hover {background:rgba(0,0,0,0.35);}
-}
-
-
-@media screen and (min-width:$screen-md){
-  #content {
-    .arrow {height:70%;top:15%;
-      img {width:30px;}
-      &:hover a {cursor:url('#{$imagePath}arrow_32.svg'), auto;
-        img {width:50px;}
-      }
-    }
-  }
-}
 
 @include scrollbars($lime-green, 6px);
-
-.custom-view {position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);}
 
 
 // Setup for sidebar animations
@@ -175,7 +143,7 @@ nav {position:absolute;top:0;bottom:0;height:100%;left:100%;width:calc(100% - 3r
 
 body.sidebar-open {
   #parallax, #content {@include transform(translateX(calc(-100% + 3rem)));}
-  #track:before {visibility:visible;opacity:1;}
+  #content-l2:before {visibility:visible;opacity:1;}
 }
 
 @media screen and (min-width:$screen-sm){

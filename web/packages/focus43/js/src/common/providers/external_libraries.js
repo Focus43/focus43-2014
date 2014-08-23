@@ -1,3 +1,5 @@
+/* global TimelineLite */
+
 angular.module('f43.common').
 
     /**

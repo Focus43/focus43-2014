@@ -1,8 +1,6 @@
-/* global Power2 */
-
 angular.module('f43.sections').
 
-    directive('sectionAbout', [function(){
+    directive('sectionWork', [function(){
 
         function _link( scope, $element ){
 
@@ -18,13 +16,13 @@ angular.module('f43.sections').
     /**
      * Animation handler for the page entering/leaving
      */
-    animation('.page-about', ['TweenLite', function( TweenLite ){
+    animation('.page-work', ['TweenLite', function( TweenLite ){
         return {
             enter: function($element, done){
-                TweenLite.fromTo($element, 0.5, {scale:0.8, opacity:0}, {scale:1, opacity:1, onComplete:done});
+                TweenLite.fromTo($element, 1, {rotation:180, opacity:0}, {rotation:0, opacity:1, delay:1, onComplete: done}, 1);
             },
             leave: function($element, done){
-                TweenLite.to($element, 0.5, {scale:0.8, opacity:0, onComplete:done});
+                TweenLite.to($element, 1, {rotation:180, onComplete: done});
             }
         };
     }]);
