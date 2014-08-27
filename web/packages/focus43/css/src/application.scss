@@ -93,7 +93,7 @@ img {@extend .img-responsive;display:inline-block;}
   // Mask element when sidebar is open
   &:before {display:block;content:'';background:rgba(0,0,0,0.8);position:absolute;top:0;left:0;right:0;bottom:0;z-index:9;visibility:hidden;opacity:0;@include transition(all 0.45s ease);}
   // Pages (ng-view!)
-  .page {visibility:hidden;position:absolute;top:0;left:0;width:100%;height:100%;}
+  .page {position:absolute;top:0;left:0;width:100%;height:100%;/*INITIALLY*/opacity:0;visibility:hidden;}
   // Sections (ie, wrapper for all templates)
   section {height:100%;width:100%;position:relative;padding:$gutterWidthHalf 0;@include scrollOverflow;}
 }
@@ -158,4 +158,10 @@ body.sidebar-open {
 // Modernizr things
 html.no-csscalc {
   nav {display:none !important;}
+}
+
+html {
+  &.cms-admin, &.edit-mode {
+    #content-l2 .page {opacity:1;visibility:visible;}
+  }
 }

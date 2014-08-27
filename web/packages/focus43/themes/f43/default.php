@@ -1,11 +1,11 @@
 <!DOCTYPE HTML>
-<html lang="<?php echo LANGUAGE; ?>" ng-app="f43">
+<html lang="<?php echo LANGUAGE; ?>" ng-app="f43" class="<?php echo $documentClass; ?>">
 <head>
-<?php Loader::packageElement('theme/head_tag', 'focus43'); ?>
-<?php Loader::element('header_required'); // REQUIRED BY C5 // ?>
+    <?php Loader::packageElement('theme/head_tag', 'focus43'); ?>
+    <?php Loader::element('header_required'); // REQUIRED BY C5 // ?>
 </head>
 
-<body animator ng-class="{'sidebar-open':sidebar}">
+<body class="pt-<?php echo $sectionElement; ?>" ng-class="{'sidebar-open':sidebar}" animator preloader>
 
     <div id="parallax">
         <div class="inner">
@@ -15,29 +15,14 @@
         </div>
     </div>
 
-    <script id="/home" type="text/ng-template">
-        <?php Loader::packageElement('templates/home', 'focus43'); ?>
-    </script>
-
-    <script id="/about" type="text/ng-template">
-        <?php Loader::packageElement('templates/about', 'focus43'); ?>
-    </script>
-
-    <script id="/work" type="text/ng-template">
-        <?php Loader::packageElement('templates/work', 'focus43'); ?>
-    </script>
-
-    <script id="/experiments" type="text/ng-template">
-        <?php Loader::packageElement('templates/experiments', 'focus43'); ?>
-    </script>
-
-    <script id="/contact" type="text/ng-template">
-        <?php Loader::packageElement('templates/contact', 'focus43'); ?>
-    </script>
-
     <div id="content">
         <div id="content-l2">
-            <div class="page" ng-view ng-class="pageClass"></div>
+            <div class="page" ng-class="pageClass"<?php if( !$cmsToolbar ){echo ' ng-view';} ?>>
+                <?php Loader::packageElement("sections/{$sectionElement}", 'focus43', array(
+                    'c' => $c,
+                    'cmsEditing' => $cmsEditing
+                )); ?>
+            </div>
         </div>
 
         <!-- nav (sidebar) -->

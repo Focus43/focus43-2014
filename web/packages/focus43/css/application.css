@@ -3853,12 +3853,14 @@ img {
     -o-transition: all 0.45s ease;
     transition: all 0.45s ease; }
   #content-l2 .page {
-    visibility: hidden;
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%; }
+    height: 100%;
+    /*INITIALLY*/
+    opacity: 0;
+    visibility: hidden; }
   #content-l2 section {
     height: 100%;
     width: 100%;
@@ -4035,3 +4037,7 @@ body.sidebar-open #content-l2:before {
     transform: translateX(-375px); } }
 html.no-csscalc nav {
   display: none !important; }
+
+html.cms-admin #content-l2 .page, html.edit-mode #content-l2 .page {
+  opacity: 1;
+  visibility: visible; }

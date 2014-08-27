@@ -1,10 +1,12 @@
 <?php defined('C5_EXECUTE') or die(_("Access Denied."));
 	
 	class Focus43Package extends Package {
-	
-	    protected $pkgHandle 			= 'focus43';
+
+        const PACKAGE_HANDLE            = 'focus43';
+
+	    protected $pkgHandle 			= self::PACKAGE_HANDLE;
 	    protected $appVersionRequired 	= '5.6.2.1';
-	    protected $pkgVersion 			= '0.02';
+	    protected $pkgVersion 			= '0.04';
 	
 		
 		/**
@@ -88,7 +90,8 @@
 			$this->runUpgradeTasks( $this->pkgVersion )
 				 ->setupUserAttributes()
 				 ->setupTheme()
-				 ->setupPageTypes();
+				 ->setupPageTypes()
+                 ->setupSinglePages();
 		}
 
 
@@ -156,12 +159,29 @@
 		 * @return Focus43Package
 		 */
 		private function setupPageTypes(){
+            if( !is_object($this->pageType('home')) ){
+                CollectionType::add(array('ctHandle' => 'home', 'ctName' => 'Home'), $this->packageObject());
+            }
+
 			if( !is_object($this->pageType('default')) ){
 	            CollectionType::add(array('ctHandle' => 'default', 'ctName' => 'Default'), $this->packageObject());
 	        }
 
             return $this;
 		}
+
+
+        /**
+         * @return Focus43Package
+         */
+        private function setupSinglePages(){
+            SinglePage::add('/about', $this->packageObject());
+            SinglePage::add('/work', $this->packageObject());
+            SinglePage::add('/experiments', $this->packageObject());
+            SinglePage::add('/contact', $this->packageObject());
+
+            return $this;
+        }
 
 
 		/**

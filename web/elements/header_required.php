@@ -62,7 +62,7 @@ else {
     //echo '<meta name="generator" content="concrete5" />';
 }
 ?>
-<?php $u = new User(); if($u->isLoggedIn()): ?>
+<?php $u = new User(); if($u->isLoggedIn() || $c->getCollectionPath() === '/login'): ?>
 <script type="text/javascript">
 <?php
 	echo("var CCM_DISPATCHER_FILENAME = '" . DIR_REL . '/' . DISPATCHER_FILENAME . "';\r");

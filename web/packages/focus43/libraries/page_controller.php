@@ -1,31 +1,23 @@
 <?php defined('C5_EXECUTE') or die("Access Denied.");
 
+//    class AreaFaker {
+//
+//        public $arHandle;
+//
+//        public function __construct( $areaName ){
+//            $this->arHandle = $areaName;
+//        }
+//
+//        public function display( $c ){}
+//    }
+
+
     class Focus43PageController extends Controller {
 
-        const PACKAGE_HANDLE    = 'focus43',
-              FLASH_TYPE_OK     = 'success',
-              FLASH_TYPE_ERROR  = 'error';
-
-        protected $requireHttps = false;
-
+        const PACKAGE_HANDLE = Focus43Package::PACKAGE_HANDLE;
 
         /**
-         * Ruby on Rails "flash" functionality ripoff.
-         * @param string $msg Optional, set the flash message
-         * @param string $type Optional, set the class for the alert
-         * @return void
-         */
-        public function flash( $msg = 'Success', $type = self::FLASH_TYPE_OK ){
-            $_SESSION['flash_msg'] = array(
-                'msg'  => $msg,
-                'type' => $type
-            );
-        }
-
-
-        /**
-         * Set the page background image attribute. On public pages where a customizable
-         * background is available, make sure this is called by the child class.
+         * If regular page view, attach theme assets.
          */
         public function view(){
             if( $this->includeThemeAssets === true ){
@@ -35,30 +27,58 @@
 
 
         /**
-         * Add js/css + tools URL meta tag; clear the flash.
          * @return void
          */
         public function on_start(){
-            // force https (if $requireHTTPS == true)
-            if( $this->requireHttps == true && !( isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on') ) ){
-                header("Location: " . str_replace('http', 'https', BASE_URL . Page::getCurrentPage()->getCollectionPath()));
+            $this->set('sectionElement', $this->sectionElement);
+            $this->set('pageClass', $this->sectionElement);
+
+            $cmsToolbar = $this->pagePermissionObject()->canWrite();
+            $cmsEditing = $this->getCollectionObject()->isEditMode();
+            $this->set('cmsToolbar', $cmsToolbar);
+            $this->set('cmsEditing', $cmsEditing);
+
+//            $documentClass = array();
+//            if( $cmsToolbar ){ array_push($documentClass, 'cms-toolbar'); }
+//            if( $cmsEditing ){ array_push($documentClass, 'cms-editing'); }
+//            $this->set('documentClass', join(' ', $documentClass));
+            if( $cmsToolbar ){
+                $this->set('documentClass', 'cms-admin');
             }
 
-            // message flash
-            if( isset($_SESSION['flash_msg']) ){
-                $this->set('flash', $_SESSION['flash_msg']);
-                unset($_SESSION['flash_msg']);
+
+
+            // Angularize this bitch...
+            $headers = getallheaders();
+            if( $headers['x-angularized'] ){
+                Loader::packageElement("sections/{$this->sectionElement}", self::PACKAGE_HANDLE, array(
+                    'c' => new Collection // inject an empty collection
+                ));
+                exit;
             }
+
+
+
+            //$this->setBodyClasses();
         }
 
 
-        /**
-         * Add "async" attribute to javascript tag output
-         * @param $string
-         * @return string
-         */
-        protected function jsAsync( $string ){
-            return preg_replace('/<script/', '<script async', $string);
+        private function setBodyClasses(){
+            // take the route and explode to array slash delimited (/one/two = ['path-one', 'path-two'])
+            $route = array_map(function( $node ){
+                if( !empty($node) ){
+                    return "pt-{$node}";
+                }
+            }, explode('/', $this->getCollectionObject()->getCollectionPath()));
+            // set classes based on admin status and/or edit mode
+            if( $this->pagePermissionObject()->canWrite() ){
+                array_push($route, 'cms-admin');
+                if( $this->getCollectionObject()->isEditMode() ){
+                    array_push($route, 'edit-mode');
+                }
+            }
+            // pass class string to the view
+            $this->set('documentClass', join($route, ' '));
         }
 
 
@@ -72,63 +92,20 @@
             // CSS + Modernizr
             $pageController->addHeaderItem( $this->getHelper('html')->css('application.css', self::PACKAGE_HANDLE) );
             // JS
-            //$pageController->addFooterItem( $this->getHelper('html')->javascript('https://maps.googleapis.com/maps/api/js?key=AIzaSyANFxVJuAgO4-wqXOeQnIfq38x7xmhMZXY&sensor=TRUE&libraries=weather') );
+            $pageController->addFooterItem( $this->getHelper('html')->javascript('https://maps.googleapis.com/maps/api/js?key=AIzaSyANFxVJuAgO4-wqXOeQnIfq38x7xmhMZXY&sensor=TRUE&libraries=weather') );
             $pageController->addFooterItem( $this->getHelper('html')->javascript('core.js', self::PACKAGE_HANDLE) );
             $pageController->addFooterItem( $this->getHelper('html')->javascript('app.js', self::PACKAGE_HANDLE) );
             // Include live reload for for grunt watch *if* VAGRANT_VM
             if(isset($_SERVER['VAGRANT_VM']) && ((bool) $_SERVER['VAGRANT_VM'] === true)){
-                $this->addFooterItem('<script src="http://localhost:35729/livereload.js"></script>');
+                $pageController->addFooterItem('<script src="http://localhost:35729/livereload.js"></script>');
             }
         }
 
 
         /**
-         * Same as $view->action(), but returns a fully qualified URL prepended
-         * with https://
-         * @param string $action
-         * @param string $task(s)
-         * @return string
-         */
-        public function secureAction($action, $task = null){
-            $args = func_get_args();
-            array_unshift($args, Page::getCurrentPage()->getCollectionPath());
-            $path = call_user_func_array(array('View', 'url'), $args);
-            return 'https://' . $_SERVER['HTTP_HOST'] . $path;
-        }
-
-
-        /**
-         * Send back an ajax response if request headers accept json, or handle
-         * redirect if just doing regular http
-         * @param bool $okOrFail
-         * @param mixed String || Array $message
-         * @return void
-         */
-        protected function formResponder( $okOrFail, $message ){
-            $accept = explode( ',', $_SERVER['HTTP_ACCEPT'] );
-            $accept = array_map('trim', $accept);
-
-
-            // send back a JSON response
-            if( in_array($accept[0], array('application/json', 'text/javascript')) || $_SERVER['X_REQUESTED_WITH'] == 'XMLHttpRequest'){
-                header('Content-Type: application/json');
-                echo json_encode( (object) array(
-                    'code'      => (int) $okOrFail,
-                    'messages'  => is_array($message) ? $message : array($message)
-                ));
-                exit;
-            }
-
-            // somehow a plain old html browser request got through, redirect it
-            $this->flash( $message, ((bool)$okOrFail === true ? self::FLASH_TYPE_OK : self::FLASH_TYPE_ERROR) );
-            $this->redirect( Page::getCurrentPage()->getCollectionPath() );
-        }
-
-
-        /**
-         * "Memoize" helpers so they're only loaded once.
+         * Memoize helpers (beware, once loaded its always the same instance).
          * @param string $handle Handle of the helper to load
-         * @param string $pkg Package to get the helper from
+         * @param bool | Package $pkg Package to get the helper from
          * @return ...Helper class of some sort
          */
         public function getHelper( $handle, $pkg = false ){

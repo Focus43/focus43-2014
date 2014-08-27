@@ -16,18 +16,17 @@ angular.module('f43.sections').
     /**
      * Animation handler for the page entering/leaving
      */
-    animation('.page-home', ['SIDEBAR_ANIMATE_TIME', 'TimelineHelpers', function( SIDEBAR_ANIMATE_TIME, TimelineHelpers ){
+    animation('.page-home', ['ViewHelper', function( ViewHelper ){
         return {
-            enter: function($element, done){
-                setTimeout(function(){
-                    TimelineHelpers.suicidal(done)
-                        //.set($element, {visibility:'visible'})
-                        .fromTo($element, 1, {scale:0.8, opacity:0}, {scale:1, opacity:1, visibility: 'visible'});
-                }, SIDEBAR_ANIMATE_TIME);
+            enter: function($element, _done){
+                ViewHelper.whenReady.enter(_done, function( timeline ){
+                    timeline.fromTo($element, 0.75, {x:'200%', autoAlpha:0}, {x:0, autoAlpha:1});
+                });
             },
-            leave: function($element, done){
-                TimelineHelpers.suicidal(done)
-                    .to($element, 0.5, {scale:0.8, opacity:0});
+            leave: function($element, _done){
+                ViewHelper.whenReady.leave(_done, function( timeline ){
+                    timeline.to($element, 0.45, {scale:1.5, rotationZ:180, autoAlpha:0, ease:Power2.easeOut});
+                });
             }
         };
     }]);

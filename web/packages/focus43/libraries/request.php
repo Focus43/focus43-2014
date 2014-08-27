@@ -14,9 +14,9 @@
                 return;
             }
 
-            if( !array_key_exists('x-angularized', getallheaders()) ){
-                $path = '';
-            }
+//            if( !array_key_exists('x-angularized', getallheaders()) ){
+//                $path = '';
+//            }
             parent::__construct($path);
         }
 

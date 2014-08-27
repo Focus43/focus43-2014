@@ -1,6 +1,6 @@
-angular.module('f43.common')
+angular.module('f43.common').
 
-    .directive('animator', ['$window', 'TweenLite', function factory( $window, TweenLite ){
+    directive('animator', ['$window', 'TweenLite', function factory( $window, TweenLite ){
 
         var pageCount = document.querySelectorAll('nav li').length,
             $layers   = document.querySelectorAll('#parallax .layer'),

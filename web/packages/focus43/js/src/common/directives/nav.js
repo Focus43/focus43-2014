@@ -36,10 +36,19 @@ angular.module('f43.common').
             // Route change (handles setting current route to active and closing sidebar)
             scope.$on('$routeChangeStart', function( event, current ){
                 var href    = current && angular.isDefined(current.params.section) ? '/' + current.params.section : '/',
-                    element = $element[0].querySelector('[href="'+href+'"]'),
-                    index   = Array.prototype.indexOf.call($listItems, element.parentNode); //_active ? Array.prototype.indexOf.call($listItems, _active.parentNode) : 0;
+                    element = $element[0].querySelector('[href="'+href+'"]');
+
+                // @todo: implement fallback
+                if( ! element ){
+                    return;
+                }
+
+                var index = Array.prototype.indexOf.call($listItems, element.parentNode); //_active ? Array.prototype.indexOf.call($listItems, _active.parentNode) : 0;
+                // Change active class
                 $listItems.removeClass('active').eq(index).addClass('active');
+                // Trigger parallax background
                 AnimatorController.parallaxTo(index);
+                // Close the nav sidebar (if was open)
                 scope.status.open = false;
             });
         }

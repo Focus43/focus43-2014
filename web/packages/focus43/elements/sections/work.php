@@ -1,7 +1,7 @@
 <section section-work>
     <div class="tabular">
         <div class="cellular">
-            work page
+            <?php $a = new Area('Work'); $a->display($c); ?>
         </div>
     </div>
 </section>
