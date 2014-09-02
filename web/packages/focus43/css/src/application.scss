@@ -86,6 +86,7 @@ img {@extend .img-responsive;display:inline-block;}
 
 
 // Main content container
+
 #content {position:relative;width:100%;height:100%;z-index:2;}
 
 // Sections container
@@ -93,7 +94,15 @@ img {@extend .img-responsive;display:inline-block;}
   // Mask element when sidebar is open
   &:before {display:block;content:'';background:rgba(0,0,0,0.8);position:absolute;top:0;left:0;right:0;bottom:0;z-index:9;visibility:hidden;opacity:0;@include transition(all 0.45s ease);}
   // Pages (ng-view!)
-  .page {position:absolute;top:0;left:0;width:100%;height:100%;/*INITIALLY*/opacity:0;visibility:hidden;}
+  .page {position:absolute;top:0;left:0;width:100%;height:100%;@include transform(translateY(0));@include transition(all 0.25s ease);
+    // Animations in/out
+    &.ng-leave {@include transform(translateY(0));
+      &.ng-leave-active {@include transform(translateY(100%));}
+    }
+    &.ng-enter {@include transform(translateY(100%));
+      &.ng-enter-active {@include transform(translateY(0));}
+    }
+  }
   // Sections (ie, wrapper for all templates)
   section {height:100%;width:100%;position:relative;padding:$gutterWidthHalf 0;@include scrollOverflow;}
 }
@@ -102,7 +111,7 @@ img {@extend .img-responsive;display:inline-block;}
 .page {
 
   // Contact page
-  &.page-contact {
+  .page-contact {
     form {max-width:800px;
       .subheader {background:$magenta-step-up7_5;
         h2 {margin:0;padding:15px;text-align:center;background:$magenta-step-down15;}
@@ -123,7 +132,9 @@ img {@extend .img-responsive;display:inline-block;}
 nav {position:absolute;top:0;bottom:0;height:100%;left:100%;width:calc(100% - 3rem);z-index:3;background:$magenta;@include text-shadow(0 1px 1px #000);
   .inner {position:relative;height:100%;width:100%;}
   .trigger {position:absolute !important;display:block;right:100%;padding:0.5rem 0.8rem;font-size:1.5rem;line-height:1;background:rgba($magenta,0.8);position:absolute !important;
-    i {position:relative;top:2px;}
+    i {position:relative;top:2px;
+      &.fa-spin {display:none;}
+    }
   }
   ul {margin:0;height:100%;@include scrollOverflow;
     li {
@@ -131,6 +142,12 @@ nav {position:absolute;top:0;bottom:0;height:100%;left:100%;width:calc(100% - 3r
       &.active a {background:$magenta-step-down7_5;}
       &:hover a {background:$magenta-step-down15;}
     }
+  }
+}
+body.working nav .trigger {
+  i {
+    &.fa-bars {display:none;}
+    &.fa-spin {display:inline-block;}
   }
 }
 

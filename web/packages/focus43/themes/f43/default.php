@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="<?php echo LANGUAGE; ?>" ng-app="f43" class="<?php echo $documentClass; ?>">
+<html lang="<?php echo LANGUAGE; ?>" class="<?php echo $documentClass; ?>">
 <head>
     <?php Loader::packageElement('theme/head_tag', 'focus43'); ?>
     <?php Loader::element('header_required'); // REQUIRED BY C5 // ?>
@@ -17,7 +17,7 @@
 
     <div id="content">
         <div id="content-l2">
-            <div class="page" ng-class="pageClass"<?php if( !$cmsToolbar ){echo ' ng-view';} ?>>
+            <div class="page"<?php if( !$cmsToolbar ){echo ' ng-view';} ?>>
                 <?php Loader::packageElement("sections/{$sectionElement}", 'focus43', array(
                     'c' => $c,
                     'cmsEditing' => $cmsEditing

@@ -21,6 +21,20 @@
             // Http config
             $httpProvider.defaults.headers.common['x-angularized'] = true;
 
+            // On starting/ending ajax calls; adjust 'working' model to true/false on rootscope
+            $httpProvider.interceptors.push(['$rootScope', function( $rootScope ){
+                return {
+                    request: function( _config ){
+                        $rootScope.working = true;
+                        return _config;
+                    },
+                    response: function( _response ){
+                        $rootScope.working = false;
+                        return _response;
+                    }
+                };
+            }]);
+
             // Provide constants
             $provide.factory('AppPaths', function factory(){
                 return {
@@ -40,23 +54,7 @@
                         return _defer.promise;
                     }
                 }]
-//                ,templateCheck: ['$q', function( $q ){
-//                    var _defer = $q.defer();
-//
-//                    console.log('CHECKING TEMPLATE');
-//                    setTimeout(function(){
-//                        console.log('TEMPLATE CHECKED');
-//                        _defer.resolve();
-//                    }, 1500);
-//
-//                    return _defer.promise;
-//                }]
-//                ,pauser: ['$q', function( $q ){
-//                    var _defer = $q.defer();
-//                    setTimeout(function(){ _defer.resolve(); }, 500);
-//                    return _defer.promise;
-//                }]
-                };
+            };
 
             // If cms-admin class is present on <html>, don't initialize any angular routing
             if( angular.element(document.documentElement).hasClass('cms-admin') ){
@@ -100,16 +98,22 @@
             FastClick.attach(document.body);
 
             // Set the class on ng-view to the "page-{route}"
-            var isFirstRun = true;
+            //var isFirstRun = true;
             $rootScope.$on('$viewContentLoaded', function(){
-                if( isFirstRun ){
-                    isFirstRun = false;
-                    ViewHelper.viewChanged().resolve();
-                }else{
-                    ViewHelper.viewChanged();
-                }
+//                if( isFirstRun ){
+//                    isFirstRun = false;
+//                    ViewHelper.viewChanged().resolve();
+//                }else{
+//                    ViewHelper.viewChanged();
+//                }
 
-                $rootScope.pageClass = 'page-' + ($route.current.params.section || 'home');
+                setTimeout(function(){
+                    $rootScope.$apply(function(){
+                        console.log('applied late');
+                        $rootScope.pageClass = 'page-' + ($route.current.params.section || 'home');
+                    });
+                }, 500);
+
             });
         }]);
 
@@ -117,7 +121,7 @@
     /**
      * Manually bootstrap angular
      */
-    angular.element(document).ready(function() {
+    angular.element(document).ready(function(){
         // Before angular is initialized; store the precompiled innerHTML of the ng-view
         var pageElement = document.querySelector('#content-l2 > .page');
         window._precompiledView = pageElement.innerHTML;

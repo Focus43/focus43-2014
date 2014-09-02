@@ -1,4 +1,4 @@
-<section section-contact>
+<section ng-class="pageClass">
     <div class="tabular">
         <div class="cellular">
             <form id="frmContact" class="container" name="contactForm" role="form" ng-submit="submit()" novalidate>

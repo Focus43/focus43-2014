@@ -21,6 +21,20 @@
             // Http config
             $httpProvider.defaults.headers.common['x-angularized'] = true;
 
+            // On starting/ending ajax calls; adjust 'working' model to true/false on rootscope
+            $httpProvider.interceptors.push(['$rootScope', function( $rootScope ){
+                return {
+                    request: function( _config ){
+                        $rootScope.working = true;
+                        return _config;
+                    },
+                    response: function( _response ){
+                        $rootScope.working = false;
+                        return _response;
+                    }
+                };
+            }]);
+
             // Provide constants
             $provide.factory('AppPaths', function factory(){
                 return {
@@ -40,23 +54,7 @@
                         return _defer.promise;
                     }
                 }]
-//                ,templateCheck: ['$q', function( $q ){
-//                    var _defer = $q.defer();
-//
-//                    console.log('CHECKING TEMPLATE');
-//                    setTimeout(function(){
-//                        console.log('TEMPLATE CHECKED');
-//                        _defer.resolve();
-//                    }, 1500);
-//
-//                    return _defer.promise;
-//                }]
-//                ,pauser: ['$q', function( $q ){
-//                    var _defer = $q.defer();
-//                    setTimeout(function(){ _defer.resolve(); }, 500);
-//                    return _defer.promise;
-//                }]
-                };
+            };
 
             // If cms-admin class is present on <html>, don't initialize any angular routing
             if( angular.element(document.documentElement).hasClass('cms-admin') ){
@@ -100,16 +98,22 @@
             FastClick.attach(document.body);
 
             // Set the class on ng-view to the "page-{route}"
-            var isFirstRun = true;
+            //var isFirstRun = true;
             $rootScope.$on('$viewContentLoaded', function(){
-                if( isFirstRun ){
-                    isFirstRun = false;
-                    ViewHelper.viewChanged().resolve();
-                }else{
-                    ViewHelper.viewChanged();
-                }
+//                if( isFirstRun ){
+//                    isFirstRun = false;
+//                    ViewHelper.viewChanged().resolve();
+//                }else{
+//                    ViewHelper.viewChanged();
+//                }
 
-                $rootScope.pageClass = 'page-' + ($route.current.params.section || 'home');
+                setTimeout(function(){
+                    $rootScope.$apply(function(){
+                        console.log('applied late');
+                        $rootScope.pageClass = 'page-' + ($route.current.params.section || 'home');
+                    });
+                }, 500);
+
             });
         }]);
 
@@ -117,7 +121,7 @@
     /**
      * Manually bootstrap angular
      */
-    angular.element(document).ready(function() {
+    angular.element(document).ready(function(){
         // Before angular is initialized; store the precompiled innerHTML of the ng-view
         var pageElement = document.querySelector('#content-l2 > .page');
         window._precompiledView = pageElement.innerHTML;
@@ -517,25 +521,25 @@ angular.module('f43.sections').
             scope: true,
             link: _link
         };
-    }]).
+    }]);//.
 
     /**
      * Animation handler for the page entering/leaving
      */
-    animation('.page-about', ['ViewHelper', function( ViewHelper ){
-        return {
-            enter: function($element, _done){
-                ViewHelper.whenReady.enter(_done, function( timeline ){
-                    timeline.fromTo($element, 0.75, {x:'-200%', autoAlpha:0}, {x:0, autoAlpha:1});
-                });
-            },
-            leave: function($element, _done){
-                ViewHelper.whenReady.leave(_done, function( timeline ){
-                    timeline.to($element, 0.45, {scale:0.75, autoAlpha:0, ease:Power2.easeOut});
-                });
-            }
-        };
-    }]);
+//    animation('.page-about', ['ViewHelper', function( ViewHelper ){
+//        return {
+//            enter: function($element, _done){
+//                ViewHelper.whenReady.enter(_done, function( timeline ){
+//                    timeline.fromTo($element, 0.75, {x:'-200%', autoAlpha:0}, {x:0, autoAlpha:1});
+//                });
+//            },
+//            leave: function($element, _done){
+//                ViewHelper.whenReady.leave(_done, function( timeline ){
+//                    timeline.to($element, 0.45, {scale:0.75, autoAlpha:0, ease:Power2.easeOut});
+//                });
+//            }
+//        };
+//    }]);
 
 /* global Power2 */
 
@@ -585,28 +589,36 @@ angular.module('f43.sections').
         };
     }]).
 
+    animation('.page-contact', function(){
+        return {
+            addClass: function(el, klass, a, b){
+                console.log(klass + ' added!');
+            }
+        };
+    }).
+
     /**
      * Animation handler for the page entering/leaving
      */
-    animation('.page-contact', ['ViewHelper', function( ViewHelper ){
-        return {
-            enter: function($element, _done){
-                ViewHelper.whenReady.enter(_done, function( timeline ){
-                    var _rows = $element[0].querySelectorAll('.row');
-                    timeline.
-                        set(_rows, {y:'100%', autoAlpha:0}).
-                        set($element, {autoAlpha:1}).
-                        staggerTo(_rows, 0.25, {y:0, autoAlpha:1}, 0.15);
-                });
-            },
-            leave: function($element, _done){
-                ViewHelper.whenReady.leave(_done, function( timeline ){
-                    var _rows = Array.prototype.slice.call($element[0].querySelectorAll('.row')).reverse();
-                    timeline.staggerTo(_rows, 0.25, {y:500, autoAlpha:0}, 0.1);
-                });
-            }
-        };
-    }]).
+//    animation('.page-contact', ['ViewHelper', function( ViewHelper ){
+//        return {
+//            enter: function($element, _done){
+//                ViewHelper.whenReady.enter(_done, function( timeline ){
+//                    var _rows = $element[0].querySelectorAll('.row');
+//                    timeline.
+//                        set(_rows, {y:'100%', autoAlpha:0}).
+//                        set($element, {autoAlpha:1}).
+//                        staggerTo(_rows, 0.25, {y:0, autoAlpha:1}, 0.15);
+//                });
+//            },
+//            leave: function($element, _done){
+//                ViewHelper.whenReady.leave(_done, function( timeline ){
+//                    var _rows = Array.prototype.slice.call($element[0].querySelectorAll('.row')).reverse();
+//                    timeline.staggerTo(_rows, 0.25, {y:500, autoAlpha:0}, 0.1);
+//                });
+//            }
+//        };
+//    }]).
 
     /**
      * Animation handler for when the form is sent successfully.
@@ -664,25 +676,25 @@ angular.module('f43.sections').
             scope: true,
             link: _link
         };
-    }]).
+    }]);//.
 
     /**
      * Animation handler for the page entering/leaving
      */
-    animation('.page-experiments', ['ViewHelper', function( ViewHelper ){
-        return {
-            enter: function($element, _done){
-                ViewHelper.whenReady.enter(_done, function( timeline ){
-                    timeline.fromTo($element, 0.75, {x:'-200%', autoAlpha:0}, {x:0, autoAlpha:1});
-                });
-            },
-            leave: function($element, _done){
-                ViewHelper.whenReady.leave(_done, function( timeline ){
-                    timeline.to($element, 0.45, {scale:0.75, autoAlpha:0, ease:Power2.easeOut});
-                });
-            }
-        };
-    }]);
+//    animation('.page-experiments', ['ViewHelper', function( ViewHelper ){
+//        return {
+//            enter: function($element, _done){
+//                ViewHelper.whenReady.enter(_done, function( timeline ){
+//                    timeline.fromTo($element, 0.75, {x:'-200%', autoAlpha:0}, {x:0, autoAlpha:1});
+//                });
+//            },
+//            leave: function($element, _done){
+//                ViewHelper.whenReady.leave(_done, function( timeline ){
+//                    timeline.to($element, 0.45, {scale:0.75, autoAlpha:0, ease:Power2.easeOut});
+//                });
+//            }
+//        };
+//    }]);
 angular.module('f43.sections').
 
     directive('sectionHome', [function(){
@@ -696,25 +708,25 @@ angular.module('f43.sections').
             scope: true,
             link: _link
         };
-    }]).
+    }]);//.
 
     /**
      * Animation handler for the page entering/leaving
      */
-    animation('.page-home', ['ViewHelper', function( ViewHelper ){
-        return {
-            enter: function($element, _done){
-                ViewHelper.whenReady.enter(_done, function( timeline ){
-                    timeline.fromTo($element, 0.75, {x:'200%', autoAlpha:0}, {x:0, autoAlpha:1});
-                });
-            },
-            leave: function($element, _done){
-                ViewHelper.whenReady.leave(_done, function( timeline ){
-                    timeline.to($element, 0.45, {scale:1.5, rotationZ:180, autoAlpha:0, ease:Power2.easeOut});
-                });
-            }
-        };
-    }]);
+//    animation('.page-home', ['ViewHelper', function( ViewHelper ){
+//        return {
+//            enter: function($element, _done){
+//                ViewHelper.whenReady.enter(_done, function( timeline ){
+//                    timeline.fromTo($element, 0.75, {x:'200%', autoAlpha:0}, {x:0, autoAlpha:1});
+//                });
+//            },
+//            leave: function($element, _done){
+//                ViewHelper.whenReady.leave(_done, function( timeline ){
+//                    timeline.to($element, 0.45, {scale:1.5, rotationZ:180, autoAlpha:0, ease:Power2.easeOut});
+//                });
+//            }
+//        };
+//    }]);
 angular.module('f43.sections').
 
     directive('sectionWork', [function(){
@@ -728,22 +740,22 @@ angular.module('f43.sections').
             scope: true,
             link: _link
         };
-    }]).
+    }]);//.
 
     /**
      * Animation handler for the page entering/leaving
      */
-    animation('.page-work', ['ViewHelper', function( ViewHelper ){
-        return {
-            enter: function($element, _done){
-                ViewHelper.whenReady.enter(_done, function( timeline ){
-                    timeline.fromTo($element, 0.75, {x:'200%', autoAlpha:0}, {x:0, autoAlpha:1});
-                });
-            },
-            leave: function($element, _done){
-                ViewHelper.whenReady.leave(_done, function( timeline ){
-                    timeline.to($element, 0.45, {scale:1.5, rotationZ:180, autoAlpha:0, ease:Power2.easeOut});
-                });
-            }
-        };
-    }]);
+//    animation('.page-work', ['ViewHelper', function( ViewHelper ){
+//        return {
+//            enter: function($element, _done){
+//                ViewHelper.whenReady.enter(_done, function( timeline ){
+//                    timeline.fromTo($element, 0.75, {x:'200%', autoAlpha:0}, {x:0, autoAlpha:1});
+//                });
+//            },
+//            leave: function($element, _done){
+//                ViewHelper.whenReady.leave(_done, function( timeline ){
+//                    timeline.to($element, 0.45, {scale:1.5, rotationZ:180, autoAlpha:0, ease:Power2.easeOut});
+//                });
+//            }
+//        };
+//    }]);

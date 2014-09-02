@@ -46,28 +46,36 @@ angular.module('f43.sections').
         };
     }]).
 
+    animation('.page-contact', function(){
+        return {
+            addClass: function(el, klass, a, b){
+                console.log(klass + ' added!');
+            }
+        };
+    }).
+
     /**
      * Animation handler for the page entering/leaving
      */
-    animation('.page-contact', ['ViewHelper', function( ViewHelper ){
-        return {
-            enter: function($element, _done){
-                ViewHelper.whenReady.enter(_done, function( timeline ){
-                    var _rows = $element[0].querySelectorAll('.row');
-                    timeline.
-                        set(_rows, {y:'100%', autoAlpha:0}).
-                        set($element, {autoAlpha:1}).
-                        staggerTo(_rows, 0.25, {y:0, autoAlpha:1}, 0.15);
-                });
-            },
-            leave: function($element, _done){
-                ViewHelper.whenReady.leave(_done, function( timeline ){
-                    var _rows = Array.prototype.slice.call($element[0].querySelectorAll('.row')).reverse();
-                    timeline.staggerTo(_rows, 0.25, {y:500, autoAlpha:0}, 0.1);
-                });
-            }
-        };
-    }]).
+//    animation('.page-contact', ['ViewHelper', function( ViewHelper ){
+//        return {
+//            enter: function($element, _done){
+//                ViewHelper.whenReady.enter(_done, function( timeline ){
+//                    var _rows = $element[0].querySelectorAll('.row');
+//                    timeline.
+//                        set(_rows, {y:'100%', autoAlpha:0}).
+//                        set($element, {autoAlpha:1}).
+//                        staggerTo(_rows, 0.25, {y:0, autoAlpha:1}, 0.15);
+//                });
+//            },
+//            leave: function($element, _done){
+//                ViewHelper.whenReady.leave(_done, function( timeline ){
+//                    var _rows = Array.prototype.slice.call($element[0].querySelectorAll('.row')).reverse();
+//                    timeline.staggerTo(_rows, 0.25, {y:500, autoAlpha:0}, 0.1);
+//                });
+//            }
+//        };
+//    }]).
 
     /**
      * Animation handler for when the form is sent successfully.
