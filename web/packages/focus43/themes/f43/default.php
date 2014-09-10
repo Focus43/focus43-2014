@@ -5,7 +5,7 @@
     <?php Loader::element('header_required'); // REQUIRED BY C5 // ?>
 </head>
 
-<body class="pt-<?php echo $sectionElement; ?>" ng-class="{'sidebar-open':sidebar}" animator preloader>
+<body class="pt-<?php echo $sectionElement; ?>" ng-class="{'sidebar-open':sidebar,'working':working}" animator preloader ng-animate-children>
 
     <div id="parallax">
         <div class="inner">
@@ -17,7 +17,7 @@
 
     <div id="content">
         <div id="content-l2">
-            <div class="page"<?php if( !$cmsToolbar ){echo ' ng-view';} ?>>
+            <div ng-animate-children class="page"<?php if( !$cmsToolbar ){echo ' ng-view';} ?>>
                 <?php Loader::packageElement("sections/{$sectionElement}", 'focus43', array(
                     'c' => $c,
                     'cmsEditing' => $cmsEditing

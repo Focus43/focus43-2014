@@ -73,7 +73,7 @@ img {@extend .img-responsive;display:inline-block;}
 }
 
 // Horizontal parallax
-#parallax, #parallax .inner, #parallax .layer {width:100%;height:100%;}
+#parallax, #parallax .inner, #parallax .layer {width:100%;height:100%;display:none !important;}
 #parallax {position:fixed;top:0;left:0;z-index:0;
   .inner {position:relative;overflow:hidden;
     .layer {position:absolute;top:0;left:0;width:200%;background-size:cover;background-repeat:no-repeat;@include transform(translateZ(0) translateX(0));@include transition-property(all);@include transition-timing-function(ease);
@@ -90,7 +90,7 @@ img {@extend .img-responsive;display:inline-block;}
 #content {position:relative;width:100%;height:100%;z-index:2;}
 
 // Sections container
-#content-l2 {position:relative;height:100%;
+#content-l2 {position:relative;height:100%;background:url('#{$imagePath}renders/5/world.jpg') no-repeat 50% 100%;background-size:cover;
   // Mask element when sidebar is open
   &:before {display:block;content:'';background:rgba(0,0,0,0.8);position:absolute;top:0;left:0;right:0;bottom:0;z-index:9;visibility:hidden;opacity:0;@include transition(all 0.45s ease);}
   // Pages (ng-view!)
@@ -109,6 +109,15 @@ img {@extend .img-responsive;display:inline-block;}
 
 // Individual pages
 .page {
+  .page-home {
+    #logolax {position:relative;top:-25%;width:100%;height:950px;//position:relative;top:-200px;width:1300px;height:900px;max-width:100%;display:inline-block;margin:0 auto;
+      div {position:absolute;top:0;left:0;width:100%;height:100%;background-color:transparent;background-size:cover;background-position:50% 50%;}
+      #z4 {background-image:url('#{$imagePath}renders/5/5.png');}
+      #z3 {background-image:url('#{$imagePath}renders/5/3.png');}
+      #z2 {background-image:url('#{$imagePath}renders/5/2.png');}
+      #z1 {background-image:url('#{$imagePath}renders/5/1.png');background-position:100% 50%;}
+    }
+  }
 
   // Contact page
   .page-contact {

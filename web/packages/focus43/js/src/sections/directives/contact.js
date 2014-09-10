@@ -48,8 +48,13 @@ angular.module('f43.sections').
 
     animation('.page-contact', function(){
         return {
-            addClass: function(el, klass, a, b){
-                console.log(klass + ' added!');
+            addClass: function(el, klass, done){
+                console.log('added ' + klass /*el[0].innerHTML*/);
+                done();
+            },
+            removeClass: function(el, klass, done){
+                console.log('removed ' + klass);
+                done();
             }
         };
     }).

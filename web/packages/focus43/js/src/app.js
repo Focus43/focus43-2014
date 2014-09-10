@@ -100,6 +100,8 @@
             // Set the class on ng-view to the "page-{route}"
             //var isFirstRun = true;
             $rootScope.$on('$viewContentLoaded', function(){
+                $rootScope.pageClass = 'page-' + ($route.current.params.section || 'home');
+
 //                if( isFirstRun ){
 //                    isFirstRun = false;
 //                    ViewHelper.viewChanged().resolve();
@@ -107,12 +109,12 @@
 //                    ViewHelper.viewChanged();
 //                }
 
-                setTimeout(function(){
-                    $rootScope.$apply(function(){
-                        console.log('applied late');
-                        $rootScope.pageClass = 'page-' + ($route.current.params.section || 'home');
-                    });
-                }, 500);
+//                setTimeout(function(){
+//                    $rootScope.$apply(function(){
+//                        console.log('applied late');
+//                        $rootScope.pageClass = 'page-' + ($route.current.params.section || 'home');
+//                    });
+//                }, 500);
 
             });
         }]);
