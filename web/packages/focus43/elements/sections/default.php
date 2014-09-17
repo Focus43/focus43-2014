@@ -2,7 +2,7 @@
     $area1 = new Area('Main');
     $area2 = new Area('Sidebar');
 ?>
-<section ng-class="pageClass">
+<section ng-class="animationClass">
     <div class="tabular">
         <div class="cellular">
             <div class="container">

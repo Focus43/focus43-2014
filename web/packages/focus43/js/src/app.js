@@ -91,31 +91,14 @@
          * @todo: trigger enter animation on ng-view so the immediately cached template
          * gets animated in properly (eg. setTimeout(function(){$route.reload();},500) ?)
          */
-        run(['$rootScope', '$route', '$animate', '$templateCache', 'ViewHelper', function( $rootScope, $route, $animate, $templateCache, ViewHelper ){
-            //setTimeout(function(){ $route.reload(); }, 500);
-
+        run(['$rootScope', '$route', '$animate', function( $rootScope, $route, $animate ){
             // Attach FastClick
             FastClick.attach(document.body);
 
             // Set the class on ng-view to the "page-{route}"
-            //var isFirstRun = true;
             $rootScope.$on('$viewContentLoaded', function(){
-                $rootScope.pageClass = 'page-' + ($route.current.params.section || 'home');
-
-//                if( isFirstRun ){
-//                    isFirstRun = false;
-//                    ViewHelper.viewChanged().resolve();
-//                }else{
-//                    ViewHelper.viewChanged();
-//                }
-
-//                setTimeout(function(){
-//                    $rootScope.$apply(function(){
-//                        console.log('applied late');
-//                        $rootScope.pageClass = 'page-' + ($route.current.params.section || 'home');
-//                    });
-//                }, 500);
-
+                $rootScope.pageClass      = 'page-' + ($route.current.params.section || 'home');
+                $rootScope.animationClass = $rootScope.pageClass + '-animation';
             });
         }]);
 
@@ -128,6 +111,9 @@
         var pageElement = document.querySelector('#content-l2 > .page');
         window._precompiledView = pageElement.innerHTML;
         // Remove all elements within pageElement
+        if( angular.element(document.documentElement).hasClass('cms-admin') ){
+            return;
+        }
         while (pageElement.firstChild) {
             pageElement.removeChild(pageElement.firstChild);
         }

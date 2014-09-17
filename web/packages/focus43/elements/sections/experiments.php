@@ -1,4 +1,4 @@
-<section ng-class="pageClass">
+<section ng-class="animationClass">
     <div class="tabular">
         <div class="cellular">
             experiments page

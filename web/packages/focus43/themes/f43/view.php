@@ -23,7 +23,7 @@
 
     <div id="content">
         <div id="content-l2">
-            <div ng-animate-children class="page"<?php if( !$cmsToolbar ){echo ' ng-view';} ?>>
+            <div class="page" ng-class="pageClass" ng-animate-children<?php if( !$cmsToolbar ){echo ' ng-view';} ?>>
                 <?php echo $innerContent; ?>
             </div>
         </div>

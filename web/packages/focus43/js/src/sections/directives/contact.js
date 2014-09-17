@@ -1,10 +1,6 @@
 /* global Power2 */
-
 angular.module('f43.sections').
 
-    /**
-     * Handler specifically for contact section.
-     */
     directive('sectionContact', ['$animate', 'GoogleMaps', function factory( $animate, GoogleMaps ){
 
         function _linker( scope, $element, attrs ){
@@ -46,41 +42,23 @@ angular.module('f43.sections').
         };
     }]).
 
-    animation('.page-contact', function(){
-        return {
-            addClass: function(el, klass, done){
-                console.log('added ' + klass /*el[0].innerHTML*/);
-                done();
-            },
-            removeClass: function(el, klass, done){
-                console.log('removed ' + klass);
-                done();
-            }
-        };
-    }).
 
     /**
-     * Animation handler for the page entering/leaving
+     * Animation
      */
-//    animation('.page-contact', ['ViewHelper', function( ViewHelper ){
-//        return {
-//            enter: function($element, _done){
-//                ViewHelper.whenReady.enter(_done, function( timeline ){
-//                    var _rows = $element[0].querySelectorAll('.row');
-//                    timeline.
-//                        set(_rows, {y:'100%', autoAlpha:0}).
-//                        set($element, {autoAlpha:1}).
-//                        staggerTo(_rows, 0.25, {y:0, autoAlpha:1}, 0.15);
-//                });
-//            },
-//            leave: function($element, _done){
-//                ViewHelper.whenReady.leave(_done, function( timeline ){
-//                    var _rows = Array.prototype.slice.call($element[0].querySelectorAll('.row')).reverse();
-//                    timeline.staggerTo(_rows, 0.25, {y:500, autoAlpha:0}, 0.1);
-//                });
-//            }
-//        };
-//    }]).
+    animation('.page-contact-animation', ['TimelineHelper', function( TimelineHelper ){
+        return {
+            addClass: function($element, className, done){
+                var $rows = $element[0].querySelectorAll('.row');
+                TimelineHelper.suicidal(done)
+                    .set($rows, {y:'100%', autoAlpha:0})
+                    .set($element, {autoAlpha:1})
+                    .staggerTo($rows, 0.25, {y:0, autoAlpha:1}, 0.15);
+
+            }
+        };
+    }]).
+
 
     /**
      * Animation handler for when the form is sent successfully.

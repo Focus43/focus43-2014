@@ -91,31 +91,14 @@
          * @todo: trigger enter animation on ng-view so the immediately cached template
          * gets animated in properly (eg. setTimeout(function(){$route.reload();},500) ?)
          */
-        run(['$rootScope', '$route', '$animate', '$templateCache', 'ViewHelper', function( $rootScope, $route, $animate, $templateCache, ViewHelper ){
-            //setTimeout(function(){ $route.reload(); }, 500);
-
+        run(['$rootScope', '$route', '$animate', function( $rootScope, $route, $animate ){
             // Attach FastClick
             FastClick.attach(document.body);
 
             // Set the class on ng-view to the "page-{route}"
-            //var isFirstRun = true;
             $rootScope.$on('$viewContentLoaded', function(){
-                $rootScope.pageClass = 'page-' + ($route.current.params.section || 'home');
-
-//                if( isFirstRun ){
-//                    isFirstRun = false;
-//                    ViewHelper.viewChanged().resolve();
-//                }else{
-//                    ViewHelper.viewChanged();
-//                }
-
-//                setTimeout(function(){
-//                    $rootScope.$apply(function(){
-//                        console.log('applied late');
-//                        $rootScope.pageClass = 'page-' + ($route.current.params.section || 'home');
-//                    });
-//                }, 500);
-
+                $rootScope.pageClass      = 'page-' + ($route.current.params.section || 'home');
+                $rootScope.animationClass = $rootScope.pageClass + '-animation';
             });
         }]);
 
@@ -128,6 +111,9 @@
         var pageElement = document.querySelector('#content-l2 > .page');
         window._precompiledView = pageElement.innerHTML;
         // Remove all elements within pageElement
+        if( angular.element(document.documentElement).hasClass('cms-admin') ){
+            return;
+        }
         while (pageElement.firstChild) {
             pageElement.removeChild(pageElement.firstChild);
         }
@@ -403,47 +389,6 @@ angular.module('f43.common').
                 });
             }
         };
-    }]).
-
-
-    /**
-     * Since ngView animation lets the enter/leave animations run concurrently, we
-     * need some way to make sure they run in proper order, eg:
-     * 1) leave animation COMPLETES
-     * 2) enter animation BEGINS
-     * This service uses an internally tracked _currentDefer (whereas a new one is
-     * created every time viewChanged() gets called!) to keep track of the order in
-     * which things get run.
-     */
-    service('ViewHelper', ['$q', 'TimelineHelper', function factory( $q, TimelineHelper ){
-        var _currentDefer = $q.defer();
-
-        /**
-         * Create a new _currentDefer object.
-         * @return {$.defer()}
-         */
-        this.viewChanged = function(){
-            _currentDefer = $q.defer();
-            return _currentDefer;
-        };
-
-        /**
-         * Enter and Leave functions used to register with animations.
-         * @type {{enter: Function, leave: Function}}
-         */
-        this.whenReady = {
-            enter: function( _done, _animations ){
-                var timeline = TimelineHelper.suicidal(_done);
-
-                _currentDefer.promise.then(function(){
-                    _animations.apply(timeline, [timeline]);
-                });
-            },
-            leave: function( _done, _animations ){
-                var timeline = TimelineHelper.suicidal(_done, _currentDefer);
-                _animations.apply(timeline, [timeline]);
-            }
-        };
     }]);
 angular.module('f43.googlemap').
 
@@ -523,33 +468,11 @@ angular.module('f43.sections').
             scope: true,
             link: _link
         };
-    }]);//.
-
-    /**
-     * Animation handler for the page entering/leaving
-     */
-//    animation('.page-about', ['ViewHelper', function( ViewHelper ){
-//        return {
-//            enter: function($element, _done){
-//                ViewHelper.whenReady.enter(_done, function( timeline ){
-//                    timeline.fromTo($element, 0.75, {x:'-200%', autoAlpha:0}, {x:0, autoAlpha:1});
-//                });
-//            },
-//            leave: function($element, _done){
-//                ViewHelper.whenReady.leave(_done, function( timeline ){
-//                    timeline.to($element, 0.45, {scale:0.75, autoAlpha:0, ease:Power2.easeOut});
-//                });
-//            }
-//        };
-//    }]);
+    }]);
 
 /* global Power2 */
-
 angular.module('f43.sections').
 
-    /**
-     * Handler specifically for contact section.
-     */
     directive('sectionContact', ['$animate', 'GoogleMaps', function factory( $animate, GoogleMaps ){
 
         function _linker( scope, $element, attrs ){
@@ -591,41 +514,23 @@ angular.module('f43.sections').
         };
     }]).
 
-    animation('.page-contact', function(){
-        return {
-            addClass: function(el, klass, done){
-                console.log('added ' + klass /*el[0].innerHTML*/);
-                done();
-            },
-            removeClass: function(el, klass, done){
-                console.log('removed ' + klass);
-                done();
-            }
-        };
-    }).
 
     /**
-     * Animation handler for the page entering/leaving
+     * Animation
      */
-//    animation('.page-contact', ['ViewHelper', function( ViewHelper ){
-//        return {
-//            enter: function($element, _done){
-//                ViewHelper.whenReady.enter(_done, function( timeline ){
-//                    var _rows = $element[0].querySelectorAll('.row');
-//                    timeline.
-//                        set(_rows, {y:'100%', autoAlpha:0}).
-//                        set($element, {autoAlpha:1}).
-//                        staggerTo(_rows, 0.25, {y:0, autoAlpha:1}, 0.15);
-//                });
-//            },
-//            leave: function($element, _done){
-//                ViewHelper.whenReady.leave(_done, function( timeline ){
-//                    var _rows = Array.prototype.slice.call($element[0].querySelectorAll('.row')).reverse();
-//                    timeline.staggerTo(_rows, 0.25, {y:500, autoAlpha:0}, 0.1);
-//                });
-//            }
-//        };
-//    }]).
+    animation('.page-contact-animation', ['TimelineHelper', function( TimelineHelper ){
+        return {
+            addClass: function($element, className, done){
+                var $rows = $element[0].querySelectorAll('.row');
+                TimelineHelper.suicidal(done)
+                    .set($rows, {y:'100%', autoAlpha:0})
+                    .set($element, {autoAlpha:1})
+                    .staggerTo($rows, 0.25, {y:0, autoAlpha:1}, 0.15);
+
+            }
+        };
+    }]).
+
 
     /**
      * Animation handler for when the form is sent successfully.
@@ -683,41 +588,25 @@ angular.module('f43.sections').
             scope: true,
             link: _link
         };
-    }]);//.
+    }]);
+/* global webkitCancelRequestAnimationFrame */
 
-    /**
-     * Animation handler for the page entering/leaving
-     */
-//    animation('.page-experiments', ['ViewHelper', function( ViewHelper ){
-//        return {
-//            enter: function($element, _done){
-//                ViewHelper.whenReady.enter(_done, function( timeline ){
-//                    timeline.fromTo($element, 0.75, {x:'-200%', autoAlpha:0}, {x:0, autoAlpha:1});
-//                });
-//            },
-//            leave: function($element, _done){
-//                ViewHelper.whenReady.leave(_done, function( timeline ){
-//                    timeline.to($element, 0.45, {scale:0.75, autoAlpha:0, ease:Power2.easeOut});
-//                });
-//            }
-//        };
-//    }]);
 angular.module('f43.sections').
 
     directive('sectionHome', ['$document', 'TweenLite', 'TimelineMax', function( $document, TweenLite, TimelineLite ){
 
         function _link( scope, $element ){
-            var $wrap = document.querySelector('#logolax'),
-                $z4 = document.querySelector('#z4'),
-                $z3 = document.querySelector('#z3'),
-                $z2 = document.querySelector('#z2'),
-                $z1   = document.querySelector('#z1'),
-                winW  = document.body.clientWidth,
-                winH  = document.body.clientHeight,
-                halfWidth  = winW / 2,
-                halfHeight = winH / 2;
-
-            var $all = [$z4,$z3,$z2,$z1];
+            var $wrap       = document.querySelector('#logolax'),
+                $z4         = document.querySelector('#z4'),
+                $z3         = document.querySelector('#z3'),
+                $z2         = document.querySelector('#z2'),
+                $z1         = document.querySelector('#z1'),
+                $all        = [$z4,$z3,$z2,$z1],
+                winW        = document.body.clientWidth,
+                winH        = document.body.clientHeight,
+                halfWidth   = winW / 2,
+                halfHeight  = winH / 2,
+                _coords, _animationFrame;
 
 //            (new TimelineLite({onComplete:function(){
 //                var tl = (new TimelineLite({repeat:-1}))
@@ -734,22 +623,26 @@ angular.module('f43.sections').
 //                .to($z3, 2.5, {x:150}, 2.5)
 //                .to($z4, 2.5, {x:-15}, 2.5);
 
-            var _coords;
-
             angular.element($document).on('mousemove', function( ev ){
                 _coords = {x:ev.pageX, y:ev.pageY};
             });
 
-            setInterval(function(){
+            (function _draw(){
                 if( _coords ){
                     var _x = (halfWidth - _coords.x) / winW,
                         _y = (halfHeight - _coords.y) / winH;
-                    TweenLite.set($z4, {x:-(290*_x),y:-(290*_y),scale:(1 + (1 * _y))});
-                    TweenLite.set($z3, {x:-(50*_x),y:-(50*_y),scale:(1 + (1 * _y))});
-                    TweenLite.set($z2, {x:(250*_x),y:(500*_y),scale:(1 + (1 * _y))});
-                    TweenLite.set($z1, {x:(1200*_x),y:(1200*_y),scale:(1 + (1 * _y))});
+                    TweenLite.set($z4, {x:-(290*_x),y:-(290*_y)});
+                    TweenLite.set($z3, {x:-(50*_x),y:-(50*_y)});
+                    TweenLite.set($z2, {x:(250*_x),y:(500*_y)});
+                    TweenLite.set($z1, {x:(1200*_x),y:(1200*_y)});
                 }
-            }, 50);
+                _animationFrame = requestAnimationFrame(_draw);
+            })();
+
+            // "Destruct" on removal
+            scope.$on('$destroy', function(){
+                cancelAnimationFrame(_animationFrame);
+            });
         }
 
         return {
@@ -759,31 +652,18 @@ angular.module('f43.sections').
         };
     }]).
 
-    animation('.page-home', [function(){
+
+    /**
+     * Animation
+     */
+    animation('.page-home-animation', [function(){
         return {
-            addClass: function($element, className, done){
-                console.log('added' + className /*$element[0].innerHTML*/);
+            addClass: function($element, className, _done){
+                console.log(className);
+                _done();
             }
         };
     }]);
-
-    /**
-     * Animation handler for the page entering/leaving
-     */
-//    animation('.page-home', ['ViewHelper', function( ViewHelper ){
-//        return {
-//            enter: function($element, _done){
-//                ViewHelper.whenReady.enter(_done, function( timeline ){
-//                    timeline.fromTo($element, 0.75, {x:'200%', autoAlpha:0}, {x:0, autoAlpha:1});
-//                });
-//            },
-//            leave: function($element, _done){
-//                ViewHelper.whenReady.leave(_done, function( timeline ){
-//                    timeline.to($element, 0.45, {scale:1.5, rotationZ:180, autoAlpha:0, ease:Power2.easeOut});
-//                });
-//            }
-//        };
-//    }]);
 angular.module('f43.sections').
 
     directive('sectionWork', [function(){
@@ -797,22 +677,4 @@ angular.module('f43.sections').
             scope: true,
             link: _link
         };
-    }]);//.
-
-    /**
-     * Animation handler for the page entering/leaving
-     */
-//    animation('.page-work', ['ViewHelper', function( ViewHelper ){
-//        return {
-//            enter: function($element, _done){
-//                ViewHelper.whenReady.enter(_done, function( timeline ){
-//                    timeline.fromTo($element, 0.75, {x:'200%', autoAlpha:0}, {x:0, autoAlpha:1});
-//                });
-//            },
-//            leave: function($element, _done){
-//                ViewHelper.whenReady.leave(_done, function( timeline ){
-//                    timeline.to($element, 0.45, {scale:1.5, rotationZ:180, autoAlpha:0, ease:Power2.easeOut});
-//                });
-//            }
-//        };
-//    }]);
+    }]);

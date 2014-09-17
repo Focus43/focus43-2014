@@ -1,4 +1,4 @@
-<section ng-class="pageClass" section-home>
+<section ng-class="animationClass" section-home>
     <div class="tabular">
         <div class="cellular">
             <!--<img src="<?php echo FOCUS43_IMAGE_PATH; ?>test2.png" />-->

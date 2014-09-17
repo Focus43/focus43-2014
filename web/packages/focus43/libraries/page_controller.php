@@ -52,7 +52,8 @@
             $headers = getallheaders();
             if( $headers['x-angularized'] ){
                 Loader::packageElement("sections/{$this->sectionElement}", self::PACKAGE_HANDLE, array(
-                    'c' => new Collection // inject an empty collection
+                    //'c' => new Collection // inject an empty collection
+                    'c' => $this->getCollectionObject()
                 ));
                 exit;
             }
