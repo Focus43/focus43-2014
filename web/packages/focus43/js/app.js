@@ -128,6 +128,50 @@ angular.module('f43.common', []);
 angular.module('f43.googlemap', []);
 
 angular.module('f43.sections', []);
+/* global TimelineLite */
+
+angular.module('f43.common').
+
+    /**
+     * Wrap Modernizr library for dependency injection
+     */
+    provider('Modernizr', function(){
+        this.$get = ['$window', '$log',
+            function( $window, $log ){
+                return $window['Modernizr'] || ($log.warn('Modernizr unavailable!'), false);
+            }
+        ];
+    }).
+
+    /**
+     * Wrap TimelineLite library for dependency injection
+     */
+    provider('TimelineLite', function(){
+        this.$get = ['$window', '$log',
+            function( $window, $log ){
+                return $window['TimelineLite'] || ($log.warn('TimelineLite unavailable!'), false);
+            }
+        ];
+    }).
+
+    provider('TimelineMax', function(){
+        this.$get = ['$window', '$log',
+            function( $window, $log ){
+                return $window['TimelineMax'] || ($log.warn('TimelineMax unavailable!'), false);
+            }
+        ];
+    }).
+
+    /**
+     * Wrap TweenLite library for dependency injection
+     */
+    provider('TweenLite', function(){
+        this.$get = ['$window', '$log',
+            function( $window, $log ){
+                return $window['TweenLite'] || ($log.warn('TweenLite unavailable!'), false);
+            }
+        ];
+    });
 angular.module('f43.common').
 
     directive('animator', ['$window', 'TweenLite', function factory( $window, TweenLite ){
@@ -309,50 +353,6 @@ angular.module('f43.common').
             }]
         };
     }]);
-/* global TimelineLite */
-
-angular.module('f43.common').
-
-    /**
-     * Wrap Modernizr library for dependency injection
-     */
-    provider('Modernizr', function(){
-        this.$get = ['$window', '$log',
-            function( $window, $log ){
-                return $window['Modernizr'] || ($log.warn('Modernizr unavailable!'), false);
-            }
-        ];
-    }).
-
-    /**
-     * Wrap TimelineLite library for dependency injection
-     */
-    provider('TimelineLite', function(){
-        this.$get = ['$window', '$log',
-            function( $window, $log ){
-                return $window['TimelineLite'] || ($log.warn('TimelineLite unavailable!'), false);
-            }
-        ];
-    }).
-
-    provider('TimelineMax', function(){
-        this.$get = ['$window', '$log',
-            function( $window, $log ){
-                return $window['TimelineMax'] || ($log.warn('TimelineMax unavailable!'), false);
-            }
-        ];
-    }).
-
-    /**
-     * Wrap TweenLite library for dependency injection
-     */
-    provider('TweenLite', function(){
-        this.$get = ['$window', '$log',
-            function( $window, $log ){
-                return $window['TweenLite'] || ($log.warn('TweenLite unavailable!'), false);
-            }
-        ];
-    });
 angular.module('f43.common').
 
     /**
@@ -439,20 +439,6 @@ angular.module('f43.googlemap').
             }
         };
     }]);
-angular.module('f43.googlemap').
-
-    provider('GoogleMaps', function(){
-        this.$get = ['$window', '$log',
-            function( $window, $log ){
-                if( angular.isDefined($window['google']) ){
-                    return $window['google']['maps'];
-                }
-
-                return ($log.warn('GoogleMaps unavailable!'), false);
-            }
-        ];
-    });
-
 /* global Power2 */
 
 angular.module('f43.sections').
@@ -636,12 +622,18 @@ angular.module('f43.sections').
                     TweenLite.set($z2, {x:(250*_x),y:(500*_y)});
                     TweenLite.set($z1, {x:(1200*_x),y:(1200*_y)});
                 }
-                _animationFrame = requestAnimationFrame(_draw);
+                if( window['requestAnimationFrame'] ){
+                    _animationFrame = requestAnimationFrame(_draw);
+                }else{
+                    setTimeout(_draw, 30);
+                }
             })();
 
             // "Destruct" on removal
             scope.$on('$destroy', function(){
-                cancelAnimationFrame(_animationFrame);
+                try {
+                    cancelAnimationFrame(_animationFrame);
+                }catch(e){ console.log('EXCEPTION CAUGHT: ', e); }
             });
         }
 
@@ -678,3 +670,17 @@ angular.module('f43.sections').
             link: _link
         };
     }]);
+
+angular.module('f43.googlemap').
+
+    provider('GoogleMaps', function(){
+        this.$get = ['$window', '$log',
+            function( $window, $log ){
+                if( angular.isDefined($window['google']) ){
+                    return $window['google']['maps'];
+                }
+
+                return ($log.warn('GoogleMaps unavailable!'), false);
+            }
+        ];
+    });

@@ -3783,7 +3783,7 @@ img {
 #parallax, #parallax .inner, #parallax .layer {
   width: 100%;
   height: 100%;
-  display: none !important; }
+  /*display:none !important;*/ }
 
 #parallax {
   position: fixed;
@@ -3837,9 +3837,7 @@ img {
 
 #content-l2 {
   position: relative;
-  height: 100%;
-  background: url("/packages/focus43/images/renders/5/world.jpg") no-repeat 50% 100%;
-  background-size: cover; }
+  height: 100%; }
   #content-l2:before {
     display: block;
     content: '';
@@ -3901,6 +3899,59 @@ img {
     overflow-x: hidden;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch; }
+
+#bgvid {
+  position: absolute;
+  left: 0;
+  top: 0;
+  min-width: 150%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  -webkit-transform: translateX(-50%);
+  -moz-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  -o-transform: translateX(-50%);
+  transform: translateX(-50%); }
+
+iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0; }
+
+#content-l2 {
+  z-index: 1; }
+
+.thirds {
+  width: 130%;
+  height: 100%;
+  font-size: 0;
+  line-height: 0;
+  margin-left: -15%; }
+  .thirds .node {
+    background: rgba(0, 0, 0, 0.5);
+    display: inline-block;
+    height: 100%;
+    width: 33.33%;
+    font-size: 1rem;
+    line-height: 1;
+    overflow: hidden;
+    -webkit-transform: skew(-10deg);
+    -moz-transform: skew(-10deg);
+    -ms-transform: skew(-10deg);
+    -o-transform: skew(-10deg);
+    transform: skew(-10deg); }
+    .thirds .node .inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      -webkit-transform: skew(10deg);
+      -moz-transform: skew(10deg);
+      -ms-transform: skew(10deg);
+      -o-transform: skew(10deg);
+      transform: skew(10deg); }
 
 .page.page-home #logolax {
   position: relative;

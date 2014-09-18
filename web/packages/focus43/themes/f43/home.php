@@ -16,6 +16,8 @@
     </div>
 
     <div id="content">
+        <!--<iframe width="auto" height="auto" src="//www.youtube.com/embed/GPmb2qDM64w?rel=0&autoplay=1&controls=0&loop=1" frameborder="0" allowfullscreen></iframe>-->
+
         <div id="content-l2">
             <div class="page" ng-class="pageClass" ng-animate-children<?php if( !$cmsToolbar ){echo ' ng-view';} ?>>
                 <?php Loader::packageElement("sections/{$sectionElement}", 'focus43', array(

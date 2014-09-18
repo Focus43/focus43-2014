@@ -45,12 +45,18 @@ angular.module('f43.sections').
                     TweenLite.set($z2, {x:(250*_x),y:(500*_y)});
                     TweenLite.set($z1, {x:(1200*_x),y:(1200*_y)});
                 }
-                _animationFrame = requestAnimationFrame(_draw);
+                if( window['requestAnimationFrame'] ){
+                    _animationFrame = requestAnimationFrame(_draw);
+                }else{
+                    setTimeout(_draw, 30);
+                }
             })();
 
             // "Destruct" on removal
             scope.$on('$destroy', function(){
-                cancelAnimationFrame(_animationFrame);
+                try {
+                    cancelAnimationFrame(_animationFrame);
+                }catch(e){ console.log('EXCEPTION CAUGHT: ', e); }
             });
         }
 

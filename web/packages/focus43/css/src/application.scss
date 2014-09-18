@@ -72,12 +72,13 @@ img {@extend .img-responsive;display:inline-block;}
   &.cubify-orange {background:#df8505;@include cubify(darken(#df8505,20%),($grid-gutter-width/4));}
 }
 
+
 // Horizontal parallax
-#parallax, #parallax .inner, #parallax .layer {width:100%;height:100%;display:none !important;}
+#parallax, #parallax .inner, #parallax .layer {width:100%;height:100%;/*display:none !important;*/}
 #parallax {position:fixed;top:0;left:0;z-index:0;
   .inner {position:relative;overflow:hidden;
     .layer {position:absolute;top:0;left:0;width:200%;background-size:cover;background-repeat:no-repeat;@include transform(translateZ(0) translateX(0));@include transition-property(all);@include transition-timing-function(ease);
-      &#layer-butte {@include transition-duration(2.1s);background-position:0 100%;background-image:url('#{$imagePath}parallax/camp.jpg');}
+      &#layer-butte {@include transition-duration(2.1s);background-position:0 100%;background-image:url('#{$imagePath}parallax/camp.jpg'/*renders/5/world.jpg*/);}
       &#layer-clouds {@include transition-duration(4.25s);@include transition-delay(0.35s);background-position:0 100%;background-image:url('#{$imagePath}parallax/stars.png');}
       &#layer-moon {@include transition-duration(2.7s);@include transition-delay(0.2s);background-position:35% 100%;background-image:url('#{$imagePath}parallax/moon.png');}
     }
@@ -90,7 +91,7 @@ img {@extend .img-responsive;display:inline-block;}
 #content {position:relative;width:100%;height:100%;z-index:2;}
 
 // Sections container
-#content-l2 {position:relative;height:100%;background:url('#{$imagePath}renders/5/world.jpg') no-repeat 50% 100%;background-size:cover;
+#content-l2 {position:relative;height:100%;//background:url('#{$imagePath}renders/5/world.jpg') no-repeat 50% 100%;background-size:cover;
   // Mask element when sidebar is open
   &:before {display:block;content:'';background:rgba(0,0,0,0.8);position:absolute;top:0;left:0;right:0;bottom:0;z-index:9;visibility:hidden;opacity:0;@include transition(all 0.45s ease);}
   // Pages (ng-view!)
@@ -106,6 +107,22 @@ img {@extend .img-responsive;display:inline-block;}
   // Sections (ie, wrapper for all templates)
   section {height:100%;width:100%;position:relative;padding:$gutterWidthHalf 0;@include scrollOverflow;}
 }
+
+#bgvid {
+  position:absolute;left:0;top:0;min-width:150%;min-height:100%;width:auto;height:auto;
+  @include transform(translateX(-50%));
+}
+iframe {
+  position:absolute;top:0;left:0;right:0;bottom:0;//min-width:100%;min-height:100%;width:auto;height:auto;
+}
+#content-l2 {z-index:1;}
+
+.thirds {width:130%;height:100%;font-size:0;line-height:0;margin-left:-15%;
+  .node {background:rgba(0,0,0,0.5);display:inline-block;height:100%;width:33.33%;font-size:1rem;line-height:1;overflow:hidden;@include transform(skew(-10deg));
+    .inner {position:relative;width:100%;height:100%;@include transform(skew(10deg));}
+  }
+}
+
 
 // Individual pages
 .page {
