@@ -9,7 +9,9 @@ angular.module('f43.common').
         function updateLayers( _index ){
             var _percent = (_index === 0) ? 0 : (_index+1)/pageCount,
                 _moveX   = winW * _percent;
-            TweenLite.set($layers, {x:-(_moveX)});
+            console.log(_moveX);
+            var _x2 = (document.querySelector('#layer-butte').clientWidth - winW) * _percent;
+            TweenLite.set($layers, {x:-(_x2)});
         }
 
         function _link( scope ){

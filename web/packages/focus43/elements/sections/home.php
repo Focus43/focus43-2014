@@ -1,51 +1,23 @@
 <section ng-class="animationClass" section-home style="padding:0;">
-    <div class="thirds">
-        <div class="node">
-
-        </div>
-        <div class="node">
-            <div class="inner">
-                <video autoplay loop id="bgvid">
-                    <source src="/packages/focus43/_scratch/flight.webm" type="video/webm" />
-                    <source src="/packages/focus43/_scratch/flight.mp4" type="video/mp4" />
-                </video>
-            </div>
-        </div>
-        <div class="node">
-
+    <div style="position:absolute;top:0;left:0;width:100%;height:100%;">
+        <div id="logolax">
+            <div id="z4"></div>
+            <div id="z3"></div>
+            <div id="z2"></div>
+            <div id="z1"></div>
         </div>
     </div>
 
-
-
-
-    <!--<div style="position:relative;height:65%;">
-        <video autoplay loop id="bgvid">
-            <source src="/packages/focus43/_scratch/flight.webm" type="video/webm" />
-            <source src="/packages/focus43/_scratch/flight.mp4" type="video/mp4" />
-        </video>
-        <img src="<?php echo FOCUS43_IMAGE_PATH; ?>big-f2.png" style="position:absolute;z-index:1;" />
-    </div>
-
-
-    <div class="tabular">
+    <div class="tabular" style="position:relative;z-index:99;">
         <div class="cellular">
-
-
-
-
-
-            <h1>Hi. We are Focus43.</h1>
-            <h2>We make engaging interactive stuff.</h2>
-
-
-            <div id="logolax" style="display:none;">
-                <div id="z4"></div>
-                <div id="z3"></div>
-                <div id="z2"></div>
-                <div id="z1"></div>
+            <img src="/packages/focus43/images/big-f3.png" style="position:fixed;top:15px;left:-30px;height:100px;" />
+            <div class="slanter">
+                <div style="position:relative;width:100%;height:100%;padding:1em;">
+                    <h1>Hi. We are Focus43.</h1>
+                    <h2>We make engaging interactive stuff.</h2>
+                    <div class="arrowable"></div>
+                </div>
             </div>
-            <?php //$a = new Area('Home'); $a->display($c); ?>
         </div>
-    </div>-->
+    </div>
 </section>

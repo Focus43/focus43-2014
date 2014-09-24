@@ -40,10 +40,27 @@ angular.module('f43.sections').
                 if( _coords ){
                     var _x = (halfWidth - _coords.x) / winW,
                         _y = (halfHeight - _coords.y) / winH;
-                    TweenLite.set($z4, {x:-(290*_x),y:-(290*_y)});
-                    TweenLite.set($z3, {x:-(50*_x),y:-(50*_y)});
-                    TweenLite.set($z2, {x:(250*_x),y:(500*_y)});
-                    TweenLite.set($z1, {x:(1200*_x),y:(1200*_y)});
+                    var _s = _coords.y / winH;
+                    var $butte = document.querySelector('#layer-butte'),
+                        $clouds = document.querySelector('#layer-clouds');
+//                    TweenLite.set($z4, {scale:Math.abs(0.9 - _s)});
+//                    TweenLite.set($z3, {scale:Math.abs(1 - _s)});
+//                    TweenLite.set($z2, {scale:Math.abs(1.1 - _s)});
+//                    TweenLite.set($z1, {scale:Math.abs(1.2 - _s)});
+
+//                    TweenLite.set($z4, {x:-(290*_x),y:Math.abs(190*_y),scale:Math.abs(1 - _s)});
+//                    TweenLite.set($z3, {x:-(50*_x),y:-(50*_y),scale:Math.abs(1.2 - _s)});
+//                    TweenLite.set($z2, {x:(125*_x),y:(500*_y),scale:Math.abs(1.4 - _s),autoAlpha:(_s + 1.2)});
+//                    TweenLite.set($z1, {x:(700*_x),y:(1200*_y),scale:Math.abs(1.6 - _s),autoAlpha:(_s + 0.5)});
+
+                    //TweenLite.set($z4, {x:-(290*_x),y:Math.abs(190*_y),scale:Math.abs(1 - _s)});
+
+                    //TweenLite.set($butte, {x:100 * _x});
+                    //TweenLite.set($clouds, {x:(200 * _x)});
+
+                    TweenLite.set($z3, {x:(125*_x),autoAlpha:(_s + 0.5)/*,y:(50*_y),scale:Math.abs(1+(_s * 0.8))*/});
+                    TweenLite.set($z2, {x:(300*_x),autoAlpha:(_s + 0.7)/*,y:(100*_y),scale:Math.abs(1+(_s * 1))*/});
+                    TweenLite.set($z1, {x:(700*_x),autoAlpha:(_s * 0.9)/*,y:(200*_y),scale:Math.abs(1+(_s * 1.2))*/});
                 }
                 if( window['requestAnimationFrame'] ){
                     _animationFrame = requestAnimationFrame(_draw);

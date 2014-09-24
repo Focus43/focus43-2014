@@ -128,50 +128,6 @@ angular.module('f43.common', []);
 angular.module('f43.googlemap', []);
 
 angular.module('f43.sections', []);
-/* global TimelineLite */
-
-angular.module('f43.common').
-
-    /**
-     * Wrap Modernizr library for dependency injection
-     */
-    provider('Modernizr', function(){
-        this.$get = ['$window', '$log',
-            function( $window, $log ){
-                return $window['Modernizr'] || ($log.warn('Modernizr unavailable!'), false);
-            }
-        ];
-    }).
-
-    /**
-     * Wrap TimelineLite library for dependency injection
-     */
-    provider('TimelineLite', function(){
-        this.$get = ['$window', '$log',
-            function( $window, $log ){
-                return $window['TimelineLite'] || ($log.warn('TimelineLite unavailable!'), false);
-            }
-        ];
-    }).
-
-    provider('TimelineMax', function(){
-        this.$get = ['$window', '$log',
-            function( $window, $log ){
-                return $window['TimelineMax'] || ($log.warn('TimelineMax unavailable!'), false);
-            }
-        ];
-    }).
-
-    /**
-     * Wrap TweenLite library for dependency injection
-     */
-    provider('TweenLite', function(){
-        this.$get = ['$window', '$log',
-            function( $window, $log ){
-                return $window['TweenLite'] || ($log.warn('TweenLite unavailable!'), false);
-            }
-        ];
-    });
 angular.module('f43.common').
 
     directive('animator', ['$window', 'TweenLite', function factory( $window, TweenLite ){
@@ -183,7 +139,9 @@ angular.module('f43.common').
         function updateLayers( _index ){
             var _percent = (_index === 0) ? 0 : (_index+1)/pageCount,
                 _moveX   = winW * _percent;
-            TweenLite.set($layers, {x:-(_moveX)});
+            console.log(_moveX);
+            var _x2 = (document.querySelector('#layer-butte').clientWidth - winW) * _percent;
+            TweenLite.set($layers, {x:-(_x2)});
         }
 
         function _link( scope ){
@@ -353,6 +311,50 @@ angular.module('f43.common').
             }]
         };
     }]);
+/* global TimelineLite */
+
+angular.module('f43.common').
+
+    /**
+     * Wrap Modernizr library for dependency injection
+     */
+    provider('Modernizr', function(){
+        this.$get = ['$window', '$log',
+            function( $window, $log ){
+                return $window['Modernizr'] || ($log.warn('Modernizr unavailable!'), false);
+            }
+        ];
+    }).
+
+    /**
+     * Wrap TimelineLite library for dependency injection
+     */
+    provider('TimelineLite', function(){
+        this.$get = ['$window', '$log',
+            function( $window, $log ){
+                return $window['TimelineLite'] || ($log.warn('TimelineLite unavailable!'), false);
+            }
+        ];
+    }).
+
+    provider('TimelineMax', function(){
+        this.$get = ['$window', '$log',
+            function( $window, $log ){
+                return $window['TimelineMax'] || ($log.warn('TimelineMax unavailable!'), false);
+            }
+        ];
+    }).
+
+    /**
+     * Wrap TweenLite library for dependency injection
+     */
+    provider('TweenLite', function(){
+        this.$get = ['$window', '$log',
+            function( $window, $log ){
+                return $window['TweenLite'] || ($log.warn('TweenLite unavailable!'), false);
+            }
+        ];
+    });
 angular.module('f43.common').
 
     /**
@@ -439,6 +441,20 @@ angular.module('f43.googlemap').
             }
         };
     }]);
+angular.module('f43.googlemap').
+
+    provider('GoogleMaps', function(){
+        this.$get = ['$window', '$log',
+            function( $window, $log ){
+                if( angular.isDefined($window['google']) ){
+                    return $window['google']['maps'];
+                }
+
+                return ($log.warn('GoogleMaps unavailable!'), false);
+            }
+        ];
+    });
+
 /* global Power2 */
 
 angular.module('f43.sections').
@@ -617,10 +633,27 @@ angular.module('f43.sections').
                 if( _coords ){
                     var _x = (halfWidth - _coords.x) / winW,
                         _y = (halfHeight - _coords.y) / winH;
-                    TweenLite.set($z4, {x:-(290*_x),y:-(290*_y)});
-                    TweenLite.set($z3, {x:-(50*_x),y:-(50*_y)});
-                    TweenLite.set($z2, {x:(250*_x),y:(500*_y)});
-                    TweenLite.set($z1, {x:(1200*_x),y:(1200*_y)});
+                    var _s = _coords.y / winH;
+                    var $butte = document.querySelector('#layer-butte'),
+                        $clouds = document.querySelector('#layer-clouds');
+//                    TweenLite.set($z4, {scale:Math.abs(0.9 - _s)});
+//                    TweenLite.set($z3, {scale:Math.abs(1 - _s)});
+//                    TweenLite.set($z2, {scale:Math.abs(1.1 - _s)});
+//                    TweenLite.set($z1, {scale:Math.abs(1.2 - _s)});
+
+//                    TweenLite.set($z4, {x:-(290*_x),y:Math.abs(190*_y),scale:Math.abs(1 - _s)});
+//                    TweenLite.set($z3, {x:-(50*_x),y:-(50*_y),scale:Math.abs(1.2 - _s)});
+//                    TweenLite.set($z2, {x:(125*_x),y:(500*_y),scale:Math.abs(1.4 - _s),autoAlpha:(_s + 1.2)});
+//                    TweenLite.set($z1, {x:(700*_x),y:(1200*_y),scale:Math.abs(1.6 - _s),autoAlpha:(_s + 0.5)});
+
+                    //TweenLite.set($z4, {x:-(290*_x),y:Math.abs(190*_y),scale:Math.abs(1 - _s)});
+
+                    //TweenLite.set($butte, {x:100 * _x});
+                    //TweenLite.set($clouds, {x:(200 * _x)});
+
+                    TweenLite.set($z3, {x:(125*_x),autoAlpha:(_s + 0.5)/*,y:(50*_y),scale:Math.abs(1+(_s * 0.8))*/});
+                    TweenLite.set($z2, {x:(300*_x),autoAlpha:(_s + 0.7)/*,y:(100*_y),scale:Math.abs(1+(_s * 1))*/});
+                    TweenLite.set($z1, {x:(700*_x),autoAlpha:(_s * 0.9)/*,y:(200*_y),scale:Math.abs(1+(_s * 1.2))*/});
                 }
                 if( window['requestAnimationFrame'] ){
                     _animationFrame = requestAnimationFrame(_draw);
@@ -670,17 +703,3 @@ angular.module('f43.sections').
             link: _link
         };
     }]);
-
-angular.module('f43.googlemap').
-
-    provider('GoogleMaps', function(){
-        this.$get = ['$window', '$log',
-            function( $window, $log ){
-                if( angular.isDefined($window['google']) ){
-                    return $window['google']['maps'];
-                }
-
-                return ($log.warn('GoogleMaps unavailable!'), false);
-            }
-        ];
-    });
