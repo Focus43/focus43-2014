@@ -1,0 +1,42 @@
+@mixin cubify($color, $size){ $size: floor($size); // round down if decimal
+  position:relative;
+  // left depth
+  &:before {content:"";display:block;width:$size;height:100%;position:absolute;top:0;bottom:0;left:-$size;background:lighten($color, 2.5%);@include transform(skewY(-45deg) translateY($size/2));}
+  // bottom depth
+  &:after {content:"";display:block;height:$size;position:absolute;bottom:-$size;left:0;right:0;background:darken($color, 2.5%);@include transform(skewX(-45deg) translateX(-($size/2)));}
+  // if .depth-bottom is included, show depth below
+  &.no-cubify-bottom {
+    &:after {display:none;}
+  }
+}
+
+@mixin scrollbars($color, $width: 6px){
+  ::-webkit-scrollbar {
+    width:$width;
+    background-color:rgba(darken($color,25%),0.12);
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color:rgba(darken($color,25%),0.12);
+
+    &:hover {
+      background-color:rgba(darken($color,25%),0.4);
+    }
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color:rgba($color,0.85);
+
+    &:hover {
+      background-color:rgba($color,1);
+    }
+  }
+}
+
+@mixin scrollOverflow {
+  overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+
+@mixin truncateText {
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}

@@ -1,0 +1,34 @@
+// Fonts
+@import url(http://fonts.googleapis.com/css?family=Rokkitt:400,700);
+
+// Vars
+$fa-font-path:              '/packages/redeaux/bower_components/font-awesome/fonts';
+$imagePath:                 '/packages/redeaux/images/';
+// Bootstrap
+$font-family-serif:         'Rokkitt', serif;
+$font-family-base:          $font-family-serif;
+$font-size-base:            19px;
+$font-size-h1:              400%;
+$font-size-h2:              300%;
+$font-size-h3:              200%;
+$font-size-h4:              160%;
+$headings-font-weight:      100;
+$btn-font-weight:           100;
+$border-radius-base:        0;
+$border-radius-large:       0;
+$border-radius-small:       0;
+
+// Imports
+@import 'compass';
+@import '../../bower_components/bootstrap-sass/vendor/assets/stylesheets/bootstrap/variables';
+@import '../../bower_components/bootstrap-sass/vendor/assets/stylesheets/bootstrap/mixins';
+@import '../../bower_components/bootstrap-sass/vendor/assets/stylesheets/bootstrap/scaffolding';
+@import '../../bower_components/bootstrap-sass/vendor/assets/stylesheets/bootstrap/normalize';
+@import '../../bower_components/bootstrap-sass/vendor/assets/stylesheets/bootstrap/type';
+@import '../../bower_components/bootstrap-sass/vendor/assets/stylesheets/bootstrap/grid';
+@import '../../bower_components/bootstrap-sass/vendor/assets/stylesheets/bootstrap/buttons';
+@import '../../bower_components/bootstrap-sass/vendor/assets/stylesheets/bootstrap/forms';
+@import '../../bower_components/bootstrap-sass/vendor/assets/stylesheets/bootstrap/utilities';
+@import '../../bower_components/bootstrap-sass/vendor/assets/stylesheets/bootstrap/responsive-utilities';
+@import '../../bower_components/font-awesome/scss/font-awesome';
+@import 'mixins';
