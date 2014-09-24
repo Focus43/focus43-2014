@@ -81,8 +81,8 @@ img {@extend .img-responsive;display:inline-block;}
 //      &#layer-butte {@include transition-duration(2.1s);background-position:0 100%;background-image:url('#{$imagePath}parallax/camp.jpg'/*renders/5/world.jpg*/);}
 //      &#layer-clouds {@include transition-duration(4.25s);@include transition-delay(0.35s);background-position:0 100%;background-image:url('#{$imagePath}parallax/stars.png');}
 //      &#layer-moon {@include transition-duration(2.7s);@include transition-delay(0.2s);background-position:35% 100%;background-image:url('#{$imagePath}parallax/moon.png');}
-      &#layer-butte {background-position:0 100%;background-image:url('#{$imagePath}renders/explode2/sky.jpg');}
-      &#layer-clouds {background-position:0 100%;background-image:url('#{$imagePath}renders/explode2/mtns.png');}
+      &#layer-butte {background-position:0 100%;background-image:url('#{$imagePath}renders/explode2/sky3.jpg');}
+      &#layer-clouds {top:25%;background-position:0 100%;background-image:url('#{$imagePath}renders/explode2/mtns_ppl.png');}
       &#layer-moon {display:none;} //&#layer-moon {@include transition-duration(2.7s);@include transition-delay(0.2s);background-position:35% 100%;background-image:url('#{$imagePath}parallax/moon.png');}
     }
   }

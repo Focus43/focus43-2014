@@ -648,8 +648,9 @@ angular.module('f43.sections').
 
                     //TweenLite.set($z4, {x:-(290*_x),y:Math.abs(190*_y),scale:Math.abs(1 - _s)});
 
-                    //TweenLite.set($butte, {x:100 * _x});
-                    //TweenLite.set($clouds, {x:(200 * _x)});
+                    TweenLite.to($butte, 1.4, {x:((100 * _x) < 0 ? 100 * _x : 0)});
+                    //TweenLite.to($clouds, 0.85, {x:((200 * _x) < 0 ? 200 * _x : 0)});
+                    TweenLite.set($clouds, {y:(-200 * -_y),rotationX:(_x * 90),top:_y});
 
                     TweenLite.set($z3, {x:(125*_x),autoAlpha:(_s + 0.5)/*,y:(50*_y),scale:Math.abs(1+(_s * 0.8))*/});
                     TweenLite.set($z2, {x:(300*_x),autoAlpha:(_s + 0.7)/*,y:(100*_y),scale:Math.abs(1+(_s * 1))*/});

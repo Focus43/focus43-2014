@@ -3811,10 +3811,11 @@ img {
       transition-timing-function: ease; }
       #parallax .inner .layer#layer-butte {
         background-position: 0 100%;
-        background-image: url("/packages/focus43/images/renders/explode2/sky.jpg"); }
+        background-image: url("/packages/focus43/images/renders/explode2/sky3.jpg"); }
       #parallax .inner .layer#layer-clouds {
+        top: 25%;
         background-position: 0 100%;
-        background-image: url("/packages/focus43/images/renders/explode2/mtns.png"); }
+        background-image: url("/packages/focus43/images/renders/explode2/mtns_ppl.png"); }
       #parallax .inner .layer#layer-moon {
         display: none; }
 
