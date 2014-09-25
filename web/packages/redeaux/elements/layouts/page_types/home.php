@@ -1,22 +1,40 @@
-<div ng-class="animationClass" section-home style="padding:0;">
-    <div style="position:absolute;top:0;left:0;width:100%;height:100%;">
-        <div id="logolax">
-            <div id="z4"></div>
-            <div id="z3"></div>
-            <div id="z2"></div>
-            <div id="z1"></div>
-        </div>
+<div tpl-home>
+    <div class="shards">
+        <div class="shard z3"></div>
+        <div class="shard z2"></div>
+        <div class="shard z1"></div>
     </div>
 
-    <div class="tabular" style="position:relative;z-index:99;">
-        <div class="cellular">
-            <img src="/packages/focus43/images/big-f3.png" style="position:fixed;top:15px;left:-30px;height:100px;" />
-            <!--<div class="slanter"></div>-->
-            <div class="cubify cubify-orange" style="padding:1em;display:inline-block;">
-                <h1>Hi. We are Focus43.</h1>
-                <h2>We make engaging web & iOS stuff.</h2>
-                <!--<div class="arrowable cubify cubify-blue"></div>-->
+    <div class="page-content">
+        <div class="slanter">
+            <div class="reverse">
+                <div class="tabular">
+                    <div class="cellular">
+                        <h1>Hi. We're<br />Focus43.<span>We craft web &amp; iOS experiences.</span></h1>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!--<div class="tabular">
+            <div class="cellular">
+                <div class="inner">
+                    <img src="<?php echo REDEAUX_IMAGE_PATH; ?>logo.png" />
+                    <div class="slanter">
+                        <h1>We're Focus43</h1>
+                        <?php //$a = new Area('Default'); $a->display($c); ?>
+                    </div>
+                    <div class="slanter2">
+                        <h2>We build engaging web &amp; iOS stuff</h2>
+                    </div>
+                    <div class="slanter3">
+                        <a class="q">About Us</a>
+                        <a class="q">Work</a>
+                        <a class="q">Experiments</a>
+                        <a class="q">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </div>-->
     </div>
 </div>

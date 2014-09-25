@@ -1,7 +1,7 @@
 /* global FastClick */
 ;(function( window, angular, undefined ){ 'use strict';
 
-    angular.module('redeaux', ['ngRoute', 'ngResource', 'ngAnimate', 'redeaux.common']).
+    angular.module('redeaux', ['ngRoute', 'ngResource', 'ngAnimate', 'redeaux.common', 'redeaux.pages']).
 
         config(['$provide', '$routeProvider', '$locationProvider', '$httpProvider',
             function( $provide, $routeProvider, $locationProvider, $httpProvider ){
@@ -31,8 +31,12 @@
             }
         ]).
 
-        run([function(){
+        run(['$rootScope', 'NavState', function($rootScope, NavState){
             FastClick.attach(document.body);
+
+            $rootScope.$on('$routeChangeStart', function(){
+                NavState.open = false;
+            });
         }]);
 
 

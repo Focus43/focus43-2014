@@ -10,7 +10,9 @@
     <div id="level-1">
         <?php Loader::packageElement('theme/nav', RedeauxPackage::PACKAGE_HANDLE); ?>
         <div id="level-2">
-            <div id="parallax">
+            <img class="logo" src="<?php echo REDEAUX_IMAGE_PATH; ?>logo.png" />
+
+            <div id="parallax" parallaxer>
                 <div class="layer sky"></div>
                 <div class="layer mtn"></div>
             </div>
