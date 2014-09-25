@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <div class="page-content" style="">
+    <div class="page-content" style="display:none;">
         <svg class="slant" version="1.1" width="200" height="200" x="0" y="0" viewBox="0 0 200 200" preserveAspectRatio="none">
             <!--<path stroke="none" d="M0 0 L 200 0 L 125 200 L 0 200 Z" />-->
             <path stroke="none" d="M100 0 L200 0 L100 200 L0 200 Z" />

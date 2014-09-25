@@ -19,12 +19,12 @@ img {@extend .img-responsive;display:inline-block;}
 #level-3 {}
 
 // Animations for <section> element (angular requires to be on a class)
-section.page-body {position:absolute;top:0;left:0;@include transform(translateY(0));@include transition(all 1.25s ease);
-  &.ng-leave {@include transform(translateY(0));
-    &.ng-leave-active {@include transform(translateY(100%));}
+section.page-body {position:absolute;top:0;left:0;@include transform(translateY(0));@include transition(all 0.35s ease);
+  &.ng-leave {opacity:1;@include transform(translateY(0));
+    &.ng-leave-active {opacity:0;@include transform(translateY(100%));}
   }
-  &.ng-enter {@include transform(translateY(100%));
-    &.ng-enter-active {@include transform(translateY(0));}
+  &.ng-enter {opacity:0;@include transform(translateY(-100%));
+    &.ng-enter-active {opacity:1;@include transform(translateY(0));}
   }
 }
 // section.page-body > .page-content

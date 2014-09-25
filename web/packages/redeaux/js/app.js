@@ -275,6 +275,21 @@ angular.module('redeaux.common').
     });
 angular.module('redeaux.pages').
 
+    directive('tplAbout', ['TweenLite', '$document',
+        function( TweenLite, $document ){
+
+            function _link( scope, $element ){
+
+            }
+
+            return {
+                restrict: 'A',
+                link: _link
+            };
+        }
+    ]);
+angular.module('redeaux.pages').
+
     directive('tplHome', ['TweenLite', '$document',
         function( TweenLite, $document ){
 

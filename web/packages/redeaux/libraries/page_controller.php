@@ -34,7 +34,8 @@
         public function on_start(){
             $headers = getallheaders();
             if( $headers['x-angularized'] ){
-                echo 'this!';exit;
+                $this->renderPartial();
+                exit;
             }
 
             $this->_canEdit     = $this->pagePermissionObject()->canWrite();
@@ -47,6 +48,18 @@
             if( $this->_canEdit ){ array_push($classes, 'cms-admin'); }
             if( $this->_isEditMode ){ array_push($classes, 'cms-editing'); }
             $this->set('cmsClasses', join(' ', $classes));
+        }
+
+
+        /**
+         * If x-angularized is passed in the header, this takes care of returning
+         * only the relevant page partial.
+         * @return void
+         */
+        protected function renderPartial(){
+            Loader::packageElement("layouts/{$this->_pageElement}", RedeauxPackage::PACKAGE_HANDLE, array(
+                'c' => $this->getCollectionObject()
+            ));
         }
 
 
