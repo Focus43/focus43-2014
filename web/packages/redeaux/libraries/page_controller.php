@@ -2,6 +2,9 @@
 
     class RedeauxPageController extends Controller {
 
+        /** @property $_pageElement string */
+        protected $_pageElement = 'page_types/default';
+
         /** @property $_includeThemeAssets bool */
         protected $_includeThemeAssets = false;
 
@@ -17,6 +20,8 @@
          * @return void
          */
         public function view(){
+            $this->set('pageElement', $this->_pageElement);
+
             if( $this->_includeThemeAssets === true ){
                 $this->attachThemeAssets( $this );
             }
@@ -27,8 +32,21 @@
          * @return void
          */
         public function on_start(){
+            $headers = getallheaders();
+            if( $headers['x-angularized'] ){
+                echo 'this!';exit;
+            }
+
             $this->_canEdit     = $this->pagePermissionObject()->canWrite();
             $this->_isEditMode  = $this->getCollectionObject()->isEditMode();
+
+            $this->set('canEdit', $this->_canEdit);
+            $this->set('isEditMode', $this->_isEditMode);
+
+            $classes = array();
+            if( $this->_canEdit ){ array_push($classes, 'cms-admin'); }
+            if( $this->_isEditMode ){ array_push($classes, 'cms-editing'); }
+            $this->set('cmsClasses', join(' ', $classes));
         }
 
 
@@ -45,7 +63,7 @@
             $pageController->addFooterItem( $this->getHelper('html')->javascript('app.js', RedeauxPackage::PACKAGE_HANDLE) );
             // LiveReload (if local dev environment)
             $test1 = (bool) isset($_SERVER['VAGRANT_VM']);
-            $test2 = (bool) ($_SERVER['VAGRANT_VM'] === true);
+            $test2 = (bool) $_SERVER['VAGRANT_VM'];
             $test3 = (bool) (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false);
             if( $test1 && $test2 && $test3 ){
                 $pageController->addFooterItem('<script src="//localhost:35729/livereload.js"></script>');

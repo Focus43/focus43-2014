@@ -1,36 +1,34 @@
 <?php
-    if( !($this->controller instanceof Focus43PageController) ){
-        $pageController = new Focus43PageController;
+    if( !($this->controller instanceof RedeauxPageController) ){
+        $pageController = new RedeauxPageController;
         $pageController->attachThemeAssets( $this->controller );
     }
 ?>
 <!DOCTYPE HTML>
-<html lang="<?php echo LANGUAGE; ?>" class="<?php echo $documentClass; ?>">
+<html lang="<?php echo LANGUAGE; ?>" class="<?php echo $cmsClasses; ?>">
 <head>
-    <?php Loader::packageElement('theme/head_tag', 'focus43'); ?>
+    <?php Loader::packageElement('theme/head_tag', RedeauxPackage::PACKAGE_HANDLE); ?>
     <?php Loader::element('header_required'); // REQUIRED BY C5 // ?>
 </head>
 
-<body class="pt-<?php echo $sectionElement; ?>" ng-class="{'sidebar-open':sidebar,'working':working}" animator preloader>
+<body ng-controller="CtrlRoot">
 
-    <div id="parallax">
-        <div class="inner">
-            <div id="layer-butte" class="layer"></div>
-            <div id="layer-clouds" class="layer"></div>
-            <div id="layer-moon" class="layer"></div>
+<div id="level-1">
+    <?php Loader::packageElement('theme/nav', RedeauxPackage::PACKAGE_HANDLE); ?>
+    <div id="level-2">
+        <div id="parallax">
+            <div class="layer sky"></div>
+            <div class="layer mtn"></div>
         </div>
-    </div>
 
-    <div id="content">
-        <div id="content-l2">
-            <div class="page" ng-class="pageClass" ng-animate-children<?php if( !$cmsToolbar ){echo ' ng-view';} ?>>
+        <div id="level-3">
+            <section class="page-body" ng-view ng-animate-children>
                 <?php echo $innerContent; ?>
-            </div>
+            </section>
         </div>
 
-        <!-- nav (sidebar) -->
-        <?php Loader::packageElement('theme/nav', 'focus43'); ?>
     </div>
+</div>
 
 <?php Loader::element('footer_required'); // REQUIRED BY C5 // ?>
 </body>

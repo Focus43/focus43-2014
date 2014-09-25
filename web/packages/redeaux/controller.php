@@ -6,7 +6,7 @@
 
 	    protected $pkgHandle 			= self::PACKAGE_HANDLE;
 	    protected $appVersionRequired 	= '5.6.2.1';
-	    protected $pkgVersion 			= '0.01';
+	    protected $pkgVersion 			= '0.02';
 	
 		
 		/**
@@ -159,6 +159,10 @@
 		 * @return RedeauxPackage
 		 */
 		private function setupPageTypes(){
+            if( !is_object($this->pageType('home')) ){
+                CollectionType::add(array('ctHandle' => 'home', 'ctName' => 'Home'), $this->packageObject());
+            }
+
 			if( !is_object($this->pageType('default')) ){
 	            CollectionType::add(array('ctHandle' => 'default', 'ctName' => 'Default'), $this->packageObject());
 	        }
@@ -171,6 +175,11 @@
          * @return RedeauxPackage
          */
         private function setupSinglePages(){
+            SinglePage::add('/about', $this->packageObject());
+            SinglePage::add('/work', $this->packageObject());
+            SinglePage::add('/experiments', $this->packageObject());
+            SinglePage::add('/contact', $this->packageObject());
+
             return $this;
         }
 

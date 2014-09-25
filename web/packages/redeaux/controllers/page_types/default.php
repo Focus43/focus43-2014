@@ -3,5 +3,6 @@
     class DefaultPageTypeController extends RedeauxPageController {
 
         protected $_includeThemeAssets = true;
+        protected $_pageElement        = 'page_types/default';
 
     }

@@ -2,21 +2,36 @@
 @import url(http://fonts.googleapis.com/css?family=Rokkitt:400,700);
 
 // Vars
-$fa-font-path:              '/packages/redeaux/bower_components/font-awesome/fonts';
-$imagePath:                 '/packages/redeaux/images/';
+$fa-font-path:                  '/packages/redeaux/bower_components/font-awesome/fonts';
+$image-path:                    '/packages/redeaux/images/';
+$magenta:                       #c7254e;
+$magenta-step-down15:           darken($magenta, 15%);
+$magenta-step-down7_5:          darken($magenta, 7.5%);
+$magenta-step-up7_5:            darken($magenta, 7.5%);
+$magenta-step-up15:             lighten($magenta, 15%);
+$magenta-step-up25:             lighten($magenta, 25%);
+$magenta-transparent:           rgba($magenta-step-down15, 0.9);
+$dark-blue:                     #153e4d;
+$light-blue:                    #2299ac;
+$lime-green:                    #219161;
+$sidebar-animate-time:          0.18s;
+$sidebar-animate-trigger-time:  0.3s;
+$mask-animate-time:             0.45s;
 // Bootstrap
-$font-family-serif:         'Rokkitt', serif;
-$font-family-base:          $font-family-serif;
-$font-size-base:            19px;
-$font-size-h1:              400%;
-$font-size-h2:              300%;
-$font-size-h3:              200%;
-$font-size-h4:              160%;
-$headings-font-weight:      100;
-$btn-font-weight:           100;
-$border-radius-base:        0;
-$border-radius-large:       0;
-$border-radius-small:       0;
+$text-color:                    #fff;
+$font-family-serif:             'Rokkitt', serif;
+$font-family-base:              $font-family-serif;
+$font-size-base:                19px;
+$font-size-h1:                  400%;
+$font-size-h2:                  300%;
+$font-size-h3:                  200%;
+$font-size-h4:                  160%;
+$headings-font-weight:          100;
+$btn-font-weight:               100;
+$border-radius-base:            0;
+$border-radius-large:           0;
+$border-radius-small:           0;
+$link-color:                    #fff;
 
 // Imports
 @import 'compass';
@@ -32,3 +47,6 @@ $border-radius-small:       0;
 @import '../../bower_components/bootstrap-sass/vendor/assets/stylesheets/bootstrap/responsive-utilities';
 @import '../../bower_components/font-awesome/scss/font-awesome';
 @import 'mixins';
+
+// More variables (AFTER) bootstrap defaults
+$grid-gutter-half: ($grid-gutter-width / 2);
