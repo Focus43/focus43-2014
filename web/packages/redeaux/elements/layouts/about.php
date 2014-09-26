@@ -13,5 +13,6 @@
             </svg>
             <img src="<?php echo REDEAUX_IMAGE_PATH; ?>logo.png" />
         </div>
+
     </div>
 </div>

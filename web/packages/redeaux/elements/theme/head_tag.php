@@ -1,7 +1,7 @@
 <!-- ****************************** HEY YOU! ********************************
 Enjoy checking out what's under the hood? You're probably a nerd, and we
 love nerds... so we should talk. http://focus-43.com
-************************************************************************ -->
+************************************************************************-->
 <base href="/" />
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
