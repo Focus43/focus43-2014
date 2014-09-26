@@ -140,52 +140,102 @@ angular.module('redeaux.common').
     }]);
 angular.module('redeaux.common').
 
-    directive('parallaxer', ['$document', 'TweenLite', 'Modernizr',
-        function( $document, TweenLite, Modernizr ){
+    /**
+     * Handle parallax background; automatically determines if should be using
+     * accelerometer readings if appropriate.
+     * @param $window
+     * @param $document
+     * @param TweenLite
+     * @param Modernizr
+     * @returns {{restrict: string, link: Function, scope: boolean}}
+     */
+    directive('parallaxer', ['$window', '$document', 'TweenLite', 'Modernizr',
+        function( $window, $document, TweenLite, Modernizr ){
 
             /**
-             * @todo: make working implementation
-             * @param scope
+             * Layer info "class" (injected into either MouseMotion or DeviceMotion). Don't
+             * extend as intended to use composition over inheritance.
              * @param $element
-             * @private
+             * @constructor
              */
-            function _linkDeviceMotion( scope, $element ){
-                var $win = angular.element(window),
-                    $sky = $element[0].querySelector('.sky'),
-                    $mtn = $element[0].querySelector('.mtn'),
-                    winW = document.body.clientWidth,
-                    winH = document.body.clientHeight,
-                    plxW = $sky.clientWidth,
-                    plxD = plxW - winW,
-                    _beta;
+            function LayerInfo( $element ){
+                var _self       = this;
+                this.$element   = $element[0];
+                this.$sky       = this.$element.querySelector('.sky');
+                this.$mtns      = this.$element.querySelector('.mtn');
+                this.winW       = $window.innerWidth;
+                this.winH       = $window.innerHeight;
+                this.layerW     = this.$sky.clientWidth;
+                this.layerD     = this.layerW - this.winW; // layer delta (difference)
 
-                function onDeviceMotion( _event ){
-                    _beta = _event.rotationRate.beta;
-                    //_beta = _event.accelerationIncludingGravity.x;
-                }
-
-                function animateByMotion(){
-                    //TweenLite.set($mtn, {x:(100/_beta) * 10});
-                }
-
-                // Bindings
-                $win.on('devicemotion', onDeviceMotion);
-                TweenLite.ticker.addEventListener('tick', animateByMotion);
-
-                scope.$on('$destroy', function(){
-                    $win.off('devicemotion', onDeviceMotion);
-                    TweenLite.ticker.removeEventListener('tick', animateByMotion);
+                // On window resize, update internal values
+                angular.element($window).on('resize', function(){
+                    _self.winW       = $window.innerWidth;
+                    _self.winH       = $window.innerHeight;
+                    _self.layerW     = _self.$sky.clientWidth;
+                    _self.layerD     = _self.layerW - _self.winW;
                 });
             }
 
+            /**
+             * @param xCoord
+             * @returns {number}
+             */
+            LayerInfo.prototype.percentX = function( xCoord ){ return xCoord / this.winW; };
 
-            function _linkMouse( scope, $element ){
-                var $sky = $element[0].querySelector('.sky'),
-                    $mtn = $element[0].querySelector('.mtn'),
-                    winW = document.body.clientWidth,
-                    winH = document.body.clientHeight,
-                    plxW = $sky.clientWidth,
-                    plxD = plxW - winW,
+            /**
+             * @param yCoord
+             * @returns {number}
+             */
+            LayerInfo.prototype.percentY = function( yCoord ){ return yCoord / this.winH; };
+
+            /**
+             * @param xPercent
+             * @returns {number}
+             */
+            LayerInfo.prototype.moveX    = function( xPercent ){ return -(xPercent * this.layerD); };
+
+            /**
+             * If device has accelerometer *and* its a touch device, this will get
+             * instantiated.
+             * @param LayerInfo
+             * @constructor
+             */
+            function DeviceMotion( LayerInfo ){
+                var _running = false,
+                    _beta;
+
+                // Run on every requestAnimationFrame tick
+                function onDeviceMotion( _event ){
+                    _beta = _event.rotationRate.beta;
+                }
+
+                // Animation only runs if coordinates have changed
+                function animateByMotion(){
+                    TweenLite.set(LayerInfo.$mtns, {x:(100/_beta) * 10});
+                }
+
+                this.init = function(){
+                    if( _running ){ return; }
+                    $document.on('mousemove', onDeviceMotion);
+                    TweenLite.ticker.addEventListener('tick', animateByMotion);
+                    _running = true;
+                };
+
+                this.destroy = function(){
+                    $document.off('mousemove', onDeviceMotion);
+                    TweenLite.ticker.removeEventListener('tick', animateByMotion);
+                    _running = false;
+                };
+            }
+
+            /**
+             * If regular old desktop...
+             * @param LayerInfo
+             * @constructor
+             */
+            function MouseMotion( LayerInfo ){
+                var _running = false,
                     _coords, _prevCoords;
 
                 // Run on every requestAnimationFrame tick
@@ -196,32 +246,58 @@ angular.module('redeaux.common').
                 // Animation only runs if coordinates have changed
                 function animateByMouse(){
                     if( _coords !== _prevCoords ){
-                        var x = _coords.x / winW,
-                            y = _coords.y / winH,
-                            mx = -(plxD * x);
+                        var x = LayerInfo.percentX( _coords.x ),
+                            y = LayerInfo.percentY( _coords.y ),
+                            mx = LayerInfo.moveX( x );
 
-                        TweenLite.set($sky, {x:mx/2, scale:1+(y*0.1), y:(y * 25)});
-                        TweenLite.set($mtn, {x:mx, scale:1+(y*0.1), y:-(y * 25)});
+                        // Update layers
+                        TweenLite.set(LayerInfo.$sky, {x:mx/2, scale:1+(y*0.1), y:(y*25)});
+                        TweenLite.set(LayerInfo.$mtns, {x:mx, scale:1+(y*0.1), y:-(y*25)});
 
                         // Update _prevCoords for next loop test
                         _prevCoords = _coords;
                     }
                 }
 
-                // Bindings
-                $document.on('mousemove', onMouseMove);
-                TweenLite.ticker.addEventListener('tick', animateByMouse);
+                this.init = function(){
+                    if( _running ){ return; }
+                    $document.on('mousemove', onMouseMove);
+                    TweenLite.ticker.addEventListener('tick', animateByMouse);
+                    _running = true;
+                };
 
-                // Destruct on removal
-                scope.$on('$destroy', function(){
-                    TweenLite.ticker.removeEventListener('tick', animateByMouse);
+                this.destroy = function(){
                     $document.off('mousemove', onMouseMove);
+                    TweenLite.ticker.removeEventListener('tick', animateByMouse);
+                    _running = false;
+                };
+            }
+
+            /**
+             * Link function for the directive.
+             * @param scope
+             * @param $element
+             * @private
+             */
+            function _link( scope, $element ){
+                var _info    = new LayerInfo( $element),
+                    _handler = ( Modernizr.touch && Modernizr.devicemotion ) ?
+                        new DeviceMotion(_info) : new MouseMotion(_info);
+
+                scope.start = _handler.init;
+                scope.stop  = _handler.destroy;
+
+                // Destruct on removal (shouldn't ever get called, but just in case)
+                scope.$on('$destroy', function(){
+                    _handler.destroy(); console.log('PARALLAX LAYER DESTROYED');
                 });
             }
 
+
             return {
                 restrict: 'A',
-                link: (Modernizr.touch && Modernizr.devicemotion) ? _linkDeviceMotion : _linkMouse
+                link: _link,
+                scope: true
             };
         }
     ]);
@@ -294,7 +370,8 @@ angular.module('redeaux.pages').
         function( TweenLite, $document ){
 
             function _link( scope, $element ){
-                var $z3     = $element[0].querySelector('.shard.z3'),
+                var $bgPrlx = angular.element(document.querySelector('#parallax')),
+                    $z3     = $element[0].querySelector('.shard.z3'),
                     $z2     = $element[0].querySelector('.shard.z2'),
                     $z1     = $element[0].querySelector('.shard.z1'),
                     winW    = document.body.clientWidth,
@@ -329,10 +406,18 @@ angular.module('redeaux.pages').
                 // Start animation binding
                 TweenLite.ticker.addEventListener('tick', animate);
 
+                // Initialize the background parallax layer
+                if( angular.isDefined($bgPrlx.data('$scope')) ){
+                    $bgPrlx.data('$scope').start();
+                }
+
                 // Destruct on removal
                 scope.$on('$destroy', function(){
-                    TweenLite.ticker.removeEventListener('tick', animate);
                     $document.off('mousemove', onMouseMove);
+                    TweenLite.ticker.removeEventListener('tick', animate);
+                    if( angular.isDefined($bgPrlx.data('$scope')) ){
+                        $bgPrlx.data('$scope').stop();
+                    }
                 });
             }
 

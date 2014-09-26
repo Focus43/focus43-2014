@@ -4,7 +4,8 @@ angular.module('redeaux.pages').
         function( TweenLite, $document ){
 
             function _link( scope, $element ){
-                var $z3     = $element[0].querySelector('.shard.z3'),
+                var $bgPrlx = angular.element(document.querySelector('#parallax')),
+                    $z3     = $element[0].querySelector('.shard.z3'),
                     $z2     = $element[0].querySelector('.shard.z2'),
                     $z1     = $element[0].querySelector('.shard.z1'),
                     winW    = document.body.clientWidth,
@@ -39,10 +40,18 @@ angular.module('redeaux.pages').
                 // Start animation binding
                 TweenLite.ticker.addEventListener('tick', animate);
 
+                // Initialize the background parallax layer
+                if( angular.isDefined($bgPrlx.data('$scope')) ){
+                    $bgPrlx.data('$scope').start();
+                }
+
                 // Destruct on removal
                 scope.$on('$destroy', function(){
-                    TweenLite.ticker.removeEventListener('tick', animate);
                     $document.off('mousemove', onMouseMove);
+                    TweenLite.ticker.removeEventListener('tick', animate);
+                    if( angular.isDefined($bgPrlx.data('$scope')) ){
+                        $bgPrlx.data('$scope').stop();
+                    }
                 });
             }
 
