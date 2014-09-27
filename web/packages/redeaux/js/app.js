@@ -37,6 +37,10 @@
             $rootScope.$on('$routeChangeStart', function(){
                 NavState.open = false;
             });
+
+            $rootScope.$on('$viewContentLoaded', function( newScope ){
+                console.log('-- content loaded --');
+            });
         }]);
 
 
@@ -44,6 +48,13 @@
      * Bootstrap angular
      */
     angular.element(document).ready(function(){
+        // Set target="_self" on all valid link tags to force following if logged into CMS...
+        if( angular.element(document.documentElement).hasClass('cms-admin') ){
+            angular.element(document.querySelectorAll('a')).each(function( index, el ){
+                el.setAttribute('target', '_self');
+            });
+        }
+
         // Before angular initializes, store the innerHTML of ng-view before its compiled
         var $page = document.querySelector('section.page-body');
         window['precompiled_view'] = $page.innerHTML;
@@ -51,13 +62,6 @@
         // Purge all innerHTML contents
         while($page.firstChild){
             $page.removeChild($page.firstChild);
-        }
-
-        // Set target="_self" on all valid link tags to force following if logged into CMS...
-        if( angular.element(document.documentElement).hasClass('cms-admin') ){
-            angular.element(document.querySelectorAll('a')).each(function( index, el ){
-                el.setAttribute('target', '_self');
-            });
         }
 
         // NOW bootstrap angular
@@ -354,13 +358,59 @@ angular.module('redeaux.common').
             }
         ];
     });
+angular.module('redeaux.pages', []).
+
+    animation('.anim-about',[function(){
+        return {
+            addClass: function(el, className, done){
+                console.log('about_view_ready');
+                done();
+            }
+        };
+    }]).
+
+    animation('.anim-work',[function(){
+        return {
+            addClass: function(el, className, done){
+                console.log('work_view_ready');
+                done();
+            }
+        };
+    }]);
 angular.module('redeaux.pages').
 
-    directive('tplAbout', ['TweenLite', '$document',
-        function( TweenLite, $document ){
+    directive('tplAbout', ['TweenLite', '$document', '$animate',
+        function( TweenLite, $document, $animate ){
+
+            var ANIMATION_CLASS = 'anim-about';
 
             function _link( scope, $element ){
+                $animate.enter($element[0].parentNode, $element[0].parentNode.parentNode).then(function(){
+                    scope.$apply(function(){
+                        scope.animClass = ANIMATION_CLASS;
+                    });
+                });
+            }
 
+            return {
+                restrict: 'A',
+                link: _link
+            };
+        }
+    ]);
+angular.module('redeaux.pages').
+
+    directive('tplWork', ['TweenLite', '$document', '$animate',
+        function( TweenLite, $document, $animate ){
+
+            var ANIMATION_CLASS = 'anim-experiments';
+
+            function _link( scope, $element ){
+                $animate.enter($element[0].parentNode, $element[0].parentNode.parentNode).then(function(){
+                    scope.$apply(function(){
+                        scope.animClass = ANIMATION_CLASS;
+                    });
+                });
             }
 
             return {
@@ -434,11 +484,17 @@ angular.module('redeaux.pages').
     ]);
 angular.module('redeaux.pages').
 
-    directive('tplWork', ['TweenLite', '$document',
-        function( TweenLite, $document ){
+    directive('tplWork', ['TweenLite', '$document', '$animate',
+        function( TweenLite, $document, $animate ){
+
+            var ANIMATION_CLASS = 'anim-work';
 
             function _link( scope, $element ){
-
+                $animate.enter($element[0].parentNode, $element[0].parentNode.parentNode).then(function(){
+                    scope.$apply(function(){
+                        scope.animClass = ANIMATION_CLASS;
+                    });
+                });
             }
 
             return {

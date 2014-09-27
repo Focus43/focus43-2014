@@ -23,7 +23,7 @@ section.page-body {position:absolute;top:0;left:0;@include transform(translateY(
   &.ng-leave {opacity:1;@include transform(translateY(0));
     &.ng-leave-active {opacity:0;@include transform(translateY(100%));}
   }
-  &.ng-enter {opacity:0;@include transform(translateY(-100%));
+  &.ng-enter {opacity:0;@include transform(translateY(-100%));//@include transition-delay(0.25s);
     &.ng-enter-active {opacity:1;@include transform(translateY(0));}
   }
 }

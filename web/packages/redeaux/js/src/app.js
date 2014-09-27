@@ -37,6 +37,10 @@
             $rootScope.$on('$routeChangeStart', function(){
                 NavState.open = false;
             });
+
+            $rootScope.$on('$viewContentLoaded', function( newScope ){
+                console.log('-- content loaded --');
+            });
         }]);
 
 
@@ -44,6 +48,13 @@
      * Bootstrap angular
      */
     angular.element(document).ready(function(){
+        // Set target="_self" on all valid link tags to force following if logged into CMS...
+        if( angular.element(document.documentElement).hasClass('cms-admin') ){
+            angular.element(document.querySelectorAll('a')).each(function( index, el ){
+                el.setAttribute('target', '_self');
+            });
+        }
+
         // Before angular initializes, store the innerHTML of ng-view before its compiled
         var $page = document.querySelector('section.page-body');
         window['precompiled_view'] = $page.innerHTML;
@@ -51,13 +62,6 @@
         // Purge all innerHTML contents
         while($page.firstChild){
             $page.removeChild($page.firstChild);
-        }
-
-        // Set target="_self" on all valid link tags to force following if logged into CMS...
-        if( angular.element(document.documentElement).hasClass('cms-admin') ){
-            angular.element(document.querySelectorAll('a')).each(function( index, el ){
-                el.setAttribute('target', '_self');
-            });
         }
 
         // NOW bootstrap angular

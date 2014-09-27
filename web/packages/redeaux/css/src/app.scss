@@ -1,8 +1,16 @@
 @import 'base';
 @import 'common';
+
+// components
 @import 'elements/nav';
-@import 'elements/home';
-@import 'elements/about';
-@import 'elements/work';
-@import 'elements/experiments';
-@import 'elements/contact';
+
+// single pages
+@import 'pages/about';
+@import 'pages/work';
+@import 'pages/experiments';
+@import 'pages/contact';
+
+// page types
+@import 'pages/types/home';
+@import 'pages/types/default';
+@import 'pages/types/article';

@@ -6,7 +6,7 @@
 
 	    protected $pkgHandle 			= self::PACKAGE_HANDLE;
 	    protected $appVersionRequired 	= '5.6.2.1';
-	    protected $pkgVersion 			= '0.02';
+	    protected $pkgVersion 			= '0.03';
 	
 		
 		/**
@@ -161,6 +161,10 @@
 		private function setupPageTypes(){
             if( !is_object($this->pageType('home')) ){
                 CollectionType::add(array('ctHandle' => 'home', 'ctName' => 'Home'), $this->packageObject());
+            }
+
+            if( !is_object($this->pageType('article')) ){
+                CollectionType::add(array('ctHandle' => 'article', 'ctName' => 'Article'), $this->packageObject());
             }
 
 			if( !is_object($this->pageType('default')) ){
