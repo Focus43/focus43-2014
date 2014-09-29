@@ -38,8 +38,13 @@
                 NavState.open = false;
             });
 
+            var _transitions = [
+                'trnztn-1', 'trnztn-2', 'trnztn-3', 'trnztn-4', 'trnztn-5'
+            ];
+
             $rootScope.$on('$viewContentLoaded', function( newScope ){
                 console.log('-- content loaded --');
+                $rootScope.transitionClass = _transitions[Math.floor(Math.random() * _transitions.length)];
             });
         }]);
 
@@ -400,7 +405,7 @@ angular.module('redeaux.pages').
     ]);
 angular.module('redeaux.pages').
 
-    directive('tplWork', ['TweenLite', '$document', '$animate',
+    directive('tplExperiments', ['TweenLite', '$document', '$animate',
         function( TweenLite, $document, $animate ){
 
             var ANIMATION_CLASS = 'anim-experiments';

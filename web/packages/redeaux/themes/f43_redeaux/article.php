@@ -18,7 +18,7 @@
             </div>
 
             <div id="level-3">
-                <section class="page-body" ng-view ng-animate-children>
+                <section class="page-body" ng-view ng-animate-children ng-class="transitionClass">
                     <?php Loader::packageElement("layouts/{$pageElement}", RedeauxPackage::PACKAGE_HANDLE, array(
                         'c' => $c
                     )); ?>

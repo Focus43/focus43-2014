@@ -10,7 +10,6 @@
             <li><a href="/work">Work</a></li>
             <li><a href="/experiments">Experiments</a></li>
             <li><a href="/contact">Contact</a></li>
-            <li><a href="/something/like/a/nested">nested!</a></li>
         </ul>
     </div>
 </nav>
