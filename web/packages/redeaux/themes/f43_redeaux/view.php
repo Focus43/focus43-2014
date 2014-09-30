@@ -13,24 +13,14 @@
 
 <body ng-controller="CtrlRoot">
 
-<div id="level-1">
-    <?php Loader::packageElement('theme/nav', RedeauxPackage::PACKAGE_HANDLE); ?>
-    <div id="level-2">
-        <img class="logo" src="<?php echo REDEAUX_IMAGE_PATH; ?>logo.png" />
-
-        <div id="parallax" parallaxer>
-            <div class="layer sky"></div>
-            <div class="layer mtn"></div>
-        </div>
-
-        <div id="level-3">
+    <div id="level-1">
+        <?php Loader::packageElement('theme/nav', RedeauxPackage::PACKAGE_HANDLE); ?>
+        <div id="level-2">
             <section class="page-body" ng-view ng-animate-children ng-class="transitionClass">
                 <?php echo $innerContent; ?>
             </section>
         </div>
-
     </div>
-</div>
 
 <?php Loader::element('footer_required'); // REQUIRED BY C5 // ?>
 </body>

@@ -1,11 +1,33 @@
 div[tpl-home]{width:100%;height:100%;position:relative;
-  .shards {position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;
-    .shard {position:absolute;top:0;left:-25%;width:150%;height:100%;background-color:transparent;background-size:cover;background-position:50% 50%;
-      &.z3 {background-image:url('#{$image-path}theme/z3.png');}
-      &.z2 {background-image:url('#{$image-path}theme/z2.png');}
-      &.z1 {background-image:url('#{$image-path}theme/z1.png');}
+  // Shared styles
+  #parallax, #parallax .base, #parallax .depths {position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;}
+  #parallax {overflow:hidden;z-index:-1;
+    // Layer styles
+    .layer {position:absolute;top:0;height:100%;background-size:cover;background-position:50% 50%;}
+    // Base layers (sky/mtns)
+    .base {left:-3rem;width:calc(100% + 6rem);z-index:0;
+      .layer {left:3rem;width:120%;
+        &.sky {background-image:url('#{$image-path}theme/sky.jpg');background-position:50% 0;}
+        &.mtn {background-image:url('#{$image-path}theme/mtns.png');background-position:50% 100%;}
+      }
+    }
+    // Depth layers  (shards)
+    .depths {z-index:1;
+      .layer {left:-25%;width:150%;
+        &.z3 {background-image:url('#{$image-path}theme/z3.png');}
+        &.z2 {background-image:url('#{$image-path}theme/z2.png');}
+        &.z1 {background-image:url('#{$image-path}theme/z1.png');}
+      }
     }
   }
+
+//  .shards {position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;
+//    .shard {position:absolute;top:0;left:-25%;width:150%;height:100%;background-color:transparent;background-size:cover;background-position:50% 50%;
+//      &.z3 {background-image:url('#{$image-path}theme/z3.png');}
+//      &.z2 {background-image:url('#{$image-path}theme/z2.png');}
+//      &.z1 {background-image:url('#{$image-path}theme/z1.png');}
+//    }
+//  }
 
   .page-content {padding:0;@include background-image(radial-gradient(80px 80px, #00ffff 0px, transparent 500px));
     svg.slant {position:absolute;top:0;left:0;height:100%;width:100%;

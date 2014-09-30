@@ -9,14 +9,11 @@ img {@extend .img-responsive;display:inline-block;}
 }
 @include scrollbars($magenta, 7px);
 
-#level-1, #level-2, #level-3, .page-body, .page-content {width:100%;height:100%;position:relative;}
+#level-1, #level-2, .page-body, .page-content {width:100%;height:100%;position:relative;}
 
 #level-2 {@include transform(translateZ(0) translateX(0));@include transition(all $sidebar-animate-time ease);
-  .logo {display:none;position:fixed;top:15px;left:15px;height:80px;z-index:2;}
   &:after {display:block;content:'';background:rgba(0,0,0,0.8);position:absolute;top:0;left:0;right:-3rem;bottom:0;z-index:9;visibility:hidden;opacity:0;@include transform(translateZ(0));@include transition(all $mask-animate-time ease);}
 }
-
-#level-3 {}
 
 // Animations for <section> element (angular requires to be on a class)
 section.page-body {position:absolute;top:0;left:0;}
@@ -69,14 +66,12 @@ section.page-body {position:absolute;top:0;left:0;}
 // section.page-body > .page-content
 .page-content {padding:$grid-gutter-half;@include scrollOverflow;z-index:1;}
 
-#parallax {position:absolute;top:0;left:-3rem;width:calc(100% + 6rem);height:100%;z-index:-1;overflow:hidden;
-  .layer {position:absolute;top:0;left:3rem;width:120%;height:100%;background-size:cover;background-repeat:no-repeat;//@include transform(translateZ(0) translateX(0));@include transition-property(all);@include transition-timing-function(ease);
-    &.sky {background-image:url('#{$image-path}theme/sky.jpg');background-position:50% 0;}
-    &.mtn {background-image:url('#{$image-path}theme/mtns.png');background-position:50% 100%;}
-    //&.sky {background-image:inline-image('theme/sky.jpg');background-position:50% 0;}
-    //&.mtn {background-image:inline-image('theme/mtns.png');background-position:50% 100%;}
-  }
-}
+//#parallax {position:absolute;top:0;left:-3rem;width:calc(100% + 6rem);height:100%;z-index:-1;overflow:hidden;
+//  .layer {position:absolute;top:0;left:3rem;width:120%;height:100%;background-size:cover;background-repeat:no-repeat;//@include transform(translateZ(0) translateX(0));@include transition-property(all);@include transition-timing-function(ease);
+//    &.sky {background-image:url('#{$image-path}theme/sky.jpg');background-position:50% 0;}
+//    &.mtn {background-image:url('#{$image-path}theme/mtns.png');background-position:50% 100%;}
+//  }
+//}
 
 // Fix scroll overflow while in edit mode
 html.cms-admin section.page-body {height:calc(100% - 49px);}

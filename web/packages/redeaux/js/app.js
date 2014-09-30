@@ -177,6 +177,9 @@ angular.module('redeaux.common').
                 this.$element   = $element[0];
                 this.$sky       = this.$element.querySelector('.sky');
                 this.$mtns      = this.$element.querySelector('.mtn');
+                this.$z3       = this.$element.querySelector('.z3');
+                this.$z2       = this.$element.querySelector('.z2');
+                this.$z1       = this.$element.querySelector('.z1');
                 this.winW       = $window.innerWidth;
                 this.winH       = $window.innerHeight;
                 this.layerW     = this.$sky.clientWidth;
@@ -207,7 +210,13 @@ angular.module('redeaux.common').
              * @param xPercent
              * @returns {number}
              */
-            LayerInfo.prototype.moveX    = function( xPercent ){ return -(xPercent * this.layerD); };
+            LayerInfo.prototype.moveX = function( xPercent ){ return -(xPercent * this.layerD); };
+
+            /**
+             * @param xCoord
+             * @returns {number}
+             */
+            LayerInfo.prototype.halfX = function( xCoord ){ return ((this.winW / 2) - xCoord) / this.winW; };
 
             /**
              * If device has accelerometer *and* its a touch device, this will get
@@ -260,13 +269,19 @@ angular.module('redeaux.common').
                 // Animation only runs if coordinates have changed
                 function animateByMouse(){
                     if( _coords !== _prevCoords ){
-                        var x = LayerInfo.percentX( _coords.x ),
-                            y = LayerInfo.percentY( _coords.y ),
-                            mx = LayerInfo.moveX( x );
+                        var x     = LayerInfo.percentX( _coords.x ),
+                            y     = LayerInfo.percentY( _coords.y ),
+                            xHalf = LayerInfo.halfX( _coords.x),
+                            moveX = LayerInfo.moveX( x),
+                            alpha = y + 0.25;
 
-                        // Update layers
-                        TweenLite.set(LayerInfo.$sky, {x:mx/2, scale:1+(y*0.1), y:(y*25)});
-                        TweenLite.set(LayerInfo.$mtns, {x:mx, scale:1+(y*0.1), y:-(y*25)});
+                        // Base layers
+                        TweenLite.set(LayerInfo.$sky, {x:moveX/2, scale:1+(y*0.1), y:(y*25)});
+                        TweenLite.set(LayerInfo.$mtns, {x:moveX, scale:1+(y*0.1), y:-(y*25)});
+                        // Depth layers
+                        TweenLite.set(LayerInfo.$z3, {x:(125*xHalf), autoAlpha:alpha, scale:1+(y*0.1)});
+                        TweenLite.set(LayerInfo.$z2, {x:(300*xHalf), autoAlpha:alpha, scale:1+(y*0.2)});
+                        TweenLite.set(LayerInfo.$z1, {x:(700*xHalf), autoAlpha:alpha, scale:1+(y*0.3)});
 
                         // Update _prevCoords for next loop test
                         _prevCoords = _coords;
@@ -283,6 +298,7 @@ angular.module('redeaux.common').
                 this.destroy = function(){
                     $document.off('mousemove', onMouseMove);
                     TweenLite.ticker.removeEventListener('tick', animateByMouse);
+                    LayerInfo = null; // mark for garbage collection
                     _running = false;
                 };
             }
@@ -294,16 +310,13 @@ angular.module('redeaux.common').
              * @private
              */
             function _link( scope, $element ){
-                var _info    = new LayerInfo( $element),
-                    _handler = ( Modernizr.touch && Modernizr.devicemotion ) ?
-                        new DeviceMotion(_info) : new MouseMotion(_info);
-
-                scope.start = _handler.init;
-                scope.stop  = _handler.destroy;
+                scope.handler = ( Modernizr.touch && Modernizr.devicemotion ) ?
+                        new DeviceMotion( new LayerInfo( $element) )
+                      : new MouseMotion( new LayerInfo( $element) );
 
                 // Destruct on removal (shouldn't ever get called, but just in case)
                 scope.$on('$destroy', function(){
-                    _handler.destroy(); console.log('PARALLAX LAYER DESTROYED');
+                    scope.handler.destroy(); console.log('PARALLAX LAYER DESTROYED');
                 });
             }
 
@@ -430,53 +443,17 @@ angular.module('redeaux.pages').
         function( TweenLite, $document ){
 
             function _link( scope, $element ){
-                var $bgPrlx = angular.element(document.querySelector('#parallax')),
-                    $z3     = $element[0].querySelector('.shard.z3'),
-                    $z2     = $element[0].querySelector('.shard.z2'),
-                    $z1     = $element[0].querySelector('.shard.z1'),
-                    winW    = document.body.clientWidth,
-                    winH    = document.body.clientHeight,
-                    halfW   = winW / 2,
-                    _coords, _prevCoords;
-
-                // Run on every requestAnimationFrame tick
-                function onMouseMove( _event ){
-                    _coords = {x:_event.pageX, y:_event.pageY};
-                }
-
-                // Animation only runs if coordinates have changed
-                function animate(){
-                    if( _coords !== _prevCoords ){
-                        var x = (halfW - _coords.x) / winW,
-                            y = _coords.y / winH,
-                            a = y + 0.25;
-
-                        TweenLite.set($z3, {x:(125*x), autoAlpha:a, scale:1+(y*0.1)});
-                        TweenLite.set($z2, {x:(300*x), autoAlpha:a, scale:1+(y*0.2)});
-                        TweenLite.set($z1, {x:(700*x), autoAlpha:a, scale:1+(y*0.3)});
-
-                        // Update _prevCoords for next loop test
-                        _prevCoords = _coords;
-                    }
-                }
-
-                // Mousemove event binding
-                $document.on('mousemove', onMouseMove);
-
-                // Start animation binding
-                TweenLite.ticker.addEventListener('tick', animate);
+                var $bgPrlx = angular.element(document.querySelector('#parallax'));
 
                 // Initialize the background parallax layer
                 if( angular.isDefined($bgPrlx.data('$scope')) ){
-                    $bgPrlx.data('$scope').start();
+                    $bgPrlx.data('$scope').handler.init();
                 }
 
                 // Destruct on removal
                 scope.$on('$destroy', function(){
-                    $document.off('mousemove', onMouseMove);
-                    TweenLite.ticker.removeEventListener('tick', animate);
                     if( angular.isDefined($bgPrlx.data('$scope')) ){
-                        $bgPrlx.data('$scope').stop();
+                        $bgPrlx.data('$scope').handler.destroy();
                     }
                 });
             }

@@ -1,8 +1,14 @@
 <div tpl-home>
-    <div class="shards">
-        <div class="shard z3"></div>
-        <div class="shard z2"></div>
-        <div class="shard z1"></div>
+    <div id="parallax" parallaxer>
+        <div class="base">
+            <div class="layer sky"></div>
+            <div class="layer mtn"></div>
+        </div>
+        <div class="depths">
+            <div class="layer z3"></div>
+            <div class="layer z2"></div>
+            <div class="layer z1"></div>
+        </div>
     </div>
 
     <div class="page-content">
