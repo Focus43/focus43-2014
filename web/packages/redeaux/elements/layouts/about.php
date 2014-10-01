@@ -1,18 +1,43 @@
 <div class="page-content" tpl-about ng-class="animClass">
-    <div class="header">
-        <svg version="1.1" width="200" height="200" x="0" y="0" viewBox="0 0 200 200" preserveAspectRatio="none">
-            <path stroke="none" d="M0 0 L 200 0 L 200 150 L 0 200 Z" />
-        </svg>
-        <h1>About</h1>
-    </div>
+
+    <header class="tabular">
+        <h1 class="cellular">About</h1>
+    </header>
 
     <div class="container">
-        <div class="logo-wrap">
-            <svg class="agon" version="1.1" width="100" height="100" viewBox="0 0 100 100">
-                <polygon points="50,0 95,25 95,75, 50,100 5,75 5,25"></polygon>
-            </svg>
-            <img src="<?php echo REDEAUX_IMAGE_PATH; ?>logo.png" />
+        <div class="row">
+            <div class="col-sm-10 col-sm-offset-1">
+                <h2>We're a small team of web &amp; iOS developers based in lovely Jackson, WY.</h2>
+            </div>
         </div>
+    </div>
 
+    <div class="map-wrap">
+        <div class="map-rotate">
+            <div class="map-instance" googlemap="mapOptions"></div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-10 col-sm-offset-1">
+                <h2>Our sweet spot is teaming up with other agencies/design teams needing developers. We stay focused on what we're good at - authoring top notch code.</h2>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="peeps">
+        <h3>Team <small>(In Bad Photoshops)</small></h3>
+        <div class="homey arik">
+            <span>Arik</span>
+        </div>
+        <div class="homey stine">
+            <span>Stine</span>
+        </div>
+        <div class="homey jon">
+            <span>Jon</span>
+        </div>
     </div>
 </div>

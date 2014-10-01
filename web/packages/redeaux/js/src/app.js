@@ -1,7 +1,7 @@
 /* global FastClick */
 ;(function( window, angular, undefined ){ 'use strict';
 
-    angular.module('redeaux', ['ngRoute', 'ngResource', 'ngAnimate', 'redeaux.common', 'redeaux.pages']).
+    angular.module('redeaux', ['ngRoute', 'ngResource', 'ngAnimate', 'GoogleMap', 'redeaux.common', 'redeaux.pages']).
 
         config(['$provide', '$routeProvider', '$locationProvider', '$httpProvider',
             function( $provide, $routeProvider, $locationProvider, $httpProvider ){
