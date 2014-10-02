@@ -5,11 +5,11 @@
             <i class="fa fa-circle-o-notch fa-spin"></i>
         </a>
         <ul class="list-unstyled">
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/work">Work</a></li>
-            <li><a href="/experiments">Experiments</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><a href="/"><i class="fa fa-home"></i>Home</a></li>
+            <li><a href="/about"><i class="fa fa-plus"></i>About</a></li>
+            <li><a href="/work"><i class="fa fa-bolt"></i>Work</a></li>
+            <li><a href="/experiments"><i class="fa fa-eyedropper"></i>Playground</a></li>
+            <li><a href="/contact"><i class="fa fa-send"></i>Contact</a></li>
         </ul>
     </div>
 </nav>

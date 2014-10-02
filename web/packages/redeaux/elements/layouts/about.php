@@ -12,12 +12,30 @@
         </div>
     </div>
 
-    <div class="map-wrap">
-        <div class="map-rotate">
-            <div class="map-instance" googlemap="mapOptions"></div>
+    <div class="peeps">
+        <h3>Team <small>(In Bad Photoshops)</small></h3>
+        <div class="homey arik">
+            <div class="tabular">
+                <div class="cellular">
+                    Arik
+                </div>
+            </div>
+        </div>
+        <div class="homey stine">
+            <div class="tabular">
+                <div class="cellular">
+                    Stine
+                </div>
+            </div>
+        </div>
+        <div class="homey jon">
+            <div class="tabular">
+                <div class="cellular">
+                    Jon
+                </div>
+            </div>
         </div>
     </div>
-
 
     <div class="container">
         <div class="row">
@@ -27,17 +45,6 @@
         </div>
     </div>
 
+    <div class="map-instance" googlemap="mapOptions"></div>
 
-    <div class="peeps">
-        <h3>Team <small>(In Bad Photoshops)</small></h3>
-        <div class="homey arik">
-            <span>Arik</span>
-        </div>
-        <div class="homey stine">
-            <span>Stine</span>
-        </div>
-        <div class="homey jon">
-            <span>Jon</span>
-        </div>
-    </div>
 </div>
