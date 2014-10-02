@@ -43,6 +43,16 @@
         </div>
     </article>
 
-    <div class="instagrams" ng-include="_instagram"></div>
+    <div class="instagrams">
+        <div class="gram" ng-repeat="gramObj in instagramList | limitTo:gramCount" ng-style="{'background-image':'url({{gramObj.image_src}})'}">
+            <div class="tabular">
+                <div class="cellular">
+                    <span class="caption">{{ gramObj.caption || '"I am empty" - caption' }}</span>
+                </div>
+            </div>
+            <a class="on-insta" href="{{ gramObj.link }}" target="_blank"><i class="fa fa-instagram"></i></a>
+            <span class="username">by <em>{{ gramObj.username }}</em></span>
+        </div>
+    </div>
 
 </div>

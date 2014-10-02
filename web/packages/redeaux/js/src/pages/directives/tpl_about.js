@@ -9,22 +9,10 @@ angular.module('redeaux.pages').
      * @param Breakpoints
      * @returns {{restrict: string, link: Function, scope: boolean, controller: Array}}
      */
-    directive('tplAbout', ['$document', '$animate', 'TweenLite', 'ApplicationPaths', 'Breakpoints',
-        function( $document, $animate, TweenLite, ApplicationPaths, Breakpoints ){
+    directive('tplAbout', ['$document', '$animate', 'TweenLite', 'Breakpoints',
+        function( $document, $animate, TweenLite, Breakpoints ){
 
-            var ANIMATION_CLASS     = 'anim-about',
-                INSTAGRAM_INCLUDE   = ApplicationPaths.tools + 'instagram/client';
-
-
-            /**
-             * @param injectedURI
-             * @returns {string}
-             * @private
-             */
-            function _getInstagramInclude( injectedURI ){
-                return injectedURI + '?count=' + ((window.innerWidth <= Breakpoints.lg) ? 9 : 16);
-            }
-
+            var ANIMATION_CLASS = 'anim-about';
 
             /**
              * Directive linker.
@@ -43,7 +31,7 @@ angular.module('redeaux.pages').
                 // On window resize event callback, to adjust instagram include
                 function onWindowResize(){
                     scope.$apply(function(){
-                        scope._instagram = _getInstagramInclude(INSTAGRAM_INCLUDE);
+                        scope.gramCount = (window.innerWidth <= Breakpoints.lg) ? 9 : 16;
                     });
                 }
 
@@ -60,9 +48,15 @@ angular.module('redeaux.pages').
                 restrict: 'A',
                 link: _link,
                 scope: true,
-                controller: ['$scope', function( $scope ){
-                    // Immediately set instagram value on scope
-                    $scope._instagram = _getInstagramInclude(INSTAGRAM_INCLUDE);
+                controller: ['$scope', '$http', 'ApplicationPaths', 'Breakpoints', function( $scope, $http, ApplicationPaths, Breakpoints ){
+                    $scope.gramCount = (window.innerWidth <= Breakpoints.lg) ? 9 : 16;
+
+                    $http.get(ApplicationPaths.tools + 'instagram/json').then(function(resp){
+                        if( resp.status >= 200 && resp.status <= 300 ){
+                            $scope.instagramList = resp.data;
+                        }
+                    });
+
                 }]
             };
         }

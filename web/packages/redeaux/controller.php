@@ -3,6 +3,7 @@
 	class RedeauxPackage extends Package {
 
         const PACKAGE_HANDLE            = 'redeaux';
+        const GOOGLE_MAPS_API_KEY       = 'AIzaSyANFxVJuAgO4-wqXOeQnIfq38x7xmhMZXY';
 
 	    protected $pkgHandle 			= self::PACKAGE_HANDLE;
 	    protected $appVersionRequired 	= '5.6.2.1';

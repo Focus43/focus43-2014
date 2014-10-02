@@ -20,6 +20,8 @@
          */
         config(['$provide', '$routeProvider', '$locationProvider', '$httpProvider', 'GoogleMapsAPIProvider',
             function( $provide, $routeProvider, $locationProvider, $httpProvider, GoogleMapsAPIProvider ){
+                var headEl = document.querySelector('head');
+
                 // Http config
                 $httpProvider.defaults.headers.common['x-angularized'] = true;
 
@@ -46,8 +48,8 @@
 
                 // Applications paths
                 $provide.value('ApplicationPaths', {
-                    images  : document.querySelector('meta[name="app-images"]').getAttribute('content'),
-                    tools   : document.querySelector('meta[name="app-tools"]').getAttribute('content')
+                    images  : headEl.getAttribute('data-image-path'),
+                    tools   : headEl.getAttribute('data-tools-path')
                 });
 
                 // Provide the breakpoints from Bootstrap as values
@@ -60,7 +62,7 @@
 
                 // GoogleMapsAPI config
                 GoogleMapsAPIProvider.setup({
-                    api_key : 'AIzaSyANFxVJuAgO4-wqXOeQnIfq38x7xmhMZXY',
+                    api_key : headEl.getAttribute('data-gmap-api'),
                     sensor  : true,
                     weather : false
                 });

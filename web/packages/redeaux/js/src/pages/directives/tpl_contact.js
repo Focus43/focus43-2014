@@ -81,6 +81,9 @@ angular.module('redeaux.pages').
                                     });
 
                                     infowindow.open(mapInstance, marker);
+
+                                    // Recenter
+                                    mapInstance.panBy(0, -150);
                                 });
                             }
                         });
