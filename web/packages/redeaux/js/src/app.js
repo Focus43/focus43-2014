@@ -1,10 +1,25 @@
 /* global FastClick */
 ;(function( window, angular, undefined ){ 'use strict';
 
-    angular.module('redeaux', ['ngRoute', 'ngResource', 'ngAnimate', 'GoogleMap', 'redeaux.common', 'redeaux.pages']).
+    angular.module('redeaux', [
+            'ngRoute',
+            'ngResource',
+            'ngAnimate',
+            'GoogleMap',
+            'redeaux.common',
+            'redeaux.pages'
+        ]).
 
-        config(['$provide', '$routeProvider', '$locationProvider', '$httpProvider',
-            function( $provide, $routeProvider, $locationProvider, $httpProvider ){
+        /**
+         * @description App configuration
+         * @param $provide
+         * @param $routeProvider
+         * @param $locationProvider
+         * @param $httpProvider
+         * @param GoogleMapsAPIProvider
+         */
+        config(['$provide', '$routeProvider', '$locationProvider', '$httpProvider', 'GoogleMapsAPIProvider',
+            function( $provide, $routeProvider, $locationProvider, $httpProvider, GoogleMapsAPIProvider ){
                 // Http config
                 $httpProvider.defaults.headers.common['x-angularized'] = true;
 
@@ -42,24 +57,23 @@
                     md: 992,
                     lg: 1200
                 });
+
+                // GoogleMapsAPI config
+                GoogleMapsAPIProvider.setup({
+                    api_key : 'AIzaSyANFxVJuAgO4-wqXOeQnIfq38x7xmhMZXY',
+                    sensor  : true,
+                    weather : false
+                });
             }
         ]).
 
-        run(['$rootScope', 'NavState', function($rootScope, NavState){
-            FastClick.attach(document.body);
-
-            $rootScope.$on('$routeChangeStart', function(){
-                NavState.open = false;
-            });
-
-            var _transitions = [
-                'trnztn-1', 'trnztn-2', 'trnztn-3', 'trnztn-4', 'trnztn-5'
-            ];
-
-            $rootScope.$on('$viewContentLoaded', function( newScope ){
-                console.log('-- content loaded --');
-                $rootScope.transitionClass = _transitions[Math.floor(Math.random() * _transitions.length)];
-            });
+        /**
+         * @description Run on load
+         */
+        run(['$window', function( $window ){
+            if( angular.isDefined($window['FastClick']) ){
+                FastClick.attach(document.body);
+            }
         }]);
 
 

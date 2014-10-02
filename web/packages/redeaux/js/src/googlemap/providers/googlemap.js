@@ -1,41 +1,75 @@
 angular.module('GoogleMap').
 
+    /**
+     * GoogleMapsAPI provider definition
+     */
     provider('GoogleMapsAPI', function(){
 
-        var _callback = 'google_map_loaded';
-
-        // Create init callback function in global scope!
-        window[_callback] = function(){
-            angular.element(document.body).data('gmap_defer').resolve(window['google']['maps']);
+        /**
+         * @type {{callback: string, api_key: string, sensor: boolean, weather: boolean}}
+         */
+        var configs = {
+            callback : 'google_map_loaded',
+            api_key  : 'API_KEY',
+            sensor   : true,
+            weather  : false
         };
 
-        this.$get = ['$window', '$log', '$q',
-            function( $window, $log, $q ){
+        /**
+         * @description build the URI to load google maps from
+         * @param _configs
+         * @returns {string}
+         * @private
+         */
+        function _scriptSrc( _configs ){
+            var _uri = 'https://maps.googleapis.com/maps/api/js?';
+            _uri += 'key=' + _configs.api_key;
+            _uri += '&sensor=' + ((_configs.sensor) ? 'TRUE' : 'FALSE');
+            _uri += (_configs.weather) ? '&libraries=weather' : '';
+            _uri += '&callback=' + _configs.callback;
+            return _uri;
+        }
+
+        /**
+         * @description pass in an array of configuration options
+         * @param configObj
+         */
+        this.setup = function( configObj ){
+            angular.extend(configs, configObj);
+        };
+
+
+        /**
+         * @description GoogleMapsAPI provider. Note, we're binding the Deferred to
+         * the $window.data because of the callback for google maps that has to be placed
+         * into the global scope. We don't want the global function to have to reference an
+         * internal variable and create a memory leak, so bind it with angular.element(window).data
+         * and access it via getters and setters.
+         * @param $window
+         * @param $q
+         * @returns {{promise: (*|promise|Function|promise|promise|promise), available: Function}}
+         */
+        this.$get = ['$window', '$q',
+            function( $window, $q ){
                 // Create deferred object
-                var Defer = $q.defer();
+                angular.element($window).data('mapDeferred', $q.defer());
 
-                // If Maps API is loaded, resolve imemdiately
-                if( angular.isDefined($window['google']) ){
-                    Defer.resolve($window['google']['maps']);
+                // Bind globally scoped callback for Google Maps onload
+                $window[configs.callback] = function(){
+                    angular.element($window).data('mapDeferred').resolve($window['google']['maps']);
+                };
 
-                // Otherwise load script dynamically, *with callback name bound to global scope*
-                }else{
-                    var script  = document.createElement('script');
-                    script.type = 'text/javascript';
-                    script.src  = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyANFxVJuAgO4-wqXOeQnIfq38x7xmhMZXY&sensor=TRUE&libraries=weather&callback=' + _callback;
-                    document.body.appendChild(script);
-                }
+                // Initialize the script loading
+                var script  = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src  = _scriptSrc(configs); // inject to make sure we're using merged configs
+                document.body.appendChild(script);
 
-                // Bind the Deferred object to the body via data attributes
-                angular.element(document.body).data('gmap_defer', Defer);
-
-                // Get the Deferred's promise.
-                var _promise = Defer.promise;
-
+                // Provider methods
                 return {
-                    promise: _promise,
+                    promise: angular.element($window).data('mapDeferred').promise,
                     available: function( _success ){
-                        _promise.then(_success);
+                        this.promise.then(_success);
                     }
                 };
             }

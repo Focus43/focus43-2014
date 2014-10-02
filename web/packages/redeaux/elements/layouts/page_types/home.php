@@ -1,5 +1,5 @@
 <div tpl-home>
-    <div id="parallax" parallaxer>
+    <div id="parallax">
         <div class="base">
             <div class="layer sky"></div>
             <div class="layer mtn"></div>
