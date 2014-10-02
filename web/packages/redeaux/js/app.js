@@ -392,6 +392,43 @@ angular.module('redeaux.common').
             }
         ];
     });
+angular.module('redeaux.common').
+
+    /**
+     * Functions for easily working with common TimelineLite things.
+     */
+    factory('TimelineHelper', ['TimelineLite', function factory( TimelineLite ){
+        return {
+            /**
+             * Return a random integer b/w min -> max (can be negatives).
+             * @param min
+             * @param max
+             * @returns {number}
+             */
+            randomInt: function(min, max){
+                return Math.floor(Math.random() * (max-min+1)+min);
+            },
+
+            /**
+             * Returns a new TimelineLite instance that is pre-configured with
+             * an onComplete callback to a) kill the timeline instance after
+             * completion (eg. play through then die), and b) process a
+             * _done callback function and/or a promise to resolve.
+             * @param done
+             * @param $defer
+             * @returns {TimelineLite}
+             */
+            suicidal: function( done, $defer ){
+                return new TimelineLite({
+                    onComplete: function(){
+                        this.kill();
+                        if( angular.isFunction(done) ){ done(); }
+                        if( angular.isObject($defer) ){ $defer.resolve(); }
+                    }
+                });
+            }
+        };
+    }]);
 angular.module('GoogleMap').
 
     directive('googlemap', [
@@ -424,8 +461,6 @@ angular.module('GoogleMap').
              * [{"featureType":"landscape","stylers":[{"visibility":"on"},{"color":"#e7cd79"},{"weight":0.1}]},{"featureType":"water","stylers":[{"visibility":"simplified"},{"color":"#282828"}]},{"featureType":"landscape.natural.landcover","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#d6bc68"}]},{"featureType":"administrative.locality","elementType":"geometry","stylers":[{"visibility":"off"},{"color":"#d6bc68"}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#d6bc68"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"on"},{"color":"#d6bc68"}]},{"featureType":"transit.station.airport","elementType":"geometry.fill","stylers":[{"visibility":"off"},{"color":"#d6bc68"}]},{"featureType":"poi"},{"featureType":"transit.line","stylers":[{"color":"#d6bc68"},{"visibility":"on"}]},{"featureType":"road","elementType":"geometry.stroke","stylers":[{"visibility":"off"},{"weight":1},{"color":"#e9d9a6"}]},{"featureType":"road","elementType":"geometry","stylers":[{"visibility":"simplified"},{"color":"#e9d9a6"}]},{"featureType":"road.highway","elementType":"geometry","stylers":[{"visibility":"simplified"},{"color":"#e9d9a6"}]},{"featureType":"poi.business","stylers":[{"color":"#e9d9a6"},{"visibility":"on"}]},{},{"featureType":"poi.government","stylers":[{"visibility":"off"}]},{"featureType":"poi.school","stylers":[{"visibility":"off"}]},{"featureType":"administrative","stylers":[{"visibility":"off"}]},{"featureType":"poi.medical","stylers":[{"visibility":"off"}]},{"featureType":"poi.attraction","elementType":"geometry","stylers":[{"visibility":"off"},{"color":"#cfb665"}]},{"featureType":"poi.place_of_worship","stylers":[{"visibility":"off"}]},{"featureType":"poi.sports_complex","stylers":[{"visibility":"off"}]},{},{"featureType":"road.arterial","elementType":"labels.text.stroke","stylers":[{"color":"#cfb665"},{"visibility":"off"}]},{"featureType":"road.highway","elementType":"labels.text","stylers":[{"visibility":"off"}]},{"featureType":"road.highway.controlled_access","stylers":[{"visibility":"off"}]},{"featureType":"road"}]
              * Taste 206
              * [{"featureType":"water","elementType":"geometry","stylers":[{"color":"#a0d6d1"},{"lightness":17}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#ffffff"},{"lightness":20}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#dedede"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#dedede"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#dedede"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#ffffff"},{"lightness":16}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#f1f1f1"},{"lightness":21}]},{"elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#ffffff"},{"lightness":16}]},{"elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#333333"},{"lightness":40}]},{"elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#f2f2f2"},{"lightness":19}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#fefefe"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#fefefe"},{"lightness":17},{"weight":1.2}]}]
-             * Creation Aura
-             * [{"featureType":"landscape.natural","stylers":[{"visibility":"on"},{"color":"#f9d6e2"}]},{"featureType":"water","stylers":[{"visibility":"on"},{"color":"#d82546"}]},{"featureType":"water","elementType":"labels.text.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"water","elementType":"labels.text.stroke","stylers":[{"color":"#808080"}]},{"featureType":"landscape.natural","stylers":[{"visibility":"simplified"}]},{"featureType":"transit","stylers":[{"visibility":"off"}]},{"featureType":"poi","stylers":[{"visibility":"off"}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#ffffff"}]},{"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"geometry.stroke","stylers":[{"visibility":"off"}]},{"featureType":"landscape.man_made","stylers":[{"visibility":"off"}]},{"featureType":"road.highway.controlled_access","elementType":"geometry.fill","stylers":[{"color":"#baa2ac"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"visibility":"off"}]},{"featureType":"road.highway.controlled_access","elementType":"labels.text.fill","stylers":[{"visibility":"on"},{"color":"#ffffff"}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"color":"#5c5c5c"},{"visibility":"on"}]},{"featureType":"road.local","elementType":"labels.text.stroke","stylers":[{"color":"#7e7e7e"},{"visibility":"off"}]},{"featureType":"road.arterial","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]},{"featureType":"administrative.neighborhood","stylers":[{"visibility":"off"}]},{"featureType":"administrative.locality","elementType":"labels.text.fill","stylers":[{"visibility":"on"},{"color":"#555555"}]},{"featureType":"road.highway","elementType":"geometry","stylers":[{"color":"#ffffff"}]},{"featureType":"road.highway","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]},{"featureType":"road.highway","elementType":"labels.icon","stylers":[{"visibility":"on"}]},{"featureType":"road","elementType":"labels.icon","stylers":[{"visibility":"on"},{"saturation":-80},{"lightness":12}]},{}]
              * @param mapAPI
              * @returns {{zoom: number, mapTypeId: *}}
              * @private
@@ -660,9 +695,11 @@ angular.module('redeaux.pages').
             };
         }
     ]);
+/* global Power2 */
+
 angular.module('redeaux.pages').
 
-    directive('tplContact', ['$document', '$animate', 'TweenLite', 'ApplicationPaths', 'Breakpoints',
+    directive('tplContact', ['$document', '$animate', 'TweenLite',
 
         /**
          * @param $document
@@ -671,7 +708,7 @@ angular.module('redeaux.pages').
          * @param GoogleMapsAPI
          * @returns {{restrict: string, link: Function}}
          */
-            function( $document, $animate, TweenLite, ApplicationPaths, Breakpoints ){
+            function( $document, $animate, TweenLite ){
 
             var ANIMATION_CLASS = 'anim-contact';
 
@@ -693,15 +730,39 @@ angular.module('redeaux.pages').
 
                 // Trigger video play
                 $element[0].querySelector('video').play();
+
+                // Toggle .form-sent class if responsive is valid
+                scope.$watch('response', function( _response ){
+                    if( angular.isObject(_response) && _response.ok === true ){
+                        $animate.addClass($element[0].querySelector('.form-body'), 'form-sent');
+                    }
+                });
             }
 
             return {
                 restrict: 'A',
                 link: _link,
-                controller: ['$scope', 'GoogleMapsAPI',
-                    function( $scope, GoogleMapsAPI ){
+                scope: true,
+                controller: ['$scope', '$http', 'GoogleMapsAPI', 'ApplicationPaths',
+                    function( $scope, $http, GoogleMapsAPI, ApplicationPaths ){
+                        // Form status
+                        $scope.processing = false;
                         // For $watch to work, have to initialize this to null first
                         $scope._gmap = null;
+
+                        $scope.isValid = function(){
+                            return $scope.contactForm.$invalid;
+                        };
+
+                        $scope.submit = function(){
+                            $scope.processing = true;
+                            // POST the form data
+                            $http.post(ApplicationPaths.tools + 'contact', $scope.form_data)
+                                .success(function( response ){
+                                    $scope.processing = false;
+                                    $scope.response   = response;
+                                });
+                        };
 
                         // When the map instance becomes available (from being initialized below)
                         $scope.$watch('_gmap', function( mapInstance ){
@@ -729,7 +790,8 @@ angular.module('redeaux.pages').
                             $scope.mapOptions = {
                                 center: new MapsAPI.LatLng(43.479634, -110.760234),
                                 zoom: 15,
-                                styles: [{"featureType":"water","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":40}]},{"elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]}],
+                                styles: [{"featureType":"water","elementType":"geometry","stylers":[{"color":"#7dcdcd"},{"lightness":17}]},{"featureType":"landscape","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":17}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":29},{"weight":0.2}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":18}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":16}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":21}]},{"elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":"#000000"},{"lightness":16}]},{"elementType":"labels.text.fill","stylers":[{"saturation":36},{"color":"#000000"},{"lightness":40}]},{"elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"geometry","stylers":[{"color":"#000000"},{"lightness":19}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"},{"lightness":20}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#000000"},{"lightness":17},{"weight":1.2}]}],
+                                //styles: [{"stylers":[{"visibility":"on"},{"saturation":-100},{"gamma":0.54}]},{"featureType":"road","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"water","stylers":[{"color":"#4d4946"}]},{"featureType":"poi","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"poi","elementType":"labels.text","stylers":[{"visibility":"simplified"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"road.local","elementType":"labels.text","stylers":[{"visibility":"simplified"}]},{"featureType":"water","elementType":"labels.text.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"transit.line","elementType":"geometry","stylers":[{"gamma":0.48}]},{"featureType":"transit.station","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"geometry.stroke","stylers":[{"gamma":7.18}]}],
                                 disableDefaultUI: true,
                                 scrollwheel: false
                             };
@@ -738,7 +800,23 @@ angular.module('redeaux.pages').
                 ]
             };
         }
-    ]);
+    ]).
+
+    /**
+     * Animation handler for when the form is sent successfully.
+     */
+    animation('.form-sent', ['TimelineHelper', function( TimelineHelper ){
+        return {
+            addClass: function( $element, className, done ){
+                var _rows = $element[0].querySelectorAll('.row');
+                // Create a new timeline and run it right away
+                TimelineHelper.suicidal(done)
+                    .set($element, {overflow:'hidden'})
+                    .staggerTo(_rows, 0.25, {y:-500, opacity:0, scale:0.8, ease:Power2.easeOut}, 0.15)
+                    .to($element, 0.35, {height:0, ease:Power2.easeOut});
+            }
+        };
+    }]);
 angular.module('redeaux.pages').
 
     directive('tplExperiments', ['TweenLite', '$document', '$animate',
