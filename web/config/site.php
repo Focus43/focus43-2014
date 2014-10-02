@@ -1,4 +1,7 @@
 <?php
+
+    // SECRETS
+    require_once(dirname(__FILE__) . '/_settings.php');
 	
 	/**
 	 * PAGODABOX PRODUCTION SETTINGS
@@ -93,7 +96,6 @@
     define('DB_USERNAME',   $_SERVER['DB1_USER']);
     define('DB_PASSWORD',   $_SERVER['DB1_PASS']);
 	define('DB_DATABASE',   $_SERVER['DB1_NAME']);
-	define('PASSWORD_SALT', '6NVukfgwAgqaOi3SMlsWwEqURSe4Xh8pBApvhOauP7blC2kx1FKsHxcjGSXMqP3N');
 	
 	// Sitemap.xml file
 	define('SITEMAPXML_FILE', 'files/sitemap.xml');

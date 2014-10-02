@@ -2,8 +2,8 @@
 
     class InstagramAPI {
 
-        const CLIENT_ID     = 'cb7fdefb22934501a5ea0b28852efaac';
-        const CLIENT_SECRET = '16477c60eefb43ee9debb6a052459c0c';
+        const CLIENT_ID     = INSTAGRAM_CLIENT_ID;
+        const CLIENT_SECRET = INSTAGRAM_CLIENT_SECRET;
         const WEBSITE_URL   = 'http://jghartman.com';
         const REDIRECT_URI  = 'http://jghartman.com/instagram/auth';
         const USER_ID       = 49490334;
