@@ -33,6 +33,11 @@ $border-radius-base:            0;
 $border-radius-large:           0;
 $border-radius-small:           0;
 $link-color:                    #fff;
+$input-bg:                      $magenta-transparent;
+$input-border:                  transparent;
+$input-color:                   #f5f5f5;
+$input-color-placeholder:       $magenta-step-up15;
+$input-border-focus:            $magenta-step-up7_5;
 
 // Imports
 @import 'compass';

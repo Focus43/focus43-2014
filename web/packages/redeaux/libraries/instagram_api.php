@@ -9,7 +9,8 @@
         const USER_ID       = 49490334;
 
         const BASE_DOMAIN   = 'https://api.instagram.com';
-        const RESOURCE_USER = '/v1/users/';
+        const RESOURCE_USER = '/v1/users/%s/media/recent';
+        const RESOURCE_TAGS = '/v1/tags/%s/media/recent';
 
         protected $_jsonHelper;
 
@@ -35,9 +36,24 @@
          * @param int $count
          * @return stdClass JSON data
          */
-        public function getRecentMedia( $count = 12 ){
+        public function getRecentByUser( $userID = self::USER_ID, $count = 12 ){
             // Prepare the resource path
-            $resource = self::BASE_DOMAIN . self::RESOURCE_USER . self::USER_ID . '/media/recent';
+            $resource = self::BASE_DOMAIN . sprintf(self::RESOURCE_USER, $userID);
+
+            // Execute
+            return $this->_call($resource, $this->_parameters(array(
+                'count' => (int) $count
+            )));
+        }
+
+
+        /**
+         * @param int $count
+         * @return stdClass JSON data
+         */
+        public function getRecentByTag( $tag, $count = 12 ){
+            // Prepare the resource path
+            $resource = self::BASE_DOMAIN . sprintf(self::RESOURCE_TAGS, $tag);
 
             // Execute
             return $this->_call($resource, $this->_parameters(array(

@@ -41,10 +41,10 @@ $skew-angle: 2deg;
       .username {bottom:0;left:0;font-size:13px;letter-spacing:1px;
         em {color:lighten($lime-green,10%);}
       }
-      .tabular {background:transparent;width:102%;height:102%;margin:-1% auto auto -1%;@include transition(background 0.25s ease);
-        &:hover {background:rgba(255,255,255,0.4);}
+      .tabular {opacity:1;background:rgba(0,0,0,0.4);width:102%;height:102%;margin:-1% auto auto -1%;@include transition(all 0.25s ease);
+        &:hover {opacity:0;}
       }
-      .caption {display:inline-block;padding:0.675rem;background:rgba(0,0,0,0.8);}
+      .caption {position:relative;display:inline-block;padding:0.675rem;background:rgba(0,0,0,0.8);}
     }
   }
 }

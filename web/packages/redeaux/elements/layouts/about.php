@@ -6,7 +6,8 @@
 
     <article class="tabular verbage">
         <div class="cellular">
-            <p>We're a small team of web &amp; iOS developers based in lovely Jackson, WY.</p>
+            <!--<p>We're a small team of web &amp; iOS developers based in lovely Jackson, WY.</p>-->
+            <?php $a = new Area('About 1'); $a->display($c); ?>
         </div>
     </article>
 
@@ -37,11 +38,10 @@
 
     <article class="tabular verbage">
         <div class="cellular">
-            <p>Our sweet spot is teaming up with other agencies/design teams needing developers. We like to focus on our strong suit - authoring top notch code.</p>
+            <!--<p>Our sweet spot is teaming up with other agencies/design teams needing developers. We like to focus on our strong suit - authoring top notch code.</p>-->
+            <?php $a = new Area('About 2'); $a->display($c); ?>
         </div>
     </article>
-
-    <!--<div class="map-instance" googlemap="mapOptions"></div>-->
 
     <div class="instagrams" ng-include="_instagram"></div>
 
