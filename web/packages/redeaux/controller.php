@@ -35,7 +35,8 @@
 
 			// Autoload classes
 			Loader::registerAutoload(array(
-				'RedeauxPageController'	=> array('library', 'page_controller', $this->pkgHandle)
+				'RedeauxPageController'	=> array('library', 'page_controller', $this->pkgHandle),
+                'InstagramAPI'          => array('library', 'instagram_api', $this->pkgHandle)
 			));
 	    }
 		

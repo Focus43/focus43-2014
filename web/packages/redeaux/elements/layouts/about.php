@@ -1,18 +1,16 @@
 <div class="page-content" tpl-about ng-class="animClass">
 
-    <header class="tabular">
+    <article class="tabular heading">
         <h1 class="cellular">About</h1>
-    </header>
+    </article>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-10 col-sm-offset-1">
-                <h2>We're a small team of web &amp; iOS developers based in lovely Jackson, WY.</h2>
-            </div>
+    <article class="tabular verbage">
+        <div class="cellular">
+            <p>We're a small team of web &amp; iOS developers based in lovely Jackson, WY.</p>
         </div>
-    </div>
+    </article>
 
-    <div class="peeps">
+    <article class="peeps">
         <h3>Team <small>(In Bad Photoshops)</small></h3>
         <div class="homey arik">
             <div class="tabular">
@@ -35,16 +33,16 @@
                 </div>
             </div>
         </div>
-    </div>
+    </article>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-10 col-sm-offset-1">
-                <h2>Our sweet spot is teaming up with other agencies/design teams needing developers. We stay focused on what we're good at - authoring top notch code.</h2>
-            </div>
+    <article class="tabular verbage">
+        <div class="cellular">
+            <p>Our sweet spot is teaming up with other agencies/design teams needing developers. We like to focus on our strong suit - authoring top notch code.</p>
         </div>
-    </div>
+    </article>
 
-    <div class="map-instance" googlemap="mapOptions"></div>
+    <!--<div class="map-instance" googlemap="mapOptions"></div>-->
+
+    <div class="instagrams" ng-include="_instagram"></div>
 
 </div>

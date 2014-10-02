@@ -1,6 +1,6 @@
 angular.module('redeaux.pages').
 
-    directive('tplAbout', ['$document', '$animate', 'TweenLite', 'GoogleMapsAPI',
+    directive('tplAbout', ['$document', '$animate', 'TweenLite', 'GoogleMapsAPI', 'ApplicationPaths', 'Breakpoints',
 
         /**
          * @param $document
@@ -9,9 +9,21 @@ angular.module('redeaux.pages').
          * @param GoogleMapsAPI
          * @returns {{restrict: string, link: Function}}
          */
-        function( $document, $animate, TweenLite, GoogleMapsAPI ){
+        function( $document, $animate, TweenLite, GoogleMapsAPI, ApplicationPaths, Breakpoints ){
 
-            var ANIMATION_CLASS = 'anim-about';
+            var ANIMATION_CLASS     = 'anim-about',
+                INSTAGRAM_INCLUDE   = ApplicationPaths.tools + 'instagram/client';
+
+
+            /**
+             * @param injectedURI
+             * @returns {string}
+             * @private
+             */
+            function _getInstagramInclude( injectedURI ){
+                return injectedURI + '?count=' + ((window.innerWidth <= Breakpoints.lg) ? 9 : 16);
+            }
+
 
             /**
              * Directive linker.
@@ -20,7 +32,6 @@ angular.module('redeaux.pages').
              * @private
              */
             function _link( scope, $element ){
-
                 // Trigger addClass animations
                 $animate.enter($element[0].parentNode, $element[0].parentNode.parentNode).then(function(){
                     scope.$apply(function(){
@@ -37,6 +48,24 @@ angular.module('redeaux.pages').
                         disableDefaultUI: true,
                         scrollwheel: false
                     };
+                });
+
+                // Immediately set instagram value on scope
+                scope._instagram = _getInstagramInclude(INSTAGRAM_INCLUDE);
+
+                // On window resize event callback, to adjust instagram include
+                function onWindowResize(){
+                    scope.$apply(function(){
+                        scope._instagram = _getInstagramInclude(INSTAGRAM_INCLUDE);
+                    });
+                }
+
+                // Bind to window resize event
+                angular.element(window).on('resize', onWindowResize);
+
+                // On nav to different page, destroy window resize watcher
+                scope.$on('$destroy', function(){
+                    angular.element(window).off('resize', onWindowResize);
                 });
             }
 

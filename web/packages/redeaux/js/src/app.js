@@ -28,6 +28,20 @@
                             return '/' + (params.page || '');
                         }
                     });
+
+                // Applications paths
+                $provide.value('ApplicationPaths', {
+                    images  : document.querySelector('meta[name="app-images"]').getAttribute('content'),
+                    tools   : document.querySelector('meta[name="app-tools"]').getAttribute('content')
+                });
+
+                // Provide the breakpoints from Bootstrap as values
+                $provide.value('Breakpoints', {
+                    xs: 480,
+                    sm: 768,
+                    md: 992,
+                    lg: 1200
+                });
             }
         ]).
 
