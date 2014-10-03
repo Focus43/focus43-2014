@@ -13,6 +13,7 @@
                 )); ?>
             </section>
         </div>
+        <div class="spinnable"></div>
     </div>
 
 <?php Loader::element('footer_required'); // REQUIRED BY C5 // ?>

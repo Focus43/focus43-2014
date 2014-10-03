@@ -54,8 +54,7 @@ module.exports = function( gulp ){
                 utils.log(utils.colors.red(err.toString()));
                 this.emit('end');
             })
-            .pipe(gulp.dest(_packagePath('css/')))
-            .pipe(livereload({auto:false}));
+            .pipe(gulp.dest(_packagePath('css/')));
     }
 
 
@@ -117,6 +116,11 @@ module.exports = function( gulp ){
         livereload.listen();
         gulp.watch(_packagePath('css/src/**/*.scss'), ['sass:dev']);
         gulp.watch(_packagePath('js/src/**/*.js'), ['js:app:dev']);
+
+        // Livereload only on *.css (NOT .scss) file changes!
+        gulp.watch(_packagePath('css/*.css')).on('change', function(file){
+            livereload.changed(file.path);
+        });
     });
 
 };

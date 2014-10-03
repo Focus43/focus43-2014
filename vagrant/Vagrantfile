@@ -58,7 +58,7 @@ Vagrant.configure("2") do |config|
               :version => '2.1.0',
               :gems => [# just examples...
                   {:name => 'bundler'},
-                  {:name => 'compass'}
+                  {:name => 'compass', :version => '~> 1.0.1'}
               ]
           }
       }
