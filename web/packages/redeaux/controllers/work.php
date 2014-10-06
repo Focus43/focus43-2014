@@ -5,4 +5,9 @@
         protected $_includeThemeAssets = true;
         protected $_pageElement        = 'work';
 
+
+        public function view( $project = null ){
+            parent::view();
+        }
+
     }

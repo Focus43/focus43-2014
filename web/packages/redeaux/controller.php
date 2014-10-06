@@ -7,7 +7,7 @@
 
 	    protected $pkgHandle 			= self::PACKAGE_HANDLE;
 	    protected $appVersionRequired 	= '5.6.2.1';
-	    protected $pkgVersion 			= '0.03';
+	    protected $pkgVersion 			= '0.04';
 	
 		
 		/**
@@ -182,9 +182,11 @@
          */
         private function setupSinglePages(){
             SinglePage::add('/about', $this->packageObject());
-            SinglePage::add('/work', $this->packageObject());
             SinglePage::add('/experiments', $this->packageObject());
             SinglePage::add('/contact', $this->packageObject());
+
+            SinglePage::add('/work', $this->packageObject());
+            SinglePage::add('/work/town_of_jackson', $this->packageObject());
 
             return $this;
         }
