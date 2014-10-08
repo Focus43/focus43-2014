@@ -6,7 +6,15 @@
         protected $_pageElement        = 'work';
 
 
+        /**
+         * Override default view method.
+         * @param null $project
+         */
         public function view( $project = null ){
+            if( is_string($project) ){
+                $this->_pageElement = sprintf('projects/%s', $project);
+            }
+            // Render page
             parent::view();
         }
 

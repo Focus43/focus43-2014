@@ -30,23 +30,23 @@
 
                 // Route definitions (purely dynamic)
                 $routeProvider.
-                    when('/work/:project?', {templateUrl: '/work', resolve:{
-                        /**
-                         * Return a promise; resolves or rejects based on
-                         * whether its the top level 'work' page or a child
-                         * page. If promise gets rejected, it prevents angular
-                         * firing events that trigger page animations.
-                         */
-                        project: ['$route', '$q', function($route, $q){
-                            var defer = $q.defer();
-                            if( angular.isDefined($route.current.params.project) ){
-                                defer.reject();
-                            }else{
-                                defer.resolve();
-                            }
-                            return defer.promise;
-                        }]
-                    }}).
+//                    when('/work/:project?', {templateUrl: '/work', resolve:{
+//                        /**
+//                         * Return a promise; resolves or rejects based on
+//                         * whether its the top level 'work' page or a child
+//                         * page. If promise gets rejected, it prevents angular
+//                         * firing events that trigger page animations.
+//                         */
+//                        project: ['$route', '$q', function($route, $q){
+//                            var defer = $q.defer();
+//                            if( angular.isDefined($route.current.params.project) ){
+//                                defer.reject();
+//                            }else{
+//                                defer.resolve();
+//                            }
+//                            return defer.promise;
+//                        }]
+//                    }}).
                     when('/:page*?', {
                         resolve: {
                             precompiled: ['$templateCache', '$q', function( $templateCache, $q ){

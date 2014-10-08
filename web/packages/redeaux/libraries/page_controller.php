@@ -22,6 +22,12 @@
         public function view(){
             $this->set('pageElement', $this->_pageElement);
 
+            $headers = getallheaders();
+            if( $headers['x-angularized'] ){
+                $this->renderPartial();
+                exit;
+            }
+
             if( $this->_includeThemeAssets === true ){
                 $this->attachThemeAssets( $this );
             }
@@ -32,12 +38,6 @@
          * @return void
          */
         public function on_start(){
-            $headers = getallheaders();
-            if( $headers['x-angularized'] ){
-                $this->renderPartial();
-                exit;
-            }
-
             $this->_canEdit     = $this->pagePermissionObject()->canWrite();
             $this->_isEditMode  = $this->getCollectionObject()->isEditMode();
 

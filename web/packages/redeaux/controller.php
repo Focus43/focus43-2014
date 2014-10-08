@@ -186,7 +186,6 @@
             SinglePage::add('/contact', $this->packageObject());
 
             SinglePage::add('/work', $this->packageObject());
-            SinglePage::add('/work/town_of_jackson', $this->packageObject());
 
             return $this;
         }

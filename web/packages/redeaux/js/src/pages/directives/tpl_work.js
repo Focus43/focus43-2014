@@ -30,13 +30,13 @@ angular.module('redeaux.pages').
                 link: _link,
                 controller: ['$scope', '$route', 'ApplicationPaths',
                     function( $scope, $route, ApplicationPaths ){
-                        $scope._route = $route;
-
-                        $scope.$watch('_route.current.params', function( params ){
-                            if( angular.isDefined(params.project) ){
-                                $scope._include = ApplicationPaths.tools + 'work/' + params.project;
-                            }
-                        });
+//                        $scope._route = $route;
+//
+//                        $scope.$watch('_route.current.params', function( params ){
+//                            if( angular.isDefined(params.project) ){
+//                                $scope._include = ApplicationPaths.tools + 'work/' + params.project;
+//                            }
+//                        });
                     }
                 ]
             };

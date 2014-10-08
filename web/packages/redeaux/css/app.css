@@ -4558,13 +4558,6 @@ body.loading #level-2 {
       .page-content[tpl-work] .inner .item.github:before {
         background-position: 100% 0;
         background-image: url("/packages/redeaux/images/photos/code.jpg"); }
-.page-content[tpl-work] .project-view {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.75); }
 
 .page-content[tpl-experiments] {
   background: #219161; }
@@ -4799,6 +4792,9 @@ body.loading #level-2 {
       margin-top: 0; }
     .page-content[tpl-contact] .map-instance .map-info-window h3 {
       margin-top: 0; }
+
+.page-content[tpl-toj] {
+  background: #c7254e; }
 
 div[tpl-home] {
   width: 100%;

@@ -41,6 +41,4 @@
             </div>
         </a>
     </div>
-
-    <div ng-include="_include" class="project-view"></div>
 </div>
