@@ -25,6 +25,20 @@
                 // Http config
                 $httpProvider.defaults.headers.common['x-angularized'] = true;
 
+                // AJAX request interceptor to show loading icon
+                $httpProvider.interceptors.push(['$rootScope', function( $rootScope ){
+                    return {
+                        request: function( _default ){
+                            $rootScope.bodyClasses.loading = true;
+                            return _default;
+                        },
+                        response: function( _default ){
+                            $rootScope.bodyClasses.loading = false;
+                            return _default;
+                        }
+                    };
+                }]);
+
                 // Enable HTML5 location mode
                 $locationProvider.html5Mode(true).hashPrefix('!');
 
@@ -49,10 +63,10 @@
 //                    }}).
                     when('/:page*?', {
                         resolve: {
-                            precompiled: ['$templateCache', '$q', function( $templateCache, $q ){
+                            precompiled: ['$templateCache', '$location', '$q', function( $templateCache, $location, $q ){
                                 if( $templateCache.info().size === 0 ){
                                     var defer = $q.defer();
-                                    $templateCache.put(window.location.pathname, window['precompiled_view']);
+                                    $templateCache.put($location.path(), window['PRE_COMPILED_VIEW']);
                                     defer.resolve();
                                     return defer.promise;
                                 }
@@ -89,10 +103,14 @@
         /**
          * @description Run on load
          */
-        run(['$window', function( $window ){
+        run(['$window', '$rootScope', function( $window, $rootScope ){
             if( angular.isDefined($window['FastClick']) ){
                 FastClick.attach(document.body);
             }
+
+            $rootScope.bodyClasses = {
+                'loading'   : false
+            };
         }]);
 
 
@@ -109,12 +127,12 @@
 
         // Before angular initializes, store the innerHTML of ng-view before its compiled
         var $page = document.querySelector('section.page-body');
-        window['precompiled_view'] = $page.innerHTML;
+        window['PRE_COMPILED_VIEW'] = $page.innerHTML;
 
-        // Purge all innerHTML contents
-        while($page.firstChild){
-            $page.removeChild($page.firstChild);
-        }
+        // Purge all innerHTML contents. ALWAYS leave this here because angular can
+        // rush ahead and compile the contents once, lose the reference, then when it
+        // gets recreated from the template cache, everything can be bound again!
+        while($page.firstChild){ $page.removeChild($page.firstChild); }
 
         // NOW bootstrap angular
         angular.bootstrap(document, ['redeaux']);
@@ -962,6 +980,7 @@ angular.module('redeaux.pages').
                         TweenLite.set(LayerInfo.$z2, {x:(300*xHalf), autoAlpha:alpha, scale:1+(y*0.2)});
                         TweenLite.set(LayerInfo.$z1, {x:(700*xHalf), autoAlpha:alpha, scale:1+(y*0.3)});
 
+
                         // Update _prevCoords for next loop test
                         _prevCoords = _coords;
                     }
@@ -1062,3 +1081,84 @@ angular.module('redeaux.pages').
             }
         };
     }]);
+/* global Power2 */
+angular.module('redeaux.pages').
+
+    directive('portfolioToj', ['$window', '$document', 'TimelineLite', 'TweenLite',
+        function( $window, $document, TimelineLite, TweenLite ){
+
+            function _link( scope, $element ){
+
+                var element         = $element[0],
+                    scrollPercent   = 0,
+                    smoothWheelTime = 0.6,
+                    smoothWheelDist = 50,
+                    masterTimeline  = new TimelineLite({paused:true});
+
+                function onScroll(){
+                    scrollPercent = element.scrollTop / (element.scrollHeight - element.clientHeight);
+                }
+
+
+                // Smooth scrolling: http://blog.bassta.bg/2013/05/smooth-page-scrolling-with-tweenmax/
+                function onWheel(event){
+                    event.preventDefault();
+                    var delta       = event.wheelDelta/120 || -(event.detail/3),
+                        scrolled    = element.scrollTop,
+                        scrollCalc  = scrolled - parseInt(delta * smoothWheelDist);
+
+                    TweenLite.to(element, smoothWheelTime, {
+                        scrollTo: {y:scrollCalc, autoKill:true},
+                        ease: Power2.easeOut,
+                        overwrite: 5,
+                        onUpdate: function(){
+                            //console.log(element.scrollTop);
+                        }
+                    });
+                }
+
+
+                function animationLoop(){
+                    //console.log(scrollPercent);
+                }
+
+
+
+
+//            (new TimelineLite({onComplete:function(){
+//                var tl = (new TimelineLite({repeat:-1}))
+//                    .fromTo($z1, 8, {x:200, scale:1, rotationX:0, y:-50}, {x:-550, scale:0.75, rotationX:30, y:30, ease:Power2.easeInOut})
+//                    .fromTo($z2, 7, {x:100}, {x:-250, ease:Power2.easeInOut}, 0)
+//                    .fromTo($z3, 6, {x:150}, {x:-100, ease:Power2.easeInOut}, 0)
+//                    .fromTo($z4, 5, {x:-15}, {x:15, ease:Power2.easeInOut}, 0)
+//                    .yoyo(true);
+//            }}))
+//                .set($all, {autoAlpha:0})
+//                .staggerFromTo($all, 2.5, {scale:9}, {scale:1, autoAlpha:1, ease:Power2.easeOut}, 0.5)
+//                .to($z1, 2.5, {x:200, y:-50}, 2.5)
+//                .to($z2, 2.5, {x:100}, 2.5)
+//                .to($z3, 2.5, {x:150}, 2.5)
+//                .to($z4, 2.5, {x:-15}, 2.5);
+
+
+
+
+                // Kickoff events n' shit
+                $element.on('scroll', onScroll);
+                $element.on('mousewheel DOMMouseScroll', onWheel);
+                TweenLite.ticker.addEventListener('tick', animationLoop);
+
+                // Straight MURDA MURDA animation loop. Kapow.
+                scope.$on('$destroy', function(){
+                    $element.off('scroll', onScroll);
+                    $element.off('mousewheel DOMMouseScroll', onWheel);
+                    TweenLite.ticker.removeEventListener('tick', animationLoop);
+                });
+            }
+
+            return {
+                restrict: 'A',
+                link: _link
+            };
+        }
+    ]);

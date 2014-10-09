@@ -4155,32 +4155,26 @@ nav {
     -webkit-transform-origin: center center;
     -moz-transform-origin: center center;
     -ms-transform-origin: center center;
-    transform-origin: center center;
-    -moz-animation-play-state: paused;
-    -webkit-animation-play-state: paused;
-    animation-play-state: paused; }
-  .spinnable:after {
-    -webkit-box-shadow: inset 0 17.5px 0 rgba(250, 250, 0, 0.6), inset 17.5px 0 0 rgba(250, 200, 0, 0.6), inset 0 -17.5px 0 rgba(250, 150, 0, 0.6), inset -17.5px 0 0 rgba(250, 100, 0, 0.6);
-    box-shadow: inset 0 17.5px 0 rgba(250, 250, 0, 0.6), inset 17.5px 0 0 rgba(250, 200, 0, 0.6), inset 0 -17.5px 0 rgba(250, 150, 0, 0.6), inset -17.5px 0 0 rgba(250, 100, 0, 0.6);
-    -webkit-animation: rotar 0.5s -0.5s linear infinite;
-    -o-animation: rotar 0.5s -0.5s linear infinite;
-    animation: rotar 0.5s -0.5s linear infinite; }
+    transform-origin: center center; }
   .spinnable:before {
     -webkit-box-shadow: inset 0 17.5px 0 rgba(0, 250, 250, 0.6), inset 17.5px 0 0 rgba(0, 200, 200, 0.6), inset 0 -17.5px 0 rgba(0, 150, 200, 0.6), inset -17.5px 0 0 rgba(0, 200, 250, 0.6);
-    box-shadow: inset 0 17.5px 0 rgba(0, 250, 250, 0.6), inset 17.5px 0 0 rgba(0, 200, 200, 0.6), inset 0 -17.5px 0 rgba(0, 150, 200, 0.6), inset -17.5px 0 0 rgba(0, 200, 250, 0.6);
-    -webkit-animation: rotarIz 0.5s -0.5s linear infinite;
-    -o-animation: rotarIz 0.5s -0.5s linear infinite;
-    animation: rotarIz 0.5s -0.5s linear infinite; }
+    box-shadow: inset 0 17.5px 0 rgba(0, 250, 250, 0.6), inset 17.5px 0 0 rgba(0, 200, 200, 0.6), inset 0 -17.5px 0 rgba(0, 150, 200, 0.6), inset -17.5px 0 0 rgba(0, 200, 250, 0.6); }
+  .spinnable:after {
+    -webkit-box-shadow: inset 0 17.5px 0 rgba(250, 250, 0, 0.6), inset 17.5px 0 0 rgba(250, 200, 0, 0.6), inset 0 -17.5px 0 rgba(250, 150, 0, 0.6), inset -17.5px 0 0 rgba(250, 100, 0, 0.6);
+    box-shadow: inset 0 17.5px 0 rgba(250, 250, 0, 0.6), inset 17.5px 0 0 rgba(250, 200, 0, 0.6), inset 0 -17.5px 0 rgba(250, 150, 0, 0.6), inset -17.5px 0 0 rgba(250, 100, 0, 0.6); }
 
 body.loading .spinnable {
   opacity: 1;
-  visibility: visible; }
-  body.loading .spinnable:before, body.loading .spinnable:after {
-    -moz-animation-play-state: running;
-    -webkit-animation-play-state: running;
-    animation-play-state: running; }
-body.loading #level-2 {
-  opacity: 0; }
+  visibility: visible;
+  z-index: 99; }
+  body.loading .spinnable:before {
+    -webkit-animation: rotarIz 0.5s -0.5s linear infinite;
+    -o-animation: rotarIz 0.5s -0.5s linear infinite;
+    animation: rotarIz 0.5s -0.5s linear infinite; }
+  body.loading .spinnable:after {
+    -webkit-animation: rotar 0.5s -0.5s linear infinite;
+    -o-animation: rotar 0.5s -0.5s linear infinite;
+    animation: rotar 0.5s -0.5s linear infinite; }
 
 @-moz-keyframes rotar {
   0% {
@@ -4793,8 +4787,68 @@ body.loading #level-2 {
     .page-content[tpl-contact] .map-instance .map-info-window h3 {
       margin-top: 0; }
 
-.page-content[tpl-toj] {
-  background: #c7254e; }
+.page-content[portfolio-toj] {
+  background: transparent url("http://miriadna.com/desctopwalls/images/max/Grand-Teton-National-Park.jpg") no-repeat 50% 50%;
+  background-size: cover; }
+  .page-content[portfolio-toj]:before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 200%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1; }
+  .page-content[portfolio-toj] h1 {
+    margin: 0; }
+  .page-content[portfolio-toj] .track {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; }
+  .page-content[portfolio-toj] .rail {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; }
+  .page-content[portfolio-toj] .node {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    text-align: center; }
+    .page-content[portfolio-toj] .node:nth-child(1) {
+      top: 0%;
+      background: rgba(15, 15, 15, 0.5); }
+    .page-content[portfolio-toj] .node:nth-child(2) {
+      top: 100%;
+      background: rgba(30, 30, 30, 0.5); }
+    .page-content[portfolio-toj] .node:nth-child(3) {
+      top: 200%;
+      background: rgba(45, 45, 45, 0.5); }
+    .page-content[portfolio-toj] .node:nth-child(4) {
+      top: 300%;
+      background: rgba(60, 60, 60, 0.5); }
+    .page-content[portfolio-toj] .node:nth-child(5) {
+      top: 400%;
+      background: rgba(75, 75, 75, 0.5); }
+    .page-content[portfolio-toj] .node:nth-child(6) {
+      top: 500%;
+      background: rgba(90, 90, 90, 0.5); }
+    .page-content[portfolio-toj] .node:nth-child(7) {
+      top: 600%;
+      background: rgba(105, 105, 105, 0.5); }
+    .page-content[portfolio-toj] .node:nth-child(8) {
+      top: 700%;
+      background: rgba(120, 120, 120, 0.5); }
+    .page-content[portfolio-toj] .node:nth-child(9) {
+      top: 800%;
+      background: rgba(135, 135, 135, 0.5); }
+    .page-content[portfolio-toj] .node:nth-child(10) {
+      top: 900%;
+      background: rgba(150, 150, 150, 0.5); }
 
 div[tpl-home] {
   width: 100%;

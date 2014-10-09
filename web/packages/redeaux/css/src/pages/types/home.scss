@@ -21,14 +21,6 @@ div[tpl-home]{width:100%;height:100%;position:relative;
     }
   }
 
-//  .shards {position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;
-//    .shard {position:absolute;top:0;left:-25%;width:150%;height:100%;background-color:transparent;background-size:cover;background-position:50% 50%;
-//      &.z3 {background-image:url('#{$image-path}theme/z3.png');}
-//      &.z2 {background-image:url('#{$image-path}theme/z2.png');}
-//      &.z1 {background-image:url('#{$image-path}theme/z1.png');}
-//    }
-//  }
-
   .page-content {padding:0;@include background-image(radial-gradient(80px 80px, #00ffff 0px, transparent 500px));
     svg.slant {position:absolute;top:0;left:0;height:100%;width:100%;
       path {fill:rgba($magenta, 0.6);}

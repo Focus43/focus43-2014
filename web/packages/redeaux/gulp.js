@@ -30,7 +30,7 @@ module.exports = function( gulp ){
                 _packagePath('bower_components/gsap/src/uncompressed/TimelineLite.js'),
                 _packagePath('bower_components/gsap/src/uncompressed/easing/EasePack.js'),
                 _packagePath('bower_components/gsap/src/uncompressed/plugins/CSSPlugin.js'),
-//                _packagePath('bower_components/gsap/src/uncompressed/plugins/ScrollToPlugin.js'),
+                _packagePath('bower_components/gsap/src/uncompressed/plugins/ScrollToPlugin.js'),
 //                _packagePath('bower_components/gsap/src/uncompressed/plugins/RoundPropsPlugin.js'),
 //                _packagePath('bower_components/gsap/src/uncompressed/utils/Draggable.js'),
                 _packagePath('js/3rd_party/*.js')

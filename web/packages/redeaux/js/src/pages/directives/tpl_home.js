@@ -177,6 +177,7 @@ angular.module('redeaux.pages').
                         TweenLite.set(LayerInfo.$z2, {x:(300*xHalf), autoAlpha:alpha, scale:1+(y*0.2)});
                         TweenLite.set(LayerInfo.$z1, {x:(700*xHalf), autoAlpha:alpha, scale:1+(y*0.3)});
 
+
                         // Update _prevCoords for next loop test
                         _prevCoords = _coords;
                     }

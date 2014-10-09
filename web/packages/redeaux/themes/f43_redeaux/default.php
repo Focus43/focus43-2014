@@ -2,7 +2,7 @@
 <html lang="<?php echo LANGUAGE; ?>" class="<?php echo $cmsClasses; ?>">
 <?php Loader::packageElement('theme/head_tag', RedeauxPackage::PACKAGE_HANDLE); ?>
 
-<body ng-controller="CtrlRoot">
+<body ng-controller="CtrlRoot" ng-class="bodyClasses">
 
     <div id="level-1">
         <?php Loader::packageElement('theme/nav', RedeauxPackage::PACKAGE_HANDLE); ?>
