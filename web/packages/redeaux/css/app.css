@@ -4794,61 +4794,16 @@ body.loading .spinnable {
     content: '';
     display: block;
     width: 100%;
-    height: 200%;
+    height: 300%;
     position: absolute;
     top: 0;
     left: 0;
     z-index: -1; }
-  .page-content[portfolio-toj] h1 {
-    margin: 0; }
-  .page-content[portfolio-toj] .track {
-    position: fixed;
-    top: 0;
-    left: 0;
+  .page-content[portfolio-toj] .hold-still {
+    background: rgba(0, 0, 0, 0.85);
+    height: 50%;
     width: 100%;
-    height: 100%;
-    overflow: hidden; }
-  .page-content[portfolio-toj] .rail {
-    position: relative;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%; }
-  .page-content[portfolio-toj] .node {
-    position: absolute;
-    width: 100%;
-    height: 100%;
     text-align: center; }
-    .page-content[portfolio-toj] .node:nth-child(1) {
-      top: 0%;
-      background: rgba(15, 15, 15, 0.5); }
-    .page-content[portfolio-toj] .node:nth-child(2) {
-      top: 100%;
-      background: rgba(30, 30, 30, 0.5); }
-    .page-content[portfolio-toj] .node:nth-child(3) {
-      top: 200%;
-      background: rgba(45, 45, 45, 0.5); }
-    .page-content[portfolio-toj] .node:nth-child(4) {
-      top: 300%;
-      background: rgba(60, 60, 60, 0.5); }
-    .page-content[portfolio-toj] .node:nth-child(5) {
-      top: 400%;
-      background: rgba(75, 75, 75, 0.5); }
-    .page-content[portfolio-toj] .node:nth-child(6) {
-      top: 500%;
-      background: rgba(90, 90, 90, 0.5); }
-    .page-content[portfolio-toj] .node:nth-child(7) {
-      top: 600%;
-      background: rgba(105, 105, 105, 0.5); }
-    .page-content[portfolio-toj] .node:nth-child(8) {
-      top: 700%;
-      background: rgba(120, 120, 120, 0.5); }
-    .page-content[portfolio-toj] .node:nth-child(9) {
-      top: 800%;
-      background: rgba(135, 135, 135, 0.5); }
-    .page-content[portfolio-toj] .node:nth-child(10) {
-      top: 900%;
-      background: rgba(150, 150, 150, 0.5); }
 
 div[tpl-home] {
   width: 100%;

@@ -10,16 +10,20 @@ angular.module('redeaux.pages').
                     scrollPercent   = 0,
                     smoothWheelTime = 0.6,
                     smoothWheelDist = 50,
-                    masterTimeline  = new TimelineLite({paused:true});
+                    masterTimeline  = new TimelineLite({paused:true, useFrames:false});
 
-                function onScroll(){
-                    scrollPercent = element.scrollTop / (element.scrollHeight - element.clientHeight);
-                }
+
+//                masterTimeline.to(document.querySelector('h1'), 1, {y:1000}).
+//                    to(document.querySelector('h1'), 1, {color:'#222'});
+                //masterTimeline.fromTo(document.querySelector('img.three-d'), 2, {x:-2000, scale:1.3, rotation:-50}, {x:0, scale:1, rotation:40});
+                    //to(document.querySelector('img.three-d'), 1, {y:500, rotationY:-90});
+                    //to(null, 1, {});
 
 
                 // Smooth scrolling: http://blog.bassta.bg/2013/05/smooth-page-scrolling-with-tweenmax/
                 function onWheel(event){
                     event.preventDefault();
+
                     var delta       = event.wheelDelta/120 || -(event.detail/3),
                         scrolled    = element.scrollTop,
                         scrollCalc  = scrolled - parseInt(delta * smoothWheelDist);
@@ -27,16 +31,16 @@ angular.module('redeaux.pages').
                     TweenLite.to(element, smoothWheelTime, {
                         scrollTo: {y:scrollCalc, autoKill:true},
                         ease: Power2.easeOut,
-                        overwrite: 5,
-                        onUpdate: function(){
-                            //console.log(element.scrollTop);
-                        }
+                        overwrite: 5
                     });
                 }
 
 
                 function animationLoop(){
-                    //console.log(scrollPercent);
+                    scrollPercent = element.scrollTop / (element.scrollHeight - element.clientHeight);
+                    //masterTimeline.progress(scrollPercent);
+
+                    document.querySelector('.hold-still').style.top = element.scrollTop + 'px';
                 }
 
 
@@ -61,13 +65,11 @@ angular.module('redeaux.pages').
 
 
                 // Kickoff events n' shit
-                $element.on('scroll', onScroll);
                 $element.on('mousewheel DOMMouseScroll', onWheel);
                 TweenLite.ticker.addEventListener('tick', animationLoop);
 
                 // Straight MURDA MURDA animation loop. Kapow.
                 scope.$on('$destroy', function(){
-                    $element.off('scroll', onScroll);
                     $element.off('mousewheel DOMMouseScroll', onWheel);
                     TweenLite.ticker.removeEventListener('tick', animationLoop);
                 });
