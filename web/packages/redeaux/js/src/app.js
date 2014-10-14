@@ -17,6 +17,7 @@
          * @param $locationProvider
          * @param $httpProvider
          * @param GoogleMapsAPIProvider
+         * @todo: implement error message displaying instead of just hiding the loading animation
          */
         config(['$provide', '$routeProvider', '$locationProvider', '$httpProvider', 'GoogleMapsAPIProvider',
             function( $provide, $routeProvider, $locationProvider, $httpProvider, GoogleMapsAPIProvider ){
@@ -28,13 +29,21 @@
                 // AJAX request interceptor to show loading icon
                 $httpProvider.interceptors.push(['$rootScope', function( $rootScope ){
                     return {
-                        request: function( _default ){
+                        request: function( _passthrough ){
                             $rootScope.bodyClasses.loading = true;
-                            return _default;
+                            return _passthrough;
                         },
-                        response: function( _default ){
+                        response: function( _passthrough ){
                             $rootScope.bodyClasses.loading = false;
-                            return _default;
+                            return _passthrough;
+                        },
+                        requestError: function( _passthrough ){
+                            $rootScope.bodyClasses.loading = false;
+                            return _passthrough;
+                        },
+                        responseError: function( _passthrough ){
+                            $rootScope.bodyClasses.loading = false;
+                            return _passthrough;
                         }
                     };
                 }]);

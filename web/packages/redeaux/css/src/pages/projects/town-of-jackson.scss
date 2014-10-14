@@ -1,5 +1,11 @@
-.page-content[portfolio-toj]{background:transparent url('http://miriadna.com/desctopwalls/images/max/Grand-Teton-National-Park.jpg') no-repeat 50% 50%;background-size:cover;
-  &:before {content:'';display:block;width:100%;height:300%;position:absolute;top:0;left:0;z-index:-1;}
+.page-content[portfolio-toj]{background:transparent url('#{$image-path}theme/sky.jpg') /*url('http://miriadna.com/desctopwalls/images/max/Grand-Teton-National-Park.jpg')*/ no-repeat 50% 50%;background-size:cover;
+  &:before {content:'';display:block;width:100%;height:200%;position:absolute;top:0;left:0;z-index:-1;}
+
+  .track {height:100%;position:relative;}
+  .tabular {height:100%;@include background-image(linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.8)));
+    .cellular {padding:1rem;@include text-shadow(0 1px 1px #000);}
+    &:nth-child(2){background:rgba(0,0,0,0.8);}
+  }
 
 //  h1 {margin:0;}
 //  .track {position:fixed;top:0;left:0;width:100%;height:100%;overflow:hidden;}
@@ -10,16 +16,13 @@
 //    }
 //  }
 
-//  .tabular {@include background-image(linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.8)));
-//    .cellular {padding:1rem;@include text-shadow(0 1px 1px #000);}
-//  }
+
 //
 //  .track {background:rgba(0,0,0,0.8);height:100%;}
 ////  img.three-d {@include transform(translateX(35%));}
 //
 //  .fixable {position:fixed;top:0;left:0;}
 
-  .hold-still {position:absolute;background:rgba(0,0,0,0.85);height:50%;width:100%;text-align:center;
-
+  .pseudo-fixed {position:absolute;height:100%;width:100%;text-align:center;overflow:hidden;
   }
 }

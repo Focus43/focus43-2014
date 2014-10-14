@@ -12,12 +12,24 @@ angular.module('redeaux.pages').
                     smoothWheelDist = 50,
                     masterTimeline  = new TimelineLite({paused:true, useFrames:false});
 
+                // selectors
+                var track  = document.querySelector('.track'),
+                    images = document.querySelectorAll('[portfolio-toj] img'),
+                    _fixed = document.querySelector('.pseudo-fixed');
 
-//                masterTimeline.to(document.querySelector('h1'), 1, {y:1000}).
-//                    to(document.querySelector('h1'), 1, {color:'#222'});
-                //masterTimeline.fromTo(document.querySelector('img.three-d'), 2, {x:-2000, scale:1.3, rotation:-50}, {x:0, scale:1, rotation:40});
-                    //to(document.querySelector('img.three-d'), 1, {y:500, rotationY:-90});
-                    //to(null, 1, {});
+                masterTimeline.
+                    to(document.querySelector('h1'), 3, {y:-2000}).
+                    fromTo(images[0], 2, {y:0, x:500}, {y:'-100%', x:0}).
+                    to(images[0], 5, {rotationZ:6,rotationY:20,y:-150,x:0}).
+                    to(images[0], 1, {rotationY:55,rotationX:-40,autoAlpha:0}).
+                    to(images[1], 3, {y:'-200%'}, '-=2');
+
+//                masterTimeline.
+//                    to(images[0], 3, {rotationX:45,rotationZ:50,scale:1.8}).
+//                    to(images[0], 1, {x:800}).
+//                    to(images[1], 1, {y:-650}, '-=1').
+//                    //delay(10).play().
+//                    to(images[1], 1, {autoAlpha:0, scale:0.8, delay:7});
 
 
                 // Smooth scrolling: http://blog.bassta.bg/2013/05/smooth-page-scrolling-with-tweenmax/
@@ -37,10 +49,10 @@ angular.module('redeaux.pages').
 
 
                 function animationLoop(){
+                    _fixed.style.top = element.scrollTop + 'px';
+                    //track.style.top  = -(element.scrollTop) + 'px';
                     scrollPercent = element.scrollTop / (element.scrollHeight - element.clientHeight);
-                    //masterTimeline.progress(scrollPercent);
-
-                    document.querySelector('.hold-still').style.top = element.scrollTop + 'px';
+                    masterTimeline.progress(scrollPercent);
                 }
 
 
