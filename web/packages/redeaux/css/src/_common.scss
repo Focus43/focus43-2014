@@ -1,5 +1,7 @@
 // Basics
-html, body {font-size:$font-size-base;height:100%;overflow:hidden;}
+* {-webkit-font-smoothing:antialiased;}
+html, body {font-size:$font-size-base;height:100%;/*overflow:hidden;*/}
+body {overflow:hidden;}
 input, textarea, button, a {&:focus, &:active {outline:0 !important;@include box-shadow(none !important);}}
 a, a:hover, a:active {cursor:pointer;text-decoration:none !important;}
 img {@extend .img-responsive;display:inline-block;}
@@ -7,6 +9,7 @@ img {@extend .img-responsive;display:inline-block;}
   .cellular {width:100%;height:100%;display:table-cell;vertical-align:middle;text-align:center;}
 }
 @include scrollbars(#73880b, 8px);
+
 
 // headers
 header {
@@ -24,7 +27,7 @@ header {
 }
 
 // Animations for <section> element (angular requires to be on a class)
-section.page-body {position:absolute;top:0;left:0;}
+.page-body {position:absolute;top:0;left:0;}
 
   .trnztn-1 {@include transform(translateY(0));@include transition(all 0.35s ease);
     &.ng-leave {opacity:1;@include transform(translateY(0));
@@ -73,6 +76,16 @@ section.page-body {position:absolute;top:0;left:0;}
 
 // section.page-body > .page-content
 .page-content {@include scrollOverflow;z-index:1;}
+
+// When viewing work projects, or specific pages where the content should be the
+// entire width, no navigation visible, and we control scrolling and such with
+// TweenLite/TimelineLite
+body.fixed-max {overflow:auto;
+  &::after {display:block;height:500%;width:1px;content:'';position:absolute;top:0;left:0;z-index:-1;}
+  #level-1 {position:fixed;padding:0;z-index:2;}
+  nav {right:-100%;opacity:0;visibility:hidden;}
+  .page-content {overflow:hidden;}
+}
 
 // Fix scroll overflow while in edit mode
 html.cms-admin section.page-body {height:calc(100% - 49px);}

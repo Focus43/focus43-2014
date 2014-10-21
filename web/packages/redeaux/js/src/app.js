@@ -118,7 +118,8 @@
             }
 
             $rootScope.bodyClasses = {
-                'loading'   : false
+                'loading'   : false,
+                'fixed-max' : false
             };
         }]);
 

@@ -71,6 +71,7 @@
         public function attachThemeAssets( Controller $pageController ){
             // CSS
             $pageController->addHeaderItem( $this->getHelper('html')->css('app.css', RedeauxPackage::PACKAGE_HANDLE) );
+            //$pageController->addHeaderItem('<link rel="stylesheet" type="text/css" href="/packages/redeaux/css/app.css" title="appstyles" />');
             // JS
             $pageController->addFooterItem( $this->getHelper('html')->javascript('core.js', RedeauxPackage::PACKAGE_HANDLE) );
             $pageController->addFooterItem( $this->getHelper('html')->javascript('app.js', RedeauxPackage::PACKAGE_HANDLE) );

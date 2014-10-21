@@ -1,28 +1,59 @@
-.page-content[portfolio-toj]{background:transparent url('#{$image-path}theme/sky.jpg') /*url('http://miriadna.com/desctopwalls/images/max/Grand-Teton-National-Park.jpg')*/ no-repeat 50% 50%;background-size:cover;
-  &:before {content:'';display:block;width:100%;height:200%;position:absolute;top:0;left:0;z-index:-1;}
-
-  .track {height:100%;position:relative;}
-  .tabular {height:100%;@include background-image(linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.8)));
-    .cellular {padding:1rem;@include text-shadow(0 1px 1px #000);}
-    &:nth-child(2){background:rgba(0,0,0,0.8);}
+.page-content[portfolio-toj]{@include background-image(linear-gradient(#f1f1f1, #c1c1c1 65%, #f1f1f1));
+  .progress {line-height:1;position:fixed;top:0;left:20%;right:20%;width:auto;height:5px;z-index:2;display:block;background:rgba($magenta, 0.45);@include border-radius(0);
+    &::after {opacity:0.4;display:block;content:'';width:100%;top:100%;left:0;height:10px;background:transparent url('#{$image-path}/timeline-notches.png') repeat-x;background-position:0 100%;}
+    .value {width:0;height:100%;background:$magenta;display:block;}
+    .marker {color:$magenta;width:24px;margin-left:-11px;margin-top:8px;position:absolute;top:100%;text-align:center;display:inline-block;padding:5px;
+      &:hover, &.active {color:darken($magenta, 20%);}
+    }
   }
 
-//  h1 {margin:0;}
-//  .track {position:fixed;top:0;left:0;width:100%;height:100%;overflow:hidden;}
-//  .rail {position:relative;top:0;left:0;width:100%;height:100%;}
-//  .node {position:absolute;width:100%;height:100%;text-align:center;
-//    @for $i from 1 through 10 { $rgb:($i * 15); // var $rgb
-//      &:nth-child(#{$i}){top:percentage($i - 1);background:rgba($rgb, $rgb, $rgb, 0.5);}
-//    }
-//  }
+  aside {position:fixed;top:1rem;right:1rem;z-index:2;
+    .close {display:inline-block;position:relative;
+      a {display:block;width:50px;height:50px;background:url('#{$image-path}svg/thin-close.svg') no-repeat 50% 50%;background-size:cover;overflow:hidden;text-indent:-999px;@include transform(rotate(0) translateZ(0));@include transition(all 0.25s ease);}
+      span {text-transform:uppercase;font-size:14px;padding:0.3rem 0.5rem;white-space:nowrap;opacity:0;visibility:hidden;display:inline-block;color:#fff;position:absolute;right:100%;top:50%;background:rgba(0,0,0,0.65);@include transform(translateX(20px) translateY(-50%) translateZ(0));@include transition(all 0.15s ease);}
+      &:hover {
+        a {@include transform(rotate(180deg));}
+        span {opacity:1;visibility:visible;@include transform(translateX(0) translateY(-50%));}
+      }
+    }
+  }
 
+  .tabular {position:absolute;top:100%;overflow:hidden;
+    &.frame-1{top:0;}
+    &.frame-2{background:url('http://miriadna.com/desctopwalls/images/max/Grand-Teton-National-Park.jpg') no-repeat 50% 0;background-size:200% 200%;}
+    &.frame-3{background:#e0587b;}
+  }
 
-//
-//  .track {background:rgba(0,0,0,0.8);height:100%;}
-////  img.three-d {@include transform(translateX(35%));}
-//
-//  .fixable {position:fixed;top:0;left:0;}
+  .frame-1 {color:#333;
+    .device {display:inline-block;position:relative;@include perspective(1000px);@include transform-style(preserve-3d);@include backface-visibility(hidden);
+      .inner-l1 {position:relative;margin:0 auto;padding:20px;background:#333;@include box-shadow(0 0 25px #000);@include transform(translateY(-15%));@include border-radius(5px 5px 0 0);
+        &::before, &::after {display:block;content:'';position:absolute;background:#bbb;@include border-radius(0 0 5px 5px);@include transition(all 0.2s ease-out);}
+        .inner-l2 {width:100%;height:100%;background-repeat:no-repeat;background-position:50% 50%;background-size:cover;@include transition(all 0.5s ease);}
 
-  .pseudo-fixed {position:absolute;height:100%;width:100%;text-align:center;overflow:hidden;
+        &.desktop {width:760px;height:504px;
+          &::before {top:100%;left:0;width:100%;height:15%;}
+          &::after {background:transparent;top:115%;width:40%;left:50%;margin-left:-20%;border-bottom:80px solid #bbb;border-left:15px solid transparent;border-right:15px solid transparent;}
+          .inner-l2 {background-image:url('#{$image-path}portfolio/toj/desktop.jpg');}
+        }
+
+        &.laptop {width:600px;height:425px;background:#0f0f0f;
+          &::before {top:100%;width:120%;left:0;height:6%;margin-left:-10%;}
+          .inner-l2 {background-image:url('#{$image-path}portfolio/toj/laptop.jpg');}
+        }
+
+        &.tablet {width:447px;height:570px;background:#535353;padding:40px;@include border-radius(10px);@include transform(translateY(0));
+          .inner-l2 {background-image:url('#{$image-path}portfolio/toj/ipad.jpg');}
+        }
+
+        &.phone {width:286px;height:560px;background:#280b0b;padding:45px 12px;@include border-radius(10px);@include transform(translateY(0));
+          .inner-l2 {background-image:url('#{$image-path}portfolio/toj/iphone.jpg');}
+        }
+      }
+    }
+    .copy {position:absolute;max-width:50%;top:0;right:0;bottom:0;padding:2rem;}
+  }
+
+  .frame-2 {
+
   }
 }
