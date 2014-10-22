@@ -2,6 +2,7 @@
 /* global TimelineLite */
 /* global TimelineMax */
 /* global TweenLite */
+/* global TweenMax */
 angular.module('redeaux.common').
 
     /**
@@ -19,44 +20,30 @@ angular.module('redeaux.common').
     }).
 
     /**
-     * @description Wrap TimelineLite library for dependency injection
+     * @description Wrap Timeline{Lite|Max} library for dependency injection. Make the provider
+     * just a generic Timeline name so we can easily swap max or lite if need be.
      * @param $window
      * @param $log
-     * @returns TimelineLite | false
+     * @returns {TimelineMax|TimelineLite|boolean}
      */
-    provider('TimelineLite', function(){
+    provider('Timeline', function(){
         this.$get = ['$window', '$log',
             function( $window, $log ){
-                return $window['TimelineLite'] || ($log.warn('TimelineLite unavailable!'), false);
-            }
-        ];
-    }).
-
-
-    /**
-     * @description Wrap TimelineMax library for dependency injection
-     * @param $window
-     * @param $log
-     * @returns TimelineMax | false
-     */
-    provider('TimelineMax', function(){
-        this.$get = ['$window', '$log',
-            function( $window, $log ){
-                return $window['TimelineMax'] || ($log.warn('TimelineMax unavailable!'), false);
+                return ($window['TimelineMax'] || $window['TimelineLite']) || ($log.warn('GS TimeLine Library unavailable!'), false);
             }
         ];
     }).
 
     /**
-     * @description Wrap TweenLite library for dependency injection
+     * @description Wrap Tween library for dependency injection.
      * @param $window
      * @param $log
-     * @returns TweenLite | false
+     * @returns {TweenMax|TweenLite|boolean}
      */
-    provider('TweenLite', function(){
+    provider('Tween', function(){
         this.$get = ['$window', '$log',
             function( $window, $log ){
-                return $window['TweenLite'] || ($log.warn('TweenLite unavailable!'), false);
+                return ($window['TweenMax'] || $window['TweenLite']) || ($log.warn('GS Tween Library unavailable!'), false);
             }
         ];
     });

@@ -13,9 +13,9 @@
     <div id="level-1">
         <?php Loader::packageElement('theme/nav', RedeauxPackage::PACKAGE_HANDLE); ?>
         <div id="level-2">
-            <section class="page-body" ng-view ng-animate-children ng-class="transitionClass">
+            <main class="page-body" ng-view ng-animate-children ng-class="transitionClass">
                 <?php echo $innerContent; ?>
-            </section>
+            </main>
         </div>
         <div class="spinnable"></div>
     </div>

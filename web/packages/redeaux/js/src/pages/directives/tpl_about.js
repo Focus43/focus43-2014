@@ -4,13 +4,12 @@ angular.module('redeaux.pages').
      * @description Template handler
      * @param $document
      * @param $animate
-     * @param TweenLite
      * @param ApplicationPaths
      * @param Breakpoints
      * @returns {{restrict: string, link: Function, scope: boolean, controller: Array}}
      */
-    directive('tplAbout', ['$document', '$animate', 'TweenLite', 'Breakpoints',
-        function( $document, $animate, TweenLite, Breakpoints ){
+    directive('tplAbout', ['$document', '$animate', 'Breakpoints',
+        function( $document, $animate, Breakpoints ){
 
             var ANIMATION_CLASS = 'anim-about';
 

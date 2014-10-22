@@ -2,13 +2,11 @@ angular.module('redeaux.pages').
 
     /**
      * @description Template handler
-     * @param TweenLite
-     * @param $document
      * @param $animate
      * @returns {{restrict: string, link: Function}}
      */
-    directive('tplExperiments', ['TweenLite', '$document', '$animate',
-        function( TweenLite, $document, $animate ){
+    directive('tplExperiments', ['$animate',
+        function( $animate ){
 
             var ANIMATION_CLASS = 'anim-experiments';
 

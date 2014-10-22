@@ -37,11 +37,11 @@ angular.module('redeaux.pages').
      * @description Parallaxer service; gets "new'd" by injector.
      * @param $window
      * @param $document
-     * @param TweenLite
+     * @param Tween
      * @param Modernizr
      */
-    service('Parallaxer', ['$window', '$document', 'TweenLite', 'Modernizr',
-        function($window, $document, TweenLite, Modernizr){
+    service('Parallaxer', ['$window', '$document', 'Tween', 'Modernizr',
+        function($window, $document, Tween, Modernizr){
 
             /**
              * @type {boolean}
@@ -126,20 +126,20 @@ angular.module('redeaux.pages').
 
                 // Animation only runs if coordinates have changed
                 function animateByMotion(){
-                    TweenLite.set(LayerInfo.$mtns, {x:(100/_beta) * 10});
+                    Tween.set(LayerInfo.$mtns, {x:(100/_beta) * 10});
                 }
 
                 this.run = function(){
                     if( _running ){ return this; }
                     $document.on('mousemove', onDeviceMotion);
-                    TweenLite.ticker.addEventListener('tick', animateByMotion);
+                    Tween.ticker.addEventListener('tick', animateByMotion);
                     _running = true;
                     return this;
                 };
 
                 this.destroy = function(){
                     $document.off('mousemove', onDeviceMotion);
-                    TweenLite.ticker.removeEventListener('tick', animateByMotion);
+                    Tween.ticker.removeEventListener('tick', animateByMotion);
                     LayerInfo.destruct();
                     LayerInfo = null; // mark for garbage collection
                     _running = false;
@@ -170,12 +170,12 @@ angular.module('redeaux.pages').
                             alpha = y + 0.25;
 
                         // Base layers
-                        TweenLite.set(LayerInfo.$sky, {x:moveX/2, scale:1+(y*0.1), y:(y*25)});
-                        TweenLite.set(LayerInfo.$mtns, {x:moveX, scale:1+(y*0.1), y:-(y*25)});
+                        Tween.set(LayerInfo.$sky, {x:moveX/2, scale:1+(y*0.1), y:(y*25)});
+                        Tween.set(LayerInfo.$mtns, {x:moveX, scale:1+(y*0.1), y:-(y*25)});
                         // Depth layers
-                        TweenLite.set(LayerInfo.$z3, {x:(125*xHalf), autoAlpha:alpha, scale:1+(y*0.1)});
-                        TweenLite.set(LayerInfo.$z2, {x:(300*xHalf), autoAlpha:alpha, scale:1+(y*0.2)});
-                        TweenLite.set(LayerInfo.$z1, {x:(700*xHalf), autoAlpha:alpha, scale:1+(y*0.3)});
+                        Tween.set(LayerInfo.$z3, {x:(125*xHalf), autoAlpha:alpha, scale:1+(y*0.1)});
+                        Tween.set(LayerInfo.$z2, {x:(300*xHalf), autoAlpha:alpha, scale:1+(y*0.2)});
+                        Tween.set(LayerInfo.$z1, {x:(700*xHalf), autoAlpha:alpha, scale:1+(y*0.3)});
 
 
                         // Update _prevCoords for next loop test
@@ -186,14 +186,14 @@ angular.module('redeaux.pages').
                 this.run = function(){
                     if( _running ){ return this; }
                     $document.on('mousemove', onMouseMove);
-                    TweenLite.ticker.addEventListener('tick', animateByMouse);
+                    Tween.ticker.addEventListener('tick', animateByMouse);
                     _running = true;
                     return this;
                 };
 
                 this.destroy = function(){
                     $document.off('mousemove', onMouseMove);
-                    TweenLite.ticker.removeEventListener('tick', animateByMouse);
+                    Tween.ticker.removeEventListener('tick', animateByMouse);
                     LayerInfo.destruct();
                     LayerInfo = null; // mark for garbage collection
                     _running = false;

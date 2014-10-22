@@ -15,9 +15,15 @@
         </div>
     </aside>
 
+    <div class="tabular frame-0">
+        <div class="cellular">
+            <h1>Town Of Jackson</h1>
+            <small class="instruct">Scroll <i class="fa fa-angle-down"></i></small>
+        </div>
+    </div>
+
     <div class="tabular frame-1">
         <div class="cellular">
-
             <div class="device">
                 <div class="inner-l1 desktop">
                     <div class="inner-l2">
@@ -33,7 +39,6 @@
                     <p>Purely web-based, for any device.</p>
                 </div>
             </div>
-
         </div>
     </div>
 

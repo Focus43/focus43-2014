@@ -21,8 +21,6 @@
          */
         config(['$provide', '$routeProvider', '$locationProvider', '$httpProvider', 'GoogleMapsAPIProvider',
             function( $provide, $routeProvider, $locationProvider, $httpProvider, GoogleMapsAPIProvider ){
-                var headEl = document.querySelector('head');
-
                 // Http config
                 $httpProvider.defaults.headers.common['x-angularized'] = true;
 
@@ -52,39 +50,23 @@
                 $locationProvider.html5Mode(true).hashPrefix('!');
 
                 // Route definitions (purely dynamic)
-                $routeProvider.
-//                    when('/work/:project?', {templateUrl: '/work', resolve:{
-//                        /**
-//                         * Return a promise; resolves or rejects based on
-//                         * whether its the top level 'work' page or a child
-//                         * page. If promise gets rejected, it prevents angular
-//                         * firing events that trigger page animations.
-//                         */
-//                        project: ['$route', '$q', function($route, $q){
-//                            var defer = $q.defer();
-//                            if( angular.isDefined($route.current.params.project) ){
-//                                defer.reject();
-//                            }else{
-//                                defer.resolve();
-//                            }
-//                            return defer.promise;
-//                        }]
-//                    }}).
-                    when('/:page*?', {
-                        resolve: {
-                            precompiled: ['$templateCache', '$location', '$q', function( $templateCache, $location, $q ){
-                                if( $templateCache.info().size === 0 ){
-                                    var defer = $q.defer();
-                                    $templateCache.put($location.path(), window['PRE_COMPILED_VIEW']);
-                                    defer.resolve();
-                                    return defer.promise;
-                                }
-                            }]
-                        },
-                        templateUrl: function(params){
-                            return '/' + (params.page || '');
-                        }
-                    });
+                $routeProvider.when('/:page*?', {
+                    resolve: {
+                        precompiled: ['$templateCache', '$location', '$q', function( $templateCache, $location, $q ){
+                            if( $templateCache.info().size === 0 ){
+                                var defer = $q.defer();
+                                $templateCache.put($location.path(), window['PRE_COMPILED_VIEW']);
+                                defer.resolve();
+                                return defer.promise;
+                            }
+                        }]
+                    },
+                    templateUrl: function(params){
+                        return '/' + (params.page || '');
+                    }
+                });
+
+                var headEl = document.querySelector('head');
 
                 // Applications paths
                 $provide.value('ApplicationPaths', {
@@ -113,10 +95,12 @@
          * @description Run on load
          */
         run(['$window', '$rootScope', function( $window, $rootScope ){
+            // Initialize FastClick right out of the gate
             if( angular.isDefined($window['FastClick']) ){
                 FastClick.attach(document.body);
             }
 
+            // List of available body classes
             $rootScope.bodyClasses = {
                 'loading'   : false,
                 'fixed-max' : false
@@ -136,7 +120,7 @@
         }
 
         // Before angular initializes, store the innerHTML of ng-view before its compiled
-        var $page = document.querySelector('section.page-body');
+        var $page = document.querySelector('main.page-body');
         window['PRE_COMPILED_VIEW'] = $page.innerHTML;
 
         // Purge all innerHTML contents. ALWAYS leave this here because angular can
@@ -155,33 +139,6 @@ angular.module('GoogleMap', []);
 
 angular.module('redeaux.pages', []);
 
-angular.module('redeaux.common').
-
-    /**
-     * @description Generic body controller
-     * @param $rootScope
-     * @param $scope
-     * @param $location
-     */
-    controller('CtrlRoot', ['$rootScope', '$scope', '$location',
-        function( $rootScope, $scope, $location ){
-            // Because SVG clip-paths reference the doc internally, and we HAVE to set
-            // a <base /> tag for angular's router, we need to add the absolute URL in
-            // the paths referenced by SVGs
-            $rootScope.$on('$routeChangeSuccess', function(){
-                $scope.absUrl = $location.absUrl();
-            });
-
-            // Available transition classes
-            var _transitions = ['trnztn-1', 'trnztn-2', 'trnztn-3', 'trnztn-4', 'trnztn-5'];
-
-            // When ng-view changes, set a new transition class
-            $rootScope.$on('$viewContentLoaded', function(){
-                console.log('-- content loaded --');
-                $scope.transitionClass = _transitions[Math.floor(Math.random() * _transitions.length)];
-            });
-        }
-    ]);
 angular.module('redeaux.common').
 
     /**
@@ -263,10 +220,139 @@ angular.module('redeaux.common').
             ]
         };
     }]);
+angular.module('redeaux.common').
+
+    /**
+     * @description Generic body controller
+     * @param $rootScope
+     * @param $scope
+     * @param $location
+     */
+    controller('CtrlRoot', ['$rootScope', '$scope', '$location',
+        function( $rootScope, $scope, $location ){
+            // Because SVG clip-paths reference the doc internally, and we HAVE to set
+            // a <base /> tag for angular's router, we need to add the absolute URL in
+            // the paths referenced by SVGs
+            $rootScope.$on('$routeChangeSuccess', function(){
+                $scope.absUrl = $location.absUrl();
+            });
+
+            // Available transition classes
+            var _transitions = ['trnztn-1', 'trnztn-2', 'trnztn-3', 'trnztn-4', 'trnztn-5'];
+
+            // When ng-view changes, set a new transition class
+            $rootScope.$on('$viewContentLoaded', function(){
+                console.log('-- content loaded --');
+                $scope.transitionClass = _transitions[Math.floor(Math.random() * _transitions.length)];
+            });
+        }
+    ]);
+angular.module('redeaux.common').
+
+    /**
+     * @description Functions for easily working with common Timeline things.
+     * @param Timeline
+     * @returns {{randomInt: Function, suicidal: Function}}
+     */
+    factory('TimelineHelper', ['Timeline',
+        function factory( Timeline ){
+            return {
+                /**
+                 * Return a random integer b/w min -> max (can be negatives).
+                 * @param min
+                 * @param max
+                 * @returns {number}
+                 */
+                randomInt: function(min, max){
+                    return Math.floor(Math.random() * (max-min+1)+min);
+                },
+
+                /**
+                 * Returns a new Timeline instance that is pre-configured with
+                 * an onComplete callback to a) kill the timeline instance after
+                 * completion (eg. play through then die), and b) process a
+                 * _done callback function and/or a promise to resolve.
+                 * @param done
+                 * @param $defer
+                 * @returns {Timeline(Max|Lite)}
+                 */
+                suicidal: function( config, onCompletes ){
+                    return new Timeline(angular.extend(config, {
+                        onComplete: function(){
+                            this.kill();
+                            if( angular.isArray(onCompletes) ){
+                                for(var i = 0; i <= onCompletes.length; i++){
+                                    if( angular.isObject(onCompletes[i]) && onCompletes[i]['resolve'] ){
+                                        onCompletes[i].resolve();
+                                    }
+                                    if( angular.isFunction(onCompletes[i]) ){
+                                        onCompletes[i]();
+                                    }
+                                }
+                            }
+                        }
+                    }));
+                }
+            };
+        }
+    ]).
+
+    /**
+     * @returns {{parseRule: Function, determineBodyScrollElement: Function}}
+     */
+    factory('Utilities', [
+        function(){
+
+            /**
+             * Get the value of a property defined in a stylesheet for a given selector.
+             * @param ssObjOrIndex CSSStyleSheet | int Stylesheet Object or Index of the stylesheet to
+             * get from the DOM
+             * @param selectorRegex RegExp Pass in a regex rule to match against, eg: new RegExp(/body\.fixed-max*(.)+after/)
+             * @param property string Property name to get from the matched rule
+             * @returns {mixed|boolean}
+             * @private
+             */
+            function _parseRule( ssObjOrIndex, selectorRegex, property ){
+                var stylesheet = angular.isObject(ssObjOrIndex) ? ssObjOrIndex : document.styleSheets[ssObjOrIndex],
+                    rules      = stylesheet.cssRules,
+                    computed   = false;
+                for(var _key in rules){
+                    if( rules[_key].selectorText && selectorRegex.test(rules[_key].selectorText) ){
+                        computed = rules[_key].style[property];
+                        break;
+                    }
+                }
+                return computed;
+            }
+
+            /**
+             * Bug in webkit causes a) different height calculations, and b) which DOM
+             * element emits scroll events on the body, ie. mousewheel. This is a quick
+             * test that will return the proper element to bind listeners to.
+             * @note Always use this inside of a timeout() with at least 15ms to ensure
+             * that DOM rendering is complete before running this test!
+             * @returns {HTMLElement}
+             * @private
+             * @ref: https://bugs.webkit.org/show_bug.cgi?id=106133
+             */
+            function _bodyScrollingElement(){
+                if( document.body.scrollHeight > document.body.clientHeight ){
+                    return document.body;
+                }
+                return document.documentElement;
+            }
+
+            return {
+                parseRule                   : _parseRule,
+                determineBodyScrollElement  : _bodyScrollingElement
+            };
+        }
+    ]);
 /* global Modernizr */
 /* global TimelineLite */
 /* global TimelineMax */
 /* global TweenLite */
+/* global TweenMax */
 angular.module('redeaux.common').
 
     /**
@@ -284,88 +370,33 @@ angular.module('redeaux.common').
     }).
 
     /**
-     * @description Wrap TimelineLite library for dependency injection
+     * @description Wrap Timeline{Lite|Max} library for dependency injection. Make the provider
+     * just a generic Timeline name so we can easily swap max or lite if need be.
      * @param $window
      * @param $log
-     * @returns TimelineLite | false
+     * @returns {TimelineMax|TimelineLite|boolean}
      */
-    provider('TimelineLite', function(){
+    provider('Timeline', function(){
         this.$get = ['$window', '$log',
             function( $window, $log ){
-                return $window['TimelineLite'] || ($log.warn('TimelineLite unavailable!'), false);
-            }
-        ];
-    }).
-
-
-    /**
-     * @description Wrap TimelineMax library for dependency injection
-     * @param $window
-     * @param $log
-     * @returns TimelineMax | false
-     */
-    provider('TimelineMax', function(){
-        this.$get = ['$window', '$log',
-            function( $window, $log ){
-                return $window['TimelineMax'] || ($log.warn('TimelineMax unavailable!'), false);
+                return ($window['TimelineMax'] || $window['TimelineLite']) || ($log.warn('GS TimeLine Library unavailable!'), false);
             }
         ];
     }).
 
     /**
-     * @description Wrap TweenLite library for dependency injection
+     * @description Wrap Tween library for dependency injection.
      * @param $window
      * @param $log
-     * @returns TweenLite | false
+     * @returns {TweenMax|TweenLite|boolean}
      */
-    provider('TweenLite', function(){
+    provider('Tween', function(){
         this.$get = ['$window', '$log',
             function( $window, $log ){
-                return $window['TweenLite'] || ($log.warn('TweenLite unavailable!'), false);
+                return ($window['TweenMax'] || $window['TweenLite']) || ($log.warn('GS Tween Library unavailable!'), false);
             }
         ];
     });
-angular.module('redeaux.common').
-
-    /**
-     * @description Functions for easily working with common TimelineLite things.
-     * @param TimelineLite
-     * @returns {{randomInt: Function, suicidal: Function}}
-     */
-    factory('TimelineHelper', ['TimelineLite',
-        function factory( TimelineLite ){
-            return {
-                /**
-                 * Return a random integer b/w min -> max (can be negatives).
-                 * @param min
-                 * @param max
-                 * @returns {number}
-                 */
-                randomInt: function(min, max){
-                    return Math.floor(Math.random() * (max-min+1)+min);
-                },
-
-                /**
-                 * Returns a new TimelineLite instance that is pre-configured with
-                 * an onComplete callback to a) kill the timeline instance after
-                 * completion (eg. play through then die), and b) process a
-                 * _done callback function and/or a promise to resolve.
-                 * @param done
-                 * @param $defer
-                 * @returns {TimelineLite}
-                 */
-                suicidal: function( done, $defer ){
-                    return new TimelineLite({
-                        onComplete: function(){
-                            this.kill();
-                            if( angular.isFunction(done) ){ done(); }
-                            if( angular.isObject($defer) ){ $defer.resolve(); }
-                        }
-                    });
-                }
-            };
-        }
-    ]);
 angular.module('GoogleMap').
 
     /**
@@ -566,13 +597,12 @@ angular.module('redeaux.pages').
      * @description Template handler
      * @param $document
      * @param $animate
-     * @param TweenLite
      * @param ApplicationPaths
      * @param Breakpoints
      * @returns {{restrict: string, link: Function, scope: boolean, controller: Array}}
      */
-    directive('tplAbout', ['$document', '$animate', 'TweenLite', 'Breakpoints',
-        function( $document, $animate, TweenLite, Breakpoints ){
+    directive('tplAbout', ['$document', '$animate', 'Breakpoints',
+        function( $document, $animate, Breakpoints ){
 
             var ANIMATION_CLASS = 'anim-about';
 
@@ -782,13 +812,11 @@ angular.module('redeaux.pages').
 
     /**
      * @description Template handler
-     * @param TweenLite
-     * @param $document
      * @param $animate
      * @returns {{restrict: string, link: Function}}
      */
-    directive('tplExperiments', ['TweenLite', '$document', '$animate',
-        function( TweenLite, $document, $animate ){
+    directive('tplExperiments', ['$animate',
+        function( $animate ){
 
             var ANIMATION_CLASS = 'anim-experiments';
 
@@ -850,11 +878,11 @@ angular.module('redeaux.pages').
      * @description Parallaxer service; gets "new'd" by injector.
      * @param $window
      * @param $document
-     * @param TweenLite
+     * @param Tween
      * @param Modernizr
      */
-    service('Parallaxer', ['$window', '$document', 'TweenLite', 'Modernizr',
-        function($window, $document, TweenLite, Modernizr){
+    service('Parallaxer', ['$window', '$document', 'Tween', 'Modernizr',
+        function($window, $document, Tween, Modernizr){
 
             /**
              * @type {boolean}
@@ -939,20 +967,20 @@ angular.module('redeaux.pages').
 
                 // Animation only runs if coordinates have changed
                 function animateByMotion(){
-                    TweenLite.set(LayerInfo.$mtns, {x:(100/_beta) * 10});
+                    Tween.set(LayerInfo.$mtns, {x:(100/_beta) * 10});
                 }
 
                 this.run = function(){
                     if( _running ){ return this; }
                     $document.on('mousemove', onDeviceMotion);
-                    TweenLite.ticker.addEventListener('tick', animateByMotion);
+                    Tween.ticker.addEventListener('tick', animateByMotion);
                     _running = true;
                     return this;
                 };
 
                 this.destroy = function(){
                     $document.off('mousemove', onDeviceMotion);
-                    TweenLite.ticker.removeEventListener('tick', animateByMotion);
+                    Tween.ticker.removeEventListener('tick', animateByMotion);
                     LayerInfo.destruct();
                     LayerInfo = null; // mark for garbage collection
                     _running = false;
@@ -983,12 +1011,12 @@ angular.module('redeaux.pages').
                             alpha = y + 0.25;
 
                         // Base layers
-                        TweenLite.set(LayerInfo.$sky, {x:moveX/2, scale:1+(y*0.1), y:(y*25)});
-                        TweenLite.set(LayerInfo.$mtns, {x:moveX, scale:1+(y*0.1), y:-(y*25)});
+                        Tween.set(LayerInfo.$sky, {x:moveX/2, scale:1+(y*0.1), y:(y*25)});
+                        Tween.set(LayerInfo.$mtns, {x:moveX, scale:1+(y*0.1), y:-(y*25)});
                         // Depth layers
-                        TweenLite.set(LayerInfo.$z3, {x:(125*xHalf), autoAlpha:alpha, scale:1+(y*0.1)});
-                        TweenLite.set(LayerInfo.$z2, {x:(300*xHalf), autoAlpha:alpha, scale:1+(y*0.2)});
-                        TweenLite.set(LayerInfo.$z1, {x:(700*xHalf), autoAlpha:alpha, scale:1+(y*0.3)});
+                        Tween.set(LayerInfo.$z3, {x:(125*xHalf), autoAlpha:alpha, scale:1+(y*0.1)});
+                        Tween.set(LayerInfo.$z2, {x:(300*xHalf), autoAlpha:alpha, scale:1+(y*0.2)});
+                        Tween.set(LayerInfo.$z1, {x:(700*xHalf), autoAlpha:alpha, scale:1+(y*0.3)});
 
 
                         // Update _prevCoords for next loop test
@@ -999,14 +1027,14 @@ angular.module('redeaux.pages').
                 this.run = function(){
                     if( _running ){ return this; }
                     $document.on('mousemove', onMouseMove);
-                    TweenLite.ticker.addEventListener('tick', animateByMouse);
+                    Tween.ticker.addEventListener('tick', animateByMouse);
                     _running = true;
                     return this;
                 };
 
                 this.destroy = function(){
                     $document.off('mousemove', onMouseMove);
-                    TweenLite.ticker.removeEventListener('tick', animateByMouse);
+                    Tween.ticker.removeEventListener('tick', animateByMouse);
                     LayerInfo.destruct();
                     LayerInfo = null; // mark for garbage collection
                     _running = false;
@@ -1037,13 +1065,11 @@ angular.module('redeaux.pages').
 
     /**
      * @description Template handler
-     * @param TweenLite
-     * @param $document
      * @param $animate
      * @returns {{restrict: string, link: Function}}
      */
-    directive('tplWork', ['TweenLite', '$document', '$animate',
-        function( TweenLite, $document, $animate ){
+    directive('tplWork', ['$animate',
+        function( $animate ){
 
             var ANIMATION_CLASS = 'anim-work';
 
@@ -1094,8 +1120,17 @@ angular.module('redeaux.pages').
 /* global Power2 */
 angular.module('redeaux.pages').
 
-    directive('portfolioToj', ['$window', '$document', '$rootScope', 'TimelineLite', 'TweenLite',
-        function( $window, $document, $rootScope, TimelineLite, TweenLite ){
+    /**
+     * TOJ portfolio directive.
+     * @param $window
+     * @param $document
+     * @param $rootScope
+     * @param Timeline
+     * @param Tween
+     * @returns {{restrict: string, link: Function, scope: boolean, controller: Array}}
+     */
+    directive('portfolioToj', ['$window', '$document', '$rootScope', 'Timeline', 'Tween', 'TimelineHelper', 'Utilities',
+        function( $window, $document, $rootScope, Timeline, Tween, TimelineHelper, Utilities ){
 
             function _link( scope, $element ){
 
@@ -1118,28 +1153,16 @@ angular.module('redeaux.pages').
                  */
                 function _scrollableHeight(){
                     return scrollElement.scrollHeight;
-//                    var styleSheet = Array.prototype.slice.call(document.styleSheets).filter(function(ss){ return ss.href; }),
-//                        styleRules = styleSheet[0].cssRules,
-//                        computed   = 0;
-//                    for(var key in styleRules){
-//                        if( styleRules[key].selectorText ){
-//                            if( /body\.fixed-max*(.)+after/.test(styleRules[key].selectorText) ){
-//                                computed = (parseInt(styleRules[key].style.height)/100) * document.body.clientHeight;
-//                                break;
-//                            }
-//                        }
-//                    }
-//                    return computed;
                 }
 
                 /**
                  * Get the position from top of the scrollElement
                  * @returns {scrollTop|*|number|scrollTop|scrollTop|Function}
                  * @private
+                 * @note: (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
                  */
                 function _scrollPosition(){
                     return scrollElement.scrollTop;
-                    //return (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
                 }
 
                 /**
@@ -1154,7 +1177,7 @@ angular.module('redeaux.pages').
                         scrolled    = _scrollPosition(),
                         scrollCalc  = scrolled - parseInt(delta * smoothWheelDist);
 
-                    TweenLite.to(scrollElement, smoothWheelTime, {
+                    Tween.to(scrollElement, smoothWheelTime, {
                         scrollTo: {y:scrollCalc, autoKill:true},
                         ease: Power2.easeOut,
                         overwrite: 5
@@ -1168,42 +1191,56 @@ angular.module('redeaux.pages').
                 function _animationLoop(){
                     scrollPercent = _scrollPosition() / (scrollableHeight - document.body.clientHeight); //element.scrollTop / (element.scrollHeight - element.clientHeight)
                     masterTimeline.progress(scrollPercent);
-                    TweenLite.to(progressBar, 0.5, {width:Math.round(masterTimeline.progress()*100)+'%', overwrite:5});
+                    Tween.to(progressBar, 0.5, {width:Math.round(masterTimeline.progress()*100)+'%', overwrite:5});
                 }
 
                 /**
                  * Build the timeline.
                  * @param linkedEl
-                 * @returns TimelineLite
+                 * @returns TimelineMax | TimelineLite
                  * @private
                  */
                 function _buildTimeline( linkedEl ){
-                    var timeline = new TimelineLite({paused:true, useFrames:false}),
+                    var timeline = new Timeline({paused:true, useFrames:false}),
+                        frame0   = linkedEl.querySelector('.frame-0'),
                         frame1   = linkedEl.querySelector('.frame-1'),
                         device   = frame1.querySelector('.device'),
                         deviceIn = device.querySelector('.inner-l1'),
                         frame2   = linkedEl.querySelector('.frame-2'),
                         frame3   = linkedEl.querySelector('.frame-3');
 
-                    //TweenLite.set(frame2, {top:0,autoAlpha:0});
+                    timeline._playByScroll = function( _label ){
+                        var labelPoint = this._labels[_label] / this.totalDuration();
+                        // Tween to
+                        Tween.to(scrollElement, 2, {
+                            scrollTo: {y:((scrollableHeight - scrollElement.clientHeight) * labelPoint), autoKill:true},
+                            ease: Power2.easeOut,
+                            overwrite: 5
+                        });
+                    };
 
                     return timeline.
-                        to(deviceIn, 2, {css:{className:'inner-l1 desktop'}}).
-                        to(deviceIn, 2, {css:{className:'inner-l1 laptop'}}).
-                        to(deviceIn, 2, {css:{className:'inner-l1 tablet'}}).
-                        to(deviceIn, 2, {css:{className:'inner-l1 phone'}}).
-                        //pause(25).play().
+                        add('start').
+                        to(frame0, 15, {backgroundPositionY:'100%', backgroundPositionX:'100%'}).
+                        to(frame0.querySelector('small'), 2, {top:500, autoAlpha:0, ease:Power2.easeIn}, '-=14').
+                        to(frame0.querySelector('h1'), 2, {y:'-200%', autoAlpha:0, ease:Power2.easeOut}, '-=12').
+                        add('frame1').
+                        to(frame1, 2, {y:'-100%'}, '-=11.5').
+                        to(deviceIn, 2, {css:{className:'inner-l1 desktop'}}, '-=8').
+                        to(deviceIn, 2, {css:{className:'inner-l1 laptop'}}, '-=6').
+                        to(deviceIn, 2, {css:{className:'inner-l1 tablet'}}, '-=4').
+                        to(deviceIn, 2, {css:{className:'inner-l1 phone'}}, '-=2').
                         to(device, 2, {rotationZ:-15, x:'-100%'}).
                         staggerFromTo(frame1.querySelectorAll('.copy *'), 2.5, {autoAlpha:0,y:200}, {autoAlpha:1,y:0}, 0.65).
                         to(frame1, 4, {}).
                         to(frame1.querySelectorAll('.device, .copy'), 2, {y:'-75%', autoAlpha:0}).
-                        //fromTo(frame2, 2, {top:'100%', autoAlpha:0}, {top:0, autoAlpha:1}, '-=2').
-                        //to(frame2, 2, {autoAlpha:1}).
+                        add('frame2').
                         to(frame2, 2, {top:'-=100%'}, '-=2').
-                        to(frame2, 11, {backgroundPositionY:'100%', ease:Power2.easeOut}).
+                        to(frame2, 11, {backgroundPositionY:'100%', backgroundSize:'300% 300%', ease:Power2.easeOut}).
                         fromTo(frame2.querySelector('img'), 3, {y:-1000}, {y:0}, '-=11').
                         fromTo(frame2.querySelector('.col-sm-4'), 3, {x:800}, {x:0}, '-=9').
                         to(frame2, 2, {}).
+                        add('frame3').
                         set(frame3, {top:0}).
                         fromTo(frame3, 2, {x:1000}, {x:0}).
                         fromTo(frame3.querySelector('img'), 2, {x:-1500,autoAlpha:0}, {x:0,autoAlpha:1});
@@ -1213,6 +1250,10 @@ angular.module('redeaux.pages').
                  * Init function once everything is ready to roll
                  */
                 function init(){
+                    // Try to unbind any previous event listeners if they stuck around
+                    $document.off('mousewheel DOMMouseScroll', _onWheel);
+                    Tween.ticker.removeEventListener('tick', _animationLoop);
+
                     scrollElement       = scope._scrollTarget;
                     scrollPercent       = 0;
                     scrollableHeight    = _scrollableHeight();
@@ -1231,7 +1272,7 @@ angular.module('redeaux.pages').
                     angular.element(markers).on('click', function(){
                         angular.element(markers).removeClass('active');
                         angular.element(this).addClass('active');
-                        TweenLite.to(scrollElement, 2, {
+                        Tween.to(scrollElement, 2, {
                             scrollTo: {y:(scrollableHeight - scrollElement.clientHeight) * (+(this.getAttribute('data-percent'))/100), autoKill:true},
                             ease: Power2.easeOut,
                             overwrite: 5
@@ -1240,7 +1281,7 @@ angular.module('redeaux.pages').
 
                     // Kickoff events n' shit
                     $document.on('mousewheel DOMMouseScroll', _onWheel);
-                    TweenLite.ticker.addEventListener('tick', _animationLoop);
+                    Tween.ticker.addEventListener('tick', _animationLoop);
                 }
 
                 /**
@@ -1260,7 +1301,8 @@ angular.module('redeaux.pages').
                  */
                 scope.linkTearDown = function(){
                     $document.off('mousewheel DOMMouseScroll', _onWheel);
-                    TweenLite.ticker.removeEventListener('tick', _animationLoop);
+                    Tween.ticker.removeEventListener('tick', _animationLoop);
+                    masterTimeline.kill();
                 };
             }
 
@@ -1282,11 +1324,7 @@ angular.module('redeaux.pages').
                      */
                     var $unregister = $rootScope.$on('$viewContentLoaded', function(){
                         $timeout(function(){
-                            if( document.body.scrollHeight > document.body.clientHeight ){
-                                $scope._scrollTarget = document.body;
-                            }else{
-                                $scope._scrollTarget = document.documentElement;
-                            }
+                            $scope._scrollTarget = Utilities.determineBodyScrollElement();
                         }, 15);
                     });
 
@@ -1302,97 +1340,3 @@ angular.module('redeaux.pages').
             };
         }
     ]);
-
-
-//    directive('portfolioToj', ['$window', '$document', 'TimelineLite', 'TweenLite',
-//        function( $window, $document, TimelineLite, TweenLite ){
-//
-//            function _link( scope, $element ){
-//
-//                var element         = $element[0],
-//                    scrollPercent   = 0,
-//                    smoothWheelTime = 0.6,
-//                    smoothWheelDist = 50,
-//                    masterTimeline  = new TimelineLite({paused:true, useFrames:false});
-//
-//                // selectors
-//                var track  = document.querySelector('.track'),
-//                    images = document.querySelectorAll('[portfolio-toj] img'),
-//                    _fixed = document.querySelector('.pseudo-fixed');
-//
-//                masterTimeline.
-//                    to(document.querySelector('h1'), 3, {y:-2000}).
-//                    fromTo(images[0], 2, {y:0, x:500}, {y:'-100%', x:0}).
-//                    to(images[0], 5, {rotationZ:6,rotationY:20,y:-150,x:0}).
-//                    to(images[0], 1, {rotationY:55,rotationX:-40,autoAlpha:0}).
-//                    to(images[1], 3, {y:'-200%'}, '-=2');
-//
-////                masterTimeline.
-////                    to(images[0], 3, {rotationX:45,rotationZ:50,scale:1.8}).
-////                    to(images[0], 1, {x:800}).
-////                    to(images[1], 1, {y:-650}, '-=1').
-////                    //delay(10).play().
-////                    to(images[1], 1, {autoAlpha:0, scale:0.8, delay:7});
-//
-//
-//                // Smooth scrolling: http://blog.bassta.bg/2013/05/smooth-page-scrolling-with-tweenmax/
-//                function onWheel(event){
-//                    event.preventDefault();
-//
-//                    var delta       = event.wheelDelta/120 || -(event.detail/3),
-//                        scrolled    = element.scrollTop,
-//                        scrollCalc  = scrolled - parseInt(delta * smoothWheelDist);
-//
-//                    TweenLite.to(element, smoothWheelTime, {
-//                        scrollTo: {y:scrollCalc, autoKill:true},
-//                        ease: Power2.easeOut,
-//                        overwrite: 5
-//                    });
-//                }
-//
-//
-//                function animationLoop(){
-//                    _fixed.style.top = element.scrollTop + 'px';
-//                    //track.style.top  = -(element.scrollTop) + 'px';
-//                    scrollPercent = element.scrollTop / (element.scrollHeight - element.clientHeight);
-//                    masterTimeline.progress(scrollPercent);
-//                }
-//
-//
-//
-//
-////            (new TimelineLite({onComplete:function(){
-////                var tl = (new TimelineLite({repeat:-1}))
-////                    .fromTo($z1, 8, {x:200, scale:1, rotationX:0, y:-50}, {x:-550, scale:0.75, rotationX:30, y:30, ease:Power2.easeInOut})
-////                    .fromTo($z2, 7, {x:100}, {x:-250, ease:Power2.easeInOut}, 0)
-////                    .fromTo($z3, 6, {x:150}, {x:-100, ease:Power2.easeInOut}, 0)
-////                    .fromTo($z4, 5, {x:-15}, {x:15, ease:Power2.easeInOut}, 0)
-////                    .yoyo(true);
-////            }}))
-////                .set($all, {autoAlpha:0})
-////                .staggerFromTo($all, 2.5, {scale:9}, {scale:1, autoAlpha:1, ease:Power2.easeOut}, 0.5)
-////                .to($z1, 2.5, {x:200, y:-50}, 2.5)
-////                .to($z2, 2.5, {x:100}, 2.5)
-////                .to($z3, 2.5, {x:150}, 2.5)
-////                .to($z4, 2.5, {x:-15}, 2.5);
-//
-//
-//
-//
-//                // Kickoff events n' shit
-//                $element.on('mousewheel DOMMouseScroll', onWheel);
-//                TweenLite.ticker.addEventListener('tick', animationLoop);
-//
-//                // Straight MURDA MURDA animation loop. Kapow.
-//                scope.$on('$destroy', function(){
-//                    $element.off('mousewheel DOMMouseScroll', onWheel);
-//                    TweenLite.ticker.removeEventListener('tick', animationLoop);
-//                });
-//            }
-//
-//            return {
-//                restrict: 'A',
-//                link: _link
-//            };
-//        }
-//    ]);

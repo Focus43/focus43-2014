@@ -21,8 +21,6 @@
          */
         config(['$provide', '$routeProvider', '$locationProvider', '$httpProvider', 'GoogleMapsAPIProvider',
             function( $provide, $routeProvider, $locationProvider, $httpProvider, GoogleMapsAPIProvider ){
-                var headEl = document.querySelector('head');
-
                 // Http config
                 $httpProvider.defaults.headers.common['x-angularized'] = true;
 
@@ -52,39 +50,23 @@
                 $locationProvider.html5Mode(true).hashPrefix('!');
 
                 // Route definitions (purely dynamic)
-                $routeProvider.
-//                    when('/work/:project?', {templateUrl: '/work', resolve:{
-//                        /**
-//                         * Return a promise; resolves or rejects based on
-//                         * whether its the top level 'work' page or a child
-//                         * page. If promise gets rejected, it prevents angular
-//                         * firing events that trigger page animations.
-//                         */
-//                        project: ['$route', '$q', function($route, $q){
-//                            var defer = $q.defer();
-//                            if( angular.isDefined($route.current.params.project) ){
-//                                defer.reject();
-//                            }else{
-//                                defer.resolve();
-//                            }
-//                            return defer.promise;
-//                        }]
-//                    }}).
-                    when('/:page*?', {
-                        resolve: {
-                            precompiled: ['$templateCache', '$location', '$q', function( $templateCache, $location, $q ){
-                                if( $templateCache.info().size === 0 ){
-                                    var defer = $q.defer();
-                                    $templateCache.put($location.path(), window['PRE_COMPILED_VIEW']);
-                                    defer.resolve();
-                                    return defer.promise;
-                                }
-                            }]
-                        },
-                        templateUrl: function(params){
-                            return '/' + (params.page || '');
-                        }
-                    });
+                $routeProvider.when('/:page*?', {
+                    resolve: {
+                        precompiled: ['$templateCache', '$location', '$q', function( $templateCache, $location, $q ){
+                            if( $templateCache.info().size === 0 ){
+                                var defer = $q.defer();
+                                $templateCache.put($location.path(), window['PRE_COMPILED_VIEW']);
+                                defer.resolve();
+                                return defer.promise;
+                            }
+                        }]
+                    },
+                    templateUrl: function(params){
+                        return '/' + (params.page || '');
+                    }
+                });
+
+                var headEl = document.querySelector('head');
 
                 // Applications paths
                 $provide.value('ApplicationPaths', {
@@ -113,10 +95,12 @@
          * @description Run on load
          */
         run(['$window', '$rootScope', function( $window, $rootScope ){
+            // Initialize FastClick right out of the gate
             if( angular.isDefined($window['FastClick']) ){
                 FastClick.attach(document.body);
             }
 
+            // List of available body classes
             $rootScope.bodyClasses = {
                 'loading'   : false,
                 'fixed-max' : false
@@ -136,7 +120,7 @@
         }
 
         // Before angular initializes, store the innerHTML of ng-view before its compiled
-        var $page = document.querySelector('section.page-body');
+        var $page = document.querySelector('main.page-body');
         window['PRE_COMPILED_VIEW'] = $page.innerHTML;
 
         // Purge all innerHTML contents. ALWAYS leave this here because angular can
