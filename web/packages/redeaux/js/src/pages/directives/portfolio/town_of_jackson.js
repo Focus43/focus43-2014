@@ -22,7 +22,7 @@ angular.module('redeaux.pages').
                     smoothWheelDist,
                     masterTimeline,
                     progressBar,
-                    markers;
+                    $markers;
 
                 /**
                  * document.body.scrollHeight computes inconsistently b/w chrome, firefox, and IE. This
@@ -47,19 +47,35 @@ angular.module('redeaux.pages').
                 }
 
                 /**
+                 * Normalize mousewheel (and especially OXS trackpad momentum scrolling)
+                 * http://stackoverflow.com/questions/5527601/normalizing-mousewheel-speed-across-browsers
+                 * @param e
+                 */
+                function normalizeMousewheel(e){
+                    var o = e,
+                        d = o.detail, w = o.wheelDelta,
+                        n = 225, n1 = n- 1, f;
+
+                    // Normalize delta
+                    d = d ? w && (f = w/d) ? d/f : -d/1.35 : w/120;
+                    // Quadratic scale if |d| > 1
+                    d = d < 1 ? d < -1 ? (-Math.pow(d, 2) - n1) / n : d : (Math.pow(d, 2) + n1) / n;
+                    // Delta *should* not be greater than 2...
+                    e.delta = Math.min(Math.max(d / 2, -1), 1);
+                }
+
+                /**
                  * Smooth scrolling: http://blog.bassta.bg/2013/05/smooth-page-scrolling-with-tweenmax/
                  * @param event
                  * @return void
                  */
                 function _onWheel(event){
                     event.preventDefault();
-
-                    var delta       = event.wheelDelta/120 || -(event.detail/3),
-                        scrolled    = _scrollPosition(),
-                        scrollCalc  = scrolled - parseInt(delta * smoothWheelDist);
-
+                    // Normalize mousewheel speed for consistency
+                    normalizeMousewheel(event);
+                    // Tween the scrollbar to specific location, implicitly tweening the timeline
                     Tween.to(scrollElement, smoothWheelTime, {
-                        scrollTo: {y:scrollCalc, autoKill:true},
+                        scrollTo: {y:(_scrollPosition() - parseInt(event.delta * smoothWheelDist)), autoKill:true},
                         ease: Power2.easeOut,
                         overwrite: 5
                     });
@@ -82,49 +98,126 @@ angular.module('redeaux.pages').
                  * @private
                  */
                 function _buildTimeline( linkedEl ){
-                    var timeline = new Timeline({paused:true, useFrames:false}),
-                        frame0   = linkedEl.querySelector('.frame-0'),
-                        frame1   = linkedEl.querySelector('.frame-1'),
-                        device   = frame1.querySelector('.device'),
-                        deviceIn = device.querySelector('.inner-l1'),
-                        frame2   = linkedEl.querySelector('.frame-2'),
-                        frame3   = linkedEl.querySelector('.frame-3');
+                    var masterTimeline  = new Timeline({paused:true, useFrames:false, smoothChildTiming:true}),
+                        _intro          = linkedEl.querySelector('.intro'),
+                        _screens        = linkedEl.querySelector('.screens'),
+                        _screensImgs    = _screens.querySelectorAll('img'),
+                        _screensSpans   = _screens.querySelectorAll('span'),
+                        _about          = linkedEl.querySelector('.about'),
+                        _video          = linkedEl.querySelector('.video');
 
-                    timeline._playByScroll = function( _label ){
+                    masterTimeline._playByScroll = function( _label, _duration ){
                         var labelPoint = this._labels[_label] / this.totalDuration();
                         // Tween to
-                        Tween.to(scrollElement, 2, {
+                        Tween.to(scrollElement, (_duration || 2), {
                             scrollTo: {y:((scrollableHeight - scrollElement.clientHeight) * labelPoint), autoKill:true},
                             ease: Power2.easeOut,
                             overwrite: 5
                         });
                     };
 
-                    return timeline.
-                        add('start').
-                        to(frame0, 15, {backgroundPositionY:'100%', backgroundPositionX:'100%'}).
-                        to(frame0.querySelector('small'), 2, {top:500, autoAlpha:0, ease:Power2.easeIn}, '-=14').
-                        to(frame0.querySelector('h1'), 2, {y:'-200%', autoAlpha:0, ease:Power2.easeOut}, '-=12').
-                        add('frame1').
-                        to(frame1, 2, {y:'-100%'}, '-=11.5').
-                        to(deviceIn, 2, {css:{className:'inner-l1 desktop'}}, '-=8').
-                        to(deviceIn, 2, {css:{className:'inner-l1 laptop'}}, '-=6').
-                        to(deviceIn, 2, {css:{className:'inner-l1 tablet'}}, '-=4').
-                        to(deviceIn, 2, {css:{className:'inner-l1 phone'}}, '-=2').
-                        to(device, 2, {rotationZ:-15, x:'-100%'}).
-                        staggerFromTo(frame1.querySelectorAll('.copy *'), 2.5, {autoAlpha:0,y:200}, {autoAlpha:1,y:0}, 0.65).
-                        to(frame1, 4, {}).
-                        to(frame1.querySelectorAll('.device, .copy'), 2, {y:'-75%', autoAlpha:0}).
-                        add('frame2').
-                        to(frame2, 2, {top:'-=100%'}, '-=2').
-                        to(frame2, 11, {backgroundPositionY:'100%', backgroundSize:'300% 300%', ease:Power2.easeOut}).
-                        fromTo(frame2.querySelector('img'), 3, {y:-1000}, {y:0}, '-=11').
-                        fromTo(frame2.querySelector('.col-sm-4'), 3, {x:800}, {x:0}, '-=9').
-                        to(frame2, 2, {}).
-                        add('frame3').
-                        set(frame3, {top:0}).
-                        fromTo(frame3, 2, {x:1000}, {x:0}).
-                        fromTo(frame3.querySelector('img'), 2, {x:-1500,autoAlpha:0}, {x:0,autoAlpha:1});
+                    masterTimeline.
+                        addLabel('intro').
+                        to(_intro, 3, {backgroundPositionY:'100%', backgroundPositionX:'100%'}).
+                        to(_intro.querySelector('small'), 2, {top:500, autoAlpha:0, ease:Power2.easeIn}, '-=2.5').
+                        to(_intro.querySelector('h1'), 2, {y:'-200%', autoAlpha:0, ease:Power2.easeOut}, '-=2').
+                        to(_intro, 2, {top:'-50%'},'-=1.5').
+
+                        addLabel('textual').
+                        to([_intro.querySelector('.textual'),_screens], 2, {top:'50%'}, '-=2').
+                        fromTo(_intro.querySelector('h3'), 1, {y:300}, {y:0}).
+                        staggerTo(_intro.querySelectorAll('h2, h3'), 1, {y:300, autoAlpha:0}, 0.5).
+                        to([_intro, _screens], 1, {y:'-50%'}, '-=1').
+
+                        addLabel('screens').
+                        to(_screensImgs[0], 1, {x:'-80%'}).
+                        to(_screensImgs[1], 1, {y:'-56%'}, '-=1').
+                        to(_screensImgs[2], 1, {x:'-20%',y:'-53%'}, '-=1').
+                        to(_screensSpans[0], 1, {x:'-30%',y:-20}, '-=1').
+                        to(_screensSpans[2], 1, {x:'30%',y:-20}, '-=1').
+                        fromTo(_screens.querySelector('.phonerize'), 0.5, {scale:0.8}, {scale:1, rotationY:30}, '-=1').
+                        staggerTo(_screensImgs, 1.5, {left:0,autoAlpha:0}, 0.5).
+                        staggerTo(_screensSpans, 1.5, {y:200,autoAlpha:0}, 0.5, '-=2.5').
+                        to(_screens.querySelector('.bg'), 4, {autoAlpha:1}, '-=3').
+
+                        addLabel('about').
+                        to(_about, 1, {y:'-100%'}, '-=2').
+
+                        addLabel('video').
+                        to(_video, 1, {y:'-100%'}, '-=1');
+
+//                    var video   = document.querySelector('video'),
+//                        canvas  = document.querySelector('canvas'),
+//                        context = canvas.getContext('2d'),
+//                        cw      = canvas.clientWidth, //Math.floor(canvas.clientWidth/100),
+//                        ch      = canvas.clientHeight;//Math.floor(canvas.clientHeight/100);
+//                    canvas.width = cw;
+//                    canvas.height = ch;
+//
+//                    var videoavail = false;
+//
+//                    //video.play();
+//
+//                    video.ondurationchange = function(){
+//                        masterTimeline.to(video, this.duration, {currentTime:'+=1'});
+//                        masterTimeline.invalidate().restart();
+//                        videoavail = true;
+//                        video.play();
+//                        console.log('playing');
+//
+//                        (function draw(v,c,w,h){
+//                            video.play();
+//                            c.drawImage(v,0,0,w,h);
+//                            video.pause();
+//                            setTimeout(draw,20,v,c,w,h);
+//                        })(video,context,cw,ch);
+//                    };
+
+                    return masterTimeline;
+
+//                    var timeline = new Timeline({paused:true, useFrames:false}),
+//                        frame0   = linkedEl.querySelector('.frame-0'),
+//                        frame1   = linkedEl.querySelector('.frame-1'),
+//                        device   = frame1.querySelector('.device'),
+//                        deviceIn = device.querySelector('.inner-l1'),
+//                        frame2   = linkedEl.querySelector('.frame-2'),
+//                        frame3   = linkedEl.querySelector('.frame-3');
+//
+//                    timeline._playByScroll = function( _label ){
+//                        var labelPoint = this._labels[_label] / this.totalDuration();
+//                        // Tween to
+//                        Tween.to(scrollElement, 2, {
+//                            scrollTo: {y:((scrollableHeight - scrollElement.clientHeight) * labelPoint), autoKill:true},
+//                            ease: Power2.easeOut,
+//                            overwrite: 5
+//                        });
+//                    };
+//
+//                    return timeline.
+//                        add('start').
+//                        to(frame0, 15, {backgroundPositionY:'100%', backgroundPositionX:'100%'}).
+//                        to(frame0.querySelector('small'), 2, {top:500, autoAlpha:0, ease:Power2.easeIn}, '-=14').
+//                        to(frame0.querySelector('h1'), 2, {y:'-200%', autoAlpha:0, ease:Power2.easeOut}, '-=12').
+//                        add('frame1').
+//                        to(frame1, 2, {y:'-100%'}, '-=11.5').
+//                        to(deviceIn, 2, {css:{className:'inner-l1 desktop'}}, '-=8').
+//                        to(deviceIn, 2, {css:{className:'inner-l1 laptop'}}, '-=6').
+//                        to(deviceIn, 2, {css:{className:'inner-l1 tablet'}}, '-=4').
+//                        to(deviceIn, 2, {css:{className:'inner-l1 phone'}}, '-=2').
+//                        to(device, 2, {rotationZ:-15, x:'-100%'}).
+//                        staggerFromTo(frame1.querySelectorAll('.copy *'), 2.5, {autoAlpha:0,y:200}, {autoAlpha:1,y:0}, 0.65).
+//                        to(frame1, 4, {}).
+//                        to(frame1.querySelectorAll('.device, .copy'), 2, {y:'-75%', autoAlpha:0}).
+//                        add('frame2').
+//                        to(frame2, 2, {top:'-=100%'}, '-=2').
+//                        to(frame2, 11, {backgroundPositionY:'100%', backgroundSize:'300% 300%', ease:Power2.easeOut}).
+//                        fromTo(frame2.querySelector('img'), 3, {y:-1000}, {y:0}, '-=11').
+//                        fromTo(frame2.querySelector('.col-sm-4'), 3, {x:800}, {x:0}, '-=9').
+//                        to(frame2, 2, {}).
+//                        add('frame3').
+//                        set(frame3, {top:0}).
+//                        fromTo(frame3, 2, {x:1000}, {x:0}).
+//                        fromTo(frame3.querySelector('img'), 2, {x:-1500,autoAlpha:0}, {x:0,autoAlpha:1});
                 }
 
                 /**
@@ -138,27 +231,34 @@ angular.module('redeaux.pages').
                     scrollElement       = scope._scrollTarget;
                     scrollPercent       = 0;
                     scrollableHeight    = _scrollableHeight();
-                    smoothWheelTime     = 0.6;
-                    smoothWheelDist     = 50;
+                    smoothWheelTime     = 0.65;
+                    smoothWheelDist     = 325;
                     masterTimeline      = _buildTimeline($element[0]);
                     progressBar         = $element[0].querySelector('.progress > .value');
-                    markers             = $element[0].querySelectorAll('.progress > .marker');
+                    $markers            = angular.element($element[0].querySelectorAll('.progress > .marker'));
 
                     // Set marker locations
-                    Array.prototype.slice.call(markers).forEach(function( node ){
-                        node.style.left = node.getAttribute('data-percent') + '%';
+                    angular.forEach($markers, function( node ){
+                        node.style.left = Math.round((masterTimeline.getLabelTime(node.getAttribute('data-label'))/masterTimeline._totalDuration)*100) + '%';
                     });
 
                     // Bind click event to markers
-                    angular.element(markers).on('click', function(){
-                        angular.element(markers).removeClass('active');
+                    $markers.on('click', function(){
+                        $markers.removeClass('active');
                         angular.element(this).addClass('active');
+                        var labelTime = masterTimeline.getLabelTime(this.getAttribute('data-label'));
                         Tween.to(scrollElement, 2, {
-                            scrollTo: {y:(scrollableHeight - scrollElement.clientHeight) * (+(this.getAttribute('data-percent'))/100), autoKill:true},
+                            //scrollTo: {y:(scrollableHeight - scrollElement.clientHeight) * (+(this.getAttribute('data-percent'))/100), autoKill:true},
+                            scrollTo: {y: (labelTime/masterTimeline._totalDuration) * (scrollableHeight - scrollElement.clientHeight), autoKill:true },
                             ease: Power2.easeOut,
                             overwrite: 5
                         });
                     });
+
+                    // "Autoplay"
+                    scope.autoplay = function(){
+                        masterTimeline._playByScroll('about', 12);
+                    };
 
                     // Kickoff events n' shit
                     $document.on('mousewheel DOMMouseScroll', _onWheel);
@@ -202,11 +302,13 @@ angular.module('redeaux.pages').
                      * is a quick way to tell where the mouseWheel event should be bound as there are
                      * inconsistencies b/w webkit and everyone else.
                      * @type {*|function()|$on|$on|$on|$on}
+                     * @todo: more bullet-proof implementation of determining/waiting to init so the scroll
+                     * bug error doesn't get caught
                      */
                     var $unregister = $rootScope.$on('$viewContentLoaded', function(){
                         $timeout(function(){
                             $scope._scrollTarget = Utilities.determineBodyScrollElement();
-                        }, 15);
+                        }, 100);
                     });
 
                     /**

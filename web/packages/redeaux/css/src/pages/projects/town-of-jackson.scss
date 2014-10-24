@@ -1,9 +1,9 @@
-.page-content[portfolio-toj]{@include background-image(linear-gradient(#f1f1f1, #c1c1c1 65%, #f1f1f1));
-  .progress {line-height:1;position:fixed;top:0;left:20%;right:20%;width:auto;height:5px;z-index:2;display:block;background:rgba($magenta, 0.45);@include border-radius(0);
+.page-content[portfolio-toj]{
+  .progress {line-height:1;position:fixed;top:0;left:20%;right:20%;width:auto;height:5px;z-index:3;display:block;background:rgba($magenta, 0.45);@include border-radius(0);@include transform(translateZ(0));@include backface-visibility(hidden);
     &::after {opacity:0.4;display:block;content:'';width:100%;top:100%;left:0;height:10px;background:transparent url('#{$image-path}/timeline-notches.png') repeat-x;background-position:0 100%;}
     .value {width:0;height:100%;background:$magenta;display:block;}
-    .marker {color:$magenta;width:24px;margin-left:-11px;margin-top:8px;position:absolute;top:100%;text-align:center;display:inline-block;padding:5px;
-      &:hover, &.active {color:darken($magenta, 20%);}
+    .marker {text-align:center;line-height:0;padding-top:20px;margin-top:15px;display:inline-block;position:absolute;top:100%;width:40px;height:40px;margin-left:-20px;background:transparent url('#{$image-path}svg/rounded_hex.svg') no-repeat 50% 50%;background-size:contain;@include transform(scale(1) translateY(0));@include transition(all 0.2s ease);
+      &:hover, &.active {color:darken($lime-green, 20%);@include transform(scale(1.3) translateY(4px));}
     }
   }
 
@@ -19,51 +19,78 @@
   }
 
   .tabular {position:absolute;top:100%;overflow:hidden;
-    &.frame-0 {top:0;background:url('/packages/redeaux/_scratch/snake_river.jpg') no-repeat 50% 0;background-size:auto 150%;}
-    &.frame-1{}
-    &.frame-2{background:url('http://miriadna.com/desctopwalls/images/max/Grand-Teton-National-Park.jpg') no-repeat 50% 0;background-size:200% 200%;}
-    &.frame-3{background:#e0587b;}
+    &.intro {top:0;}
+    &.screens{}
+//    &.frame-1{}
+//    &.frame-2{background:url('http://miriadna.com/desctopwalls/images/max/Grand-Teton-National-Park.jpg') no-repeat 50% 0;background-size:200% 200%;}
+//    &.frame-3{background:#e0587b;}
   }
 
-  .frame-0 {
-    h1 {margin:0;text-transform:uppercase;font-weight:900;font-size:8rem;line-height:7rem;@include text-shadow(0 1px 1px #000);}
+  .intro {background:url('/packages/redeaux/_scratch/snake_river.jpg') no-repeat 50% 0;background-size:auto 150%;
+    h1 {padding:0 2rem;margin:0;text-transform:uppercase;font-weight:900;font-size:8rem;line-height:7rem;@include text-shadow(0 1px 1px #000);}
     .instruct {position:relative;color:darken($light-blue,25%);display:inline-block;margin-top:2rem;text-transform:uppercase;padding:0.4rem 0.8rem;font-size:15px;font-weight:500;font-family:$font-family-sans-serif;background:rgba($light-blue,0.8);@include text-shadow(0 1px 0 #fff);@include border-radius(24px);@include animation(bob 2s infinite);
       i {line-height:0;font-size:30px;position:relative;top:4px;}
     }
-  }
-
-  .frame-1 {color:#333;
-    .device {display:inline-block;position:relative;@include perspective(1000px);@include transform-style(preserve-3d);@include backface-visibility(hidden);
-      .inner-l1 {position:relative;margin:0 auto;padding:20px;background:#333;@include box-shadow(0 0 25px #000);@include transform(translateY(-15%));@include border-radius(5px 5px 0 0);
-        &::before, &::after {display:block;content:'';position:absolute;background:#bbb;@include border-radius(0 0 5px 5px);@include transition(all 0.2s ease-out);}
-        .inner-l2 {width:100%;height:100%;background-repeat:no-repeat;background-position:50% 50%;background-size:cover;@include transition(all 0.5s ease);}
-
-        &.desktop {width:760px;height:504px;
-          &::before {top:100%;left:0;width:100%;height:15%;}
-          &::after {background:transparent;top:115%;width:40%;left:50%;margin-left:-20%;border-bottom:80px solid #bbb;border-left:15px solid transparent;border-right:15px solid transparent;}
-          .inner-l2 {background-image:url('#{$image-path}portfolio/toj/desktop.jpg');}
-        }
-
-        &.laptop {width:600px;height:425px;background:#0f0f0f;
-          &::before {top:100%;width:120%;left:0;height:6%;margin-left:-10%;}
-          .inner-l2 {background-image:url('#{$image-path}portfolio/toj/laptop.jpg');}
-        }
-
-        &.tablet {width:447px;height:570px;background:#535353;padding:40px;@include border-radius(10px);@include transform(translateY(0));
-          .inner-l2 {background-image:url('#{$image-path}portfolio/toj/ipad.jpg');}
-        }
-
-        &.phone {width:286px;height:560px;background:#280b0b;padding:45px 12px;@include border-radius(10px);@include transform(translateY(0));
-          .inner-l2 {background-image:url('#{$image-path}portfolio/toj/iphone.jpg');}
-        }
-      }
+    p {background:#000;display:inline-block;margin:0 auto;padding:10px;margin:1rem;}
+    .textual {position:absolute;top:100%;left:0;width:100%;height:50%;background:url('/packages/redeaux/_scratch/toj/antlersblur.jpg') no-repeat 50% 50%;background-size:cover;@include text-shadow(0 1px 0 #000);
+      .tabular {top:0;position:relative;}
+      h2 {font-size:400%;padding:0 2rem;font-family:'Permanent Marker', cursive;}
+      h3 {max-width:75%;margin:0 auto;}
     }
-    .copy {position:absolute;max-width:50%;top:0;right:0;bottom:0;padding:2rem;}
   }
 
-  .frame-2 {
+  .screens {@include background-image(linear-gradient(#f1f1f1, #c1c1c1 65%, #f1f1f1));
+    .bg {opacity:0;position:absolute;top:0;right:0;bottom:0;left:0;background:url('/packages/redeaux/_scratch/toj/bg_blue_abstract.jpg') 50% 50%;background-size:cover;}
+    .phonerize {position:relative;height:80%;min-width:20%;z-index:1;}//@include transform-style(preserve-3d);}
+    img {max-height:100%;position:absolute;top:50%;left:50%;@include transform(translate3d(-50%,-50%,0));
+      &:nth-of-type(1) {z-index:3;}
+      &:nth-of-type(2) {z-index:2;}
+      &:nth-of-type(3) {z-index:1;}
+    }
+    .shadower {display:none;width:30%;height:25px;position:absolute;top:105%;left:50%;margin-left:-15%;background:#000;@include filter(blur(20px));@include transform(rotateZ(6deg) translateZ(0));}
+  }
+
+  .about {
 
   }
+
+  .video {
+    video {position:absolute;top:0;left:100%;}
+    canvas {position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;z-index:1;}
+  }
+
+//  .frame-1 {color:#333;
+//    .device {display:inline-block;position:relative;@include perspective(1000px);@include transform-style(preserve-3d);@include backface-visibility(hidden);
+//      .inner-l1 {position:relative;margin:0 auto;padding:20px;background:#333;@include box-shadow(0 0 25px #000);@include transform(translateY(-15%));@include border-radius(5px 5px 0 0);
+//        &::before, &::after {display:block;content:'';position:absolute;background:#bbb;@include border-radius(0 0 5px 5px);@include transition(all 0.2s ease-out);}
+//        .inner-l2 {width:100%;height:100%;background-repeat:no-repeat;background-position:50% 50%;background-size:cover;@include transition(all 0.5s ease);}
+//
+//        &.desktop {width:760px;height:504px;
+//          &::before {top:100%;left:0;width:100%;height:15%;}
+//          &::after {background:transparent;top:115%;width:40%;left:50%;margin-left:-20%;border-bottom:80px solid #bbb;border-left:15px solid transparent;border-right:15px solid transparent;}
+//          .inner-l2 {background-image:url('#{$image-path}portfolio/toj/desktop.jpg');}
+//        }
+//
+//        &.laptop {width:600px;height:425px;background:#0f0f0f;
+//          &::before {top:100%;width:120%;left:0;height:6%;margin-left:-10%;}
+//          .inner-l2 {background-image:url('#{$image-path}portfolio/toj/laptop.jpg');}
+//        }
+//
+//        &.tablet {width:447px;height:570px;background:#535353;padding:40px;@include border-radius(10px);@include transform(translateY(0));
+//          .inner-l2 {background-image:url('#{$image-path}portfolio/toj/ipad.jpg');}
+//        }
+//
+//        &.phone {width:286px;height:560px;background:#280b0b;padding:45px 12px;@include border-radius(10px);@include transform(translateY(0));
+//          .inner-l2 {background-image:url('#{$image-path}portfolio/toj/iphone.jpg');}
+//        }
+//      }
+//    }
+//    .copy {position:absolute;max-width:50%;top:0;right:0;bottom:0;padding:2rem;}
+//  }
+//
+//  .frame-2 {
+//
+//  }
 }
 
 @include keyframes(bob){

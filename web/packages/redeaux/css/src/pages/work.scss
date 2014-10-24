@@ -6,7 +6,7 @@
       &:after {opacity:0;z-index:-1;display:block;content:'';position:absolute;top:0;right:0;bottom:0;left:0;@include background-image(radial-gradient(80px 80px, rgba(#1d1d1d, 0.45) 0px, transparent 300px));@include transition(all 0.5s ease);}
 
       &.toj {width:calc(100% * 3/3);height:calc(100% * 1/4);
-        &:before {background-image:url('http://miriadna.com/desctopwalls/images/max/Grand-Teton-National-Park.jpg');}
+        &:before {background-image:url('/packages/redeaux/_scratch/toj/antlersblur.jpg');}
       }
 
       &.svalinn {width:calc(100% * 1/3);height:calc(100% * 2/4);top:calc(100% * 1/4);

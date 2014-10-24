@@ -1,11 +1,10 @@
 <div class="page-content" portfolio-toj>
     <div class="progress">
         <span class="value"></span>
-        <a class="marker" data-percent="0">&diams;</a>
-        <a class="marker" data-percent="25">&diams;</a>
-        <a class="marker" data-percent="50">&diams;</a>
-        <a class="marker" data-percent="75">&diams;</a>
-        <a class="marker" data-percent="100">&diams;</a>
+        <a class="marker" data-label="intro">1</a>
+        <a class="marker" data-label="textual">2</a>
+        <a class="marker" data-label="screens">3</a>
+        <a class="marker" data-label="about">4</a>
     </div>
 
     <aside>
@@ -15,11 +14,56 @@
         </div>
     </aside>
 
-    <div class="tabular frame-0">
+    <div class="tabular intro">
         <div class="cellular">
             <h1>Town Of Jackson</h1>
             <small class="instruct">Scroll <i class="fa fa-angle-down"></i></small>
+            <p ng-click="autoplay()">Or autoplay...</p>
         </div>
+        <div class="textual">
+            <div class="tabular">
+                <div class="cellular">
+                    <h2>Design. Development. SEO Roadmap. Management Planning.</h2>
+                    <h3>Focus43 was hired to lead all project phases: discovery, planning, design and implementation.</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabular screens">
+        <div class="cellular">
+            <div class="bg"></div>
+            <div class="phonerize">
+                <img src="/packages/redeaux/_scratch/toj/phone1.png" />
+                <img src="/packages/redeaux/_scratch/toj/phone2.png" />
+                <img src="/packages/redeaux/_scratch/toj/phone3.png" />
+                <span class="shadower"></span>
+                <span class="shadower"></span>
+                <span class="shadower"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabular about">
+        <div class="cellular">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-5">
+                        <h4>Award-Winning Municipal Design</h4>
+                    </div>
+                    <div class="col-sm-7">
+                        <img src="/packages/redeaux/_scratch/toj/phone_round2.png" style="max-height:750px;" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tabular video">
+        <video preload autoplay>
+            <source src="/packages/redeaux/_scratch/handwriting.mp4" type="video/mp4" />
+        </video>
+        <canvas></canvas>
     </div>
 
     <div class="tabular frame-1">
