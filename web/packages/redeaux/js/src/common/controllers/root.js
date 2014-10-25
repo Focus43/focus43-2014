@@ -20,7 +20,6 @@ angular.module('redeaux.common').
 
             // When ng-view changes, set a new transition class
             $rootScope.$on('$viewContentLoaded', function(){
-                console.log('-- content loaded --');
                 $scope.transitionClass = _transitions[Math.floor(Math.random() * _transitions.length)];
             });
         }

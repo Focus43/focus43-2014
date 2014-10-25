@@ -13,10 +13,10 @@
 @mixin scrollbars($color, $width:6px){
   ::-webkit-scrollbar {width:$width;}
   ::-webkit-scrollbar-button {display:none;visibility:hidden;}
-  ::-webkit-scrollbar-track {background:lighten($color,20%);@include border-radius($width);
+  ::-webkit-scrollbar-track {background:lighten($color,20%);//@include border-radius($width);
     &:hover {background:lighten($color,25%);}
   }
-  ::-webkit-scrollbar-thumb {background:$color;@include border-radius($width);
+  ::-webkit-scrollbar-thumb {background:$color;//@include border-radius($width);
     &:hover {background:lighten($color,5%);}
   }
 }

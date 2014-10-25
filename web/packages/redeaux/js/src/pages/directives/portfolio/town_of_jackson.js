@@ -1,4 +1,5 @@
 /* global Power2 */
+/* global SteppedEase */
 angular.module('redeaux.pages').
 
     /**
@@ -81,6 +82,12 @@ angular.module('redeaux.pages').
                     });
                 }
 
+//                var canvas  = document.querySelector('canvas'),
+//                    context = canvas.getContext('2d');
+//                canvas.width = canvas.clientWidth;
+//                canvas.height = canvas.clientHeight;
+//                canvas._useFrame = 0;
+
                 /**
                  * Animation loop function, called on every tick
                  * @return void
@@ -89,6 +96,12 @@ angular.module('redeaux.pages').
                     scrollPercent = _scrollPosition() / (scrollableHeight - document.body.clientHeight); //element.scrollTop / (element.scrollHeight - element.clientHeight)
                     masterTimeline.progress(scrollPercent);
                     Tween.to(progressBar, 0.5, {width:Math.round(masterTimeline.progress()*100)+'%', overwrite:5});
+
+//                    if( canvas._frameCollection && canvas._useFrame > 0 ){
+//                        context.clearRect(0,0,canvas.width,canvas.height);
+//                        var img = canvas._frameCollection[Math.round(canvas._useFrame)];
+//                        context.drawImage(img,0,0,canvas.width,canvas.height);
+//                    }
                 }
 
                 /**
@@ -144,34 +157,26 @@ angular.module('redeaux.pages').
                         to(_about, 1, {y:'-100%'}, '-=2').
 
                         addLabel('video').
-                        to(_video, 1, {y:'-100%'}, '-=1');
+                        to(_video, 1, {y:'-100%'});
+                        //to(_video, 1, {autoAlpha:1});
+                        //to(_video, 1, {y:'-100%'}, '-=1');
 
-//                    var video   = document.querySelector('video'),
-//                        canvas  = document.querySelector('canvas'),
-//                        context = canvas.getContext('2d'),
-//                        cw      = canvas.clientWidth, //Math.floor(canvas.clientWidth/100),
-//                        ch      = canvas.clientHeight;//Math.floor(canvas.clientHeight/100);
-//                    canvas.width = cw;
-//                    canvas.height = ch;
+//                    var imgCollection = [];
+//                    (function loadFrames( frame, totalFrames, path ){
+//                        var img = new Image();
+//                        img.onload = function(){
+//                            imgCollection.push(this);
+//                            frame++;
+//                            if(frame <= totalFrames){
+//                                loadFrames(frame,totalFrames,path);
+//                            }else{
+//                                canvas._frameCollection = imgCollection;
+//                            }
+//                        };
+//                        img.src = path.replace('%s',frame);
+//                    })(0, 26, '/packages/redeaux/_scratch/frames5/%s.jpg');
 //
-//                    var videoavail = false;
-//
-//                    //video.play();
-//
-//                    video.ondurationchange = function(){
-//                        masterTimeline.to(video, this.duration, {currentTime:'+=1'});
-//                        masterTimeline.invalidate().restart();
-//                        videoavail = true;
-//                        video.play();
-//                        console.log('playing');
-//
-//                        (function draw(v,c,w,h){
-//                            video.play();
-//                            c.drawImage(v,0,0,w,h);
-//                            video.pause();
-//                            setTimeout(draw,20,v,c,w,h);
-//                        })(video,context,cw,ch);
-//                    };
+//                    masterTimeline.fromTo(canvas, 2, {_useFrame:0}, {_useFrame: 26, ease:SteppedEase.config(26)}, '-=1');
 
                     return masterTimeline;
 
@@ -233,7 +238,7 @@ angular.module('redeaux.pages').
                     scrollableHeight    = _scrollableHeight();
                     smoothWheelTime     = 0.65;
                     smoothWheelDist     = 325;
-                    masterTimeline      = _buildTimeline($element[0]);
+                    masterTimeline      = window['tl'] = _buildTimeline($element[0]);
                     progressBar         = $element[0].querySelector('.progress > .value');
                     $markers            = angular.element($element[0].querySelectorAll('.progress > .marker'));
 

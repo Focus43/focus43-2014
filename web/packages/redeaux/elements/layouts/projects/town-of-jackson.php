@@ -60,10 +60,13 @@
     </div>
 
     <div class="tabular video">
-        <video preload autoplay>
-            <source src="/packages/redeaux/_scratch/handwriting.mp4" type="video/mp4" />
+        <!--<canvas></canvas>-->
+        <video autoplay loop>
+            <source src="/packages/redeaux/_scratch/timelapse.mp4" type="video/mp4" />
         </video>
-        <canvas></canvas>
+        <div class="cellular">
+            <h1>Get In Touch</h1>
+        </div>
     </div>
 
     <div class="tabular frame-1">

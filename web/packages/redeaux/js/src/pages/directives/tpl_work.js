@@ -21,6 +21,10 @@ angular.module('redeaux.pages').
                         scope.animClass = ANIMATION_CLASS;
                     });
                 });
+
+                angular.forEach($element[0].querySelectorAll('[data-bg]'), function( node ){
+                    node.style.backgroundImage = 'url('+node.getAttribute('data-bg')+')';
+                });
             }
 
             return {
