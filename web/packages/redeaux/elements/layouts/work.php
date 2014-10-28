@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12">
-                <a class="item tabular" href="/work/town-of-jackson" preload="/packages/redeaux/_scratch/toj/antlersblur.jpg" data-blocking>
+                <a class="item tabular" href="/work/town_of_jackson" preload="/packages/redeaux/_scratch/toj/antlersblur.jpg" data-blocking>
                     <div class="cellular">Town Of Jackson</div>
                 </a>
             </div>

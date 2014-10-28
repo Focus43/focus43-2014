@@ -2,7 +2,7 @@
     <header class="tabular">
         <span style="background-image:url('/packages/redeaux/images/portfolio/cultivar.jpg');"></span>
         <div class="cellular">
-            <h1>Some title in this bitch yeaaaaa</h1>
+            <h1><?php echo Page::getCurrentPage()->getCollectionName(); ?></h1>
         </div>
     </header>
 

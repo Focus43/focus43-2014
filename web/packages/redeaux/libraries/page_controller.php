@@ -33,7 +33,12 @@
          * @return void
          */
         public function on_start(){
-            $this->determineView();
+            $headers = getallheaders();
+            if( $headers['x-angularized'] ){
+                $v = View::getInstance();
+                //$v->setThemeByPath('/' . Request::get()->getRequestPath(), 'angularized');
+                $v->setThemeByPath($this->getCollectionObject()->getCollectionPath(), 'angularized');
+            }
 
             $this->_canEdit     = $this->pagePermissionObject()->canWrite();
             $this->_isEditMode  = $this->getCollectionObject()->isEditMode();
@@ -45,21 +50,6 @@
             if( $this->_canEdit ){ array_push($classes, 'cms-admin'); }
             if( $this->_isEditMode ){ array_push($classes, 'cms-editing'); }
             $this->set('cmsClasses', join(' ', $classes));
-        }
-
-
-        /**
-         * If x-angularized is passed in the header, this takes care of returning
-         * only the relevant page partial.
-         * @return void
-         */
-        protected function determineView(){
-            $headers = getallheaders();
-            if( $headers['x-angularized'] ){
-                $v = View::getInstance();
-                //$v->setThemeByPath('/' . Request::get()->getRequestPath(), 'angularized');
-                $v->setThemeByPath($this->getCollectionObject()->getCollectionPath(), 'angularized');
-            }
         }
 
 

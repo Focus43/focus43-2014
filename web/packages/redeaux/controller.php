@@ -7,7 +7,7 @@
 
 	    protected $pkgHandle 			= self::PACKAGE_HANDLE;
 	    protected $appVersionRequired 	= '5.6.2.1';
-	    protected $pkgVersion 			= '0.05';
+	    protected $pkgVersion 			= '0.01';
 	
 		
 		/**
@@ -60,7 +60,16 @@
          * @dependency concrete_redis package
          */
         private function checkDependencies(){
-            // none required
+            // test for the redis package
+            $redisPackage 		= Package::getByHandle('concrete_redis');
+            $redisPackageAvail 	= false;
+            if( ($redisPackage instanceof Package) && ((bool)$redisPackage->isPackageInstalled()) ){
+                $redisPackageAvail = true;
+            }
+
+            if( !$redisPackageAvail ){
+                throw new Exception('Redeaux depends on the ConcreteRedis package.');
+            }
         }
 	    
 		
@@ -93,6 +102,7 @@
 				 ->setupUserAttributes()
 				 ->setupTheme()
 				 ->setupPageTypes()
+                 ->assignPageTypes()
                  ->setupSinglePages();
 		}
 
@@ -184,12 +194,26 @@
         /**
          * @return RedeauxPackage
          */
+        function assignPageTypes(){
+            // Assign Home to CollectionType 'Home'
+            Page::getByID(1)->update(array(
+                'ctID' => $this->pageType('home')->getCollectionTypeID()
+            ));
+
+            return $this;
+        }
+
+
+        /**
+         * @return RedeauxPackage
+         */
         private function setupSinglePages(){
             SinglePage::add('/about', $this->packageObject());
             SinglePage::add('/experiments', $this->packageObject());
             SinglePage::add('/contact', $this->packageObject());
 
             SinglePage::add('/work', $this->packageObject());
+            SinglePage::add('/work/town_of_jackson', $this->packageObject());
 
             return $this;
         }
