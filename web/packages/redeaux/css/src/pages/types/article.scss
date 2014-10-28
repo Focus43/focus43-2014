@@ -1,6 +1,6 @@
 .page-content[tpl-article]{background:rgba(#441122, 0.85);
   header.tabular {margin-bottom:2rem;position:relative;min-height:45%;height:auto;overflow:hidden;@include box-shadow(0 0 10px rgba(0,0,0,0.65));@include text-shadow(0 1px 1px #000);
-    span[style]{display:block;position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:0;background-size:cover;background-position:50% 50%;@include filter(grayscale(90%));@include transform(rotate(-3deg) scale(1.2));}
+    span[style]{display:block;position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;z-index:0;background-size:cover;background-position:50% 50%;@include transform(rotate(-3deg) scale(1.2));}
     .cellular {position:relative;z-index:1;background:rgba(darken(#003580,20%), 0.65);
       h1 {padding:.6em .2em;}
     }

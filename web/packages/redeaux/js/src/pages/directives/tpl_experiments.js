@@ -5,10 +5,8 @@ angular.module('redeaux.pages').
      * @param $animate
      * @returns {{restrict: string, link: Function}}
      */
-    directive('tplExperiments', ['$animate',
-        function( $animate ){
-
-            var ANIMATION_CLASS = 'anim-experiments';
+    directive('tplExperiments', [
+        function(){
 
             /**
              * @param scope
@@ -16,11 +14,7 @@ angular.module('redeaux.pages').
              * @private
              */
             function _link( scope, $element ){
-                $animate.enter($element[0].parentNode, $element[0].parentNode.parentNode).then(function(){
-                    scope.$apply(function(){
-                        scope.animClass = ANIMATION_CLASS;
-                    });
-                });
+
             }
 
             return {

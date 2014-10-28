@@ -7,7 +7,7 @@
 
 	    protected $pkgHandle 			= self::PACKAGE_HANDLE;
 	    protected $appVersionRequired 	= '5.6.2.1';
-	    protected $pkgVersion 			= '0.04';
+	    protected $pkgVersion 			= '0.05';
 	
 		
 		/**
@@ -151,6 +151,10 @@
             try {
                 $themeObj = PageTheme::add('f43_redeaux', $this->packageObject());
                 $themeObj->applyToSite();
+            }catch(Exception $e){ /* fail gracefully */ }
+
+            try {
+                PageTheme::add('angularized', $this->packageObject());
             }catch(Exception $e){ /* fail gracefully */ }
 			
 			return $this;

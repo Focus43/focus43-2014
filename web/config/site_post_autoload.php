@@ -11,5 +11,9 @@
 		if( defined('PAGE_CACHE_LIBRARY') && (PAGE_CACHE_LIBRARY === 'Redis') ){
 			$classes['RedisPageCache'] = array('library', 'page_cache/type/redis', 'concrete_redis');
 		}
+        // @note: custom caching class for Focus43 angular site!
+        if( defined('PAGE_CACHE_LIBRARY') && (PAGE_CACHE_LIBRARY === 'Angular') ){
+            $classes['AngularPageCache'] = array('library', 'page_cache/type/angular', 'redeaux');
+        }
 		Loader::registerAutoload($classes);
 	}

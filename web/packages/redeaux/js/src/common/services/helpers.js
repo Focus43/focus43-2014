@@ -51,8 +51,8 @@ angular.module('redeaux.common').
     /**
      * @returns {{parseRule: Function, determineBodyScrollElement: Function}}
      */
-    factory('Utilities', [
-        function(){
+    factory('Utilities', ['$q', '$timeout',
+        function( $q, $timeout ){
 
             /**
              * Get the value of a property defined in a stylesheet for a given selector.
@@ -82,15 +82,21 @@ angular.module('redeaux.common').
              * test that will return the proper element to bind listeners to.
              * @note Always use this inside of a timeout() with at least 15ms to ensure
              * that DOM rendering is complete before running this test!
-             * @returns {HTMLElement}
-             * @private
              * @ref: https://bugs.webkit.org/show_bug.cgi?id=106133
+             * @returns {promise|*|Function|*|promise|Function|promise|promise|promise|promise|promise}
+             * @private
              */
             function _bodyScrollingElement(){
-                if( document.body.scrollHeight > document.body.clientHeight ){
-                    return document.body;
-                }
-                return document.documentElement;
+                var defer = $q.defer();
+
+                $timeout(function(){
+                    if( document.body.scrollHeight > document.body.clientHeight ){
+                        defer.resolve(document.body);
+                    }
+                    defer.resolve(document.documentElement);
+                }, 100);
+
+                return defer.promise;
             }
 
             return {

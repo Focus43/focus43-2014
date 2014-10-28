@@ -113,14 +113,14 @@ module.exports = function( gulp ){
      * Watch tasks
      */
     gulp.task('watch', function(){
-        livereload.listen();
+        //livereload.listen();
         gulp.watch(_packagePath('css/src/**/*.scss'), ['sass:dev']);
         gulp.watch(_packagePath('js/src/**/*.js'), ['js:app:dev']);
 
         // Livereload only on *.css (NOT .scss) file changes!
-        gulp.watch(_packagePath('css/*.css')).on('change', function(file){
-            livereload.changed(file.path);
-        });
+//        gulp.watch(_packagePath('css/*.css')).on('change', function(file){
+//            livereload.changed(file.path);
+//        });
     });
 
 };

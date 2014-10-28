@@ -7,17 +7,14 @@ div[tpl-home]{width:100%;height:100%;position:relative;
     // Base layers (sky/mtns)
     .base {left:-3rem;width:calc(100% + 6rem);z-index:0;
       .layer {left:3rem;width:120%;
-        &.sky {background-image:url('#{$image-path}theme/sky.jpg');background-position:50% 0;}
-        &.mtn {background-image:url('#{$image-path}theme/mtns.png');background-position:50% 100%;}
+        &.sky {background-position:50% 0;}
+        &.mtn {background-position:50% 100%;}
       }
     }
+
     // Depth layers  (shards)
     .depths {z-index:1;
-      .layer {left:-25%;width:150%;
-        &.z3 {background-image:url('#{$image-path}theme/z3.png');}
-        &.z2 {background-image:url('#{$image-path}theme/z2.png');}
-        &.z1 {background-image:url('#{$image-path}theme/z1.png');}
-      }
+      .layer {left:-25%;width:150%;}
     }
   }
 

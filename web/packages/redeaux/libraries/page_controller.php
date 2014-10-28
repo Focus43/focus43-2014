@@ -2,6 +2,8 @@
 
     class RedeauxPageController extends Controller {
 
+        protected $supportsPageCache = true;
+
         /** @property $_pageElement string */
         protected $_pageElement = 'page_types/default';
 
@@ -14,19 +16,12 @@
         /** @property $_isEditMode bool : Set in on_start method */
         protected $_isEditMode = false;
 
-
         /**
          * Base controller's view method.
          * @return void
          */
         public function view(){
             $this->set('pageElement', $this->_pageElement);
-
-            $headers = getallheaders();
-            if( $headers['x-angularized'] ){
-                $this->renderPartial();
-                exit;
-            }
 
             if( $this->_includeThemeAssets === true ){
                 $this->attachThemeAssets( $this );
@@ -38,6 +33,8 @@
          * @return void
          */
         public function on_start(){
+            $this->determineView();
+
             $this->_canEdit     = $this->pagePermissionObject()->canWrite();
             $this->_isEditMode  = $this->getCollectionObject()->isEditMode();
 
@@ -56,10 +53,13 @@
          * only the relevant page partial.
          * @return void
          */
-        protected function renderPartial(){
-            Loader::packageElement("layouts/{$this->_pageElement}", RedeauxPackage::PACKAGE_HANDLE, array(
-                'c' => $this->getCollectionObject()
-            ));
+        protected function determineView(){
+            $headers = getallheaders();
+            if( $headers['x-angularized'] ){
+                $v = View::getInstance();
+                //$v->setThemeByPath('/' . Request::get()->getRequestPath(), 'angularized');
+                $v->setThemeByPath($this->getCollectionObject()->getCollectionPath(), 'angularized');
+            }
         }
 
 

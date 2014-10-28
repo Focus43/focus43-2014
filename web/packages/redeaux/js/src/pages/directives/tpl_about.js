@@ -3,15 +3,12 @@ angular.module('redeaux.pages').
     /**
      * @description Template handler
      * @param $document
-     * @param $animate
      * @param ApplicationPaths
      * @param Breakpoints
      * @returns {{restrict: string, link: Function, scope: boolean, controller: Array}}
      */
-    directive('tplAbout', ['$document', '$animate', 'Breakpoints',
-        function( $document, $animate, Breakpoints ){
-
-            var ANIMATION_CLASS = 'anim-about';
+    directive('tplAbout', ['$document', 'Breakpoints',
+        function( $document, Breakpoints ){
 
             /**
              * Directive linker.
@@ -20,13 +17,6 @@ angular.module('redeaux.pages').
              * @private
              */
             function _link( scope, $element ){
-                // Trigger addClass animations
-                $animate.enter($element[0].parentNode, $element[0].parentNode.parentNode).then(function(){
-                    scope.$apply(function(){
-                        scope.animClass = ANIMATION_CLASS;
-                    });
-                });
-
                 // On window resize event callback, to adjust instagram include
                 function onWindowResize(){
                     scope.$apply(function(){
@@ -59,17 +49,4 @@ angular.module('redeaux.pages').
                 }]
             };
         }
-    ]).
-
-    /**
-     * @description Animation handler
-     * @returns {{addClass: Function}}
-     */
-    animation('.anim-about', [function(){
-        return {
-            addClass: function(el, className, done){
-                console.log('about_view_ready');
-                done();
-            }
-        };
-    }]);
+    ]);

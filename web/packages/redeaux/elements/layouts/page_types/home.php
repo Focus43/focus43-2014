@@ -1,13 +1,13 @@
 <div tpl-home>
     <div id="parallax">
         <div class="base">
-            <div class="layer sky"></div>
-            <div class="layer mtn"></div>
+            <div class="layer sky" preload="/packages/redeaux/images/theme/sky.jpg" data-blocking></div>
+            <div class="layer mtn" preload="/packages/redeaux/images/theme/mtns.png" data-blocking></div>
         </div>
         <div class="depths">
-            <div class="layer z3"></div>
-            <div class="layer z2"></div>
-            <div class="layer z1"></div>
+            <div class="layer z3" preload="/packages/redeaux/images/theme/z3.png" data-blocking></div>
+            <div class="layer z2" preload="/packages/redeaux/images/theme/z2.png" data-blocking></div>
+            <div class="layer z1" preload="/packages/redeaux/images/theme/z1.png" data-blocking></div>
         </div>
     </div>
 
@@ -23,7 +23,7 @@
         </div>
     </div>
 
-    <div class="page-content" style="display:none;">
+    <div class="page-content" style="">
         <svg class="slant" version="1.1" width="200" height="200" x="0" y="0" viewBox="0 0 200 200" preserveAspectRatio="none">
             <!--<path stroke="none" d="M0 0 L 200 0 L 125 200 L 0 200 Z" />-->
             <path stroke="none" d="M100 0 L200 0 L100 200 L0 200 Z" />

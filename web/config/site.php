@@ -22,7 +22,7 @@
 		// the following depend on the constant REDIS_CONNECTION_HANDLE being defined
 		if( defined('REDIS_CONNECTION_HANDLE') ){
 			// use Redis as the page cache library
-			define('PAGE_CACHE_LIBRARY', 'Redis');
+			define('PAGE_CACHE_LIBRARY', 'Angular');
 		
 			// if using the FluidDNS package
 			define('PAGE_TITLE_FORMAT', '%2$s');
@@ -61,7 +61,7 @@
             // the following depend on the constant REDIS_CONNECTION_HANDLE being defined
             if( defined('REDIS_CONNECTION_HANDLE') ){
                 // use Redis as the page cache library
-                define('PAGE_CACHE_LIBRARY', 'Redis');
+                define('PAGE_CACHE_LIBRARY', 'Angular');
                 // if using the FluidDNS package
                 define('PAGE_TITLE_FORMAT', '%2$s');
             }

@@ -25,26 +25,26 @@
                 $httpProvider.defaults.headers.common['x-angularized'] = true;
 
                 // AJAX request interceptor to show loading icon
-                $httpProvider.interceptors.push(['$rootScope', function( $rootScope ){
-                    return {
-                        request: function( _passthrough ){
-                            $rootScope.bodyClasses.loading = true;
-                            return _passthrough;
-                        },
-                        response: function( _passthrough ){
-                            $rootScope.bodyClasses.loading = false;
-                            return _passthrough;
-                        },
-                        requestError: function( _passthrough ){
-                            $rootScope.bodyClasses.loading = false;
-                            return _passthrough;
-                        },
-                        responseError: function( _passthrough ){
-                            $rootScope.bodyClasses.loading = false;
-                            return _passthrough;
-                        }
-                    };
-                }]);
+//                $httpProvider.interceptors.push(['$rootScope', function( $rootScope ){
+//                    return {
+//                        request: function( _passthrough ){
+//                            $rootScope.bodyClasses.loading = true;
+//                            return _passthrough;
+//                        },
+//                        response: function( _passthrough ){
+//                            $rootScope.bodyClasses.loading = false;
+//                            return _passthrough;
+//                        },
+//                        requestError: function( _passthrough ){
+//                            $rootScope.bodyClasses.loading = false;
+//                            return _passthrough;
+//                        },
+//                        responseError: function( _passthrough ){
+//                            $rootScope.bodyClasses.loading = false;
+//                            return _passthrough;
+//                        }
+//                    };
+//                }]);
 
                 // Enable HTML5 location mode
                 $locationProvider.html5Mode(true).hashPrefix('!');
@@ -55,14 +55,14 @@
                         precompiled: ['$templateCache', '$location', '$q', function( $templateCache, $location, $q ){
                             if( $templateCache.info().size === 0 ){
                                 var defer = $q.defer();
-                                $templateCache.put($location.path(), window['PRE_COMPILED_VIEW']);
+                                $templateCache.put($location.path() + '?xcache=1', window['PRE_COMPILED_VIEW']);
                                 defer.resolve();
                                 return defer.promise;
                             }
                         }]
                     },
                     templateUrl: function(params){
-                        return '/' + (params.page || '');
+                        return '/' + (params.page || '') + '?xcache=1';
                     }
                 });
 
@@ -102,7 +102,7 @@
 
             // List of available body classes
             $rootScope.bodyClasses = {
-                'loading'   : false,
+                //'loading'   : false,
                 'fixed-max' : false
             };
         }]);

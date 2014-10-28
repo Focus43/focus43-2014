@@ -1,4 +1,4 @@
-<div class="page-content" tpl-default ng-class="animClass">
+<div class="page-content" tpl-default>
     <div class="tabular">
         <div class="cellular">
             <h1>Default Layout</h1>

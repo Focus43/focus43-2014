@@ -5,10 +5,8 @@ angular.module('redeaux.pages').
      * @param $animate
      * @returns {{restrict: string, link: Function}}
      */
-    directive('tplWork', ['$animate',
-        function( $animate ){
-
-            var ANIMATION_CLASS = 'anim-work';
+    directive('tplWork', [
+        function(){
 
             /**
              * @param scope
@@ -16,15 +14,14 @@ angular.module('redeaux.pages').
              * @private
              */
             function _link( scope, $element ){
-                $animate.enter($element[0].parentNode, $element[0].parentNode.parentNode).then(function(){
-                    scope.$apply(function(){
-                        scope.animClass = ANIMATION_CLASS;
-                    });
-                });
-
-                angular.forEach($element[0].querySelectorAll('[data-bg]'), function( node ){
-                    node.style.backgroundImage = 'url('+node.getAttribute('data-bg')+')';
-                });
+//                var t = 150, i = 1;
+//                angular.forEach($element[0].querySelectorAll('[data-bg]'), function( node ){
+//                    node.style.backgroundImage = 'url('+node.getAttribute('data-bg')+')';
+//                    setTimeout(function(){
+//                        node.removeAttribute('data-bg');
+//                    }, (t * i));
+//                    i++;
+//                });
             }
 
             return {
@@ -43,18 +40,4 @@ angular.module('redeaux.pages').
                 ]
             };
         }
-    ]).
-
-
-    /**
-     * @description Animation handler
-     * @returns {{addClass: Function}}
-     */
-    animation('.anim-work', [function(){
-        return {
-            addClass: function(el, className, done){
-                console.log('work_view_ready');
-                done();
-            }
-        };
-    }]);
+    ]);

@@ -1,4 +1,4 @@
-<div class="page-content" tpl-article ng-class="animClass">
+<div class="page-content" tpl-article>
     <header class="tabular">
         <span style="background-image:url('/packages/redeaux/images/portfolio/cultivar.jpg');"></span>
         <div class="cellular">

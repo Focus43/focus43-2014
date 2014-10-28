@@ -10,8 +10,6 @@ angular.module('redeaux.pages').
     directive('tplContact', ['$document', '$animate',
         function( $document, $animate ){
 
-            var ANIMATION_CLASS = 'anim-contact';
-
             /**
              * Directive linker.
              * @param scope
@@ -21,13 +19,6 @@ angular.module('redeaux.pages').
              * removed though.
              */
             function _link( scope, $element ){
-                // Trigger addClass animations
-                $animate.enter($element[0].parentNode, $element[0].parentNode.parentNode).then(function(){
-                    scope.$apply(function(){
-                        scope.animClass = ANIMATION_CLASS;
-                    });
-                });
-
                 // Trigger video play
                 $element[0].querySelector('video').play();
 
@@ -103,22 +94,6 @@ angular.module('redeaux.pages').
             };
         }
     ]).
-
-
-    /**
-     * @description Animation handler
-     * @todo: figure out why video autoplay doesn't work with animations set here
-     * @returns {{addClass: Function}}
-     */
-    animation('.anim-contact', [function(){
-        return {
-            addClass: function(el, className, done){
-                console.log('contact_view_ready');
-                //el[0].querySelector('video').play();
-                done();
-            }
-        };
-    }]).
 
 
     /**

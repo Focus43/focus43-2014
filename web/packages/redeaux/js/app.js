@@ -25,26 +25,26 @@
                 $httpProvider.defaults.headers.common['x-angularized'] = true;
 
                 // AJAX request interceptor to show loading icon
-                $httpProvider.interceptors.push(['$rootScope', function( $rootScope ){
-                    return {
-                        request: function( _passthrough ){
-                            $rootScope.bodyClasses.loading = true;
-                            return _passthrough;
-                        },
-                        response: function( _passthrough ){
-                            $rootScope.bodyClasses.loading = false;
-                            return _passthrough;
-                        },
-                        requestError: function( _passthrough ){
-                            $rootScope.bodyClasses.loading = false;
-                            return _passthrough;
-                        },
-                        responseError: function( _passthrough ){
-                            $rootScope.bodyClasses.loading = false;
-                            return _passthrough;
-                        }
-                    };
-                }]);
+//                $httpProvider.interceptors.push(['$rootScope', function( $rootScope ){
+//                    return {
+//                        request: function( _passthrough ){
+//                            $rootScope.bodyClasses.loading = true;
+//                            return _passthrough;
+//                        },
+//                        response: function( _passthrough ){
+//                            $rootScope.bodyClasses.loading = false;
+//                            return _passthrough;
+//                        },
+//                        requestError: function( _passthrough ){
+//                            $rootScope.bodyClasses.loading = false;
+//                            return _passthrough;
+//                        },
+//                        responseError: function( _passthrough ){
+//                            $rootScope.bodyClasses.loading = false;
+//                            return _passthrough;
+//                        }
+//                    };
+//                }]);
 
                 // Enable HTML5 location mode
                 $locationProvider.html5Mode(true).hashPrefix('!');
@@ -55,14 +55,14 @@
                         precompiled: ['$templateCache', '$location', '$q', function( $templateCache, $location, $q ){
                             if( $templateCache.info().size === 0 ){
                                 var defer = $q.defer();
-                                $templateCache.put($location.path(), window['PRE_COMPILED_VIEW']);
+                                $templateCache.put($location.path() + '?xcache=1', window['PRE_COMPILED_VIEW']);
                                 defer.resolve();
                                 return defer.promise;
                             }
                         }]
                     },
                     templateUrl: function(params){
-                        return '/' + (params.page || '');
+                        return '/' + (params.page || '') + '?xcache=1';
                     }
                 });
 
@@ -102,7 +102,7 @@
 
             // List of available body classes
             $rootScope.bodyClasses = {
-                'loading'   : false,
+                //'loading'   : false,
                 'fixed-max' : false
             };
         }]);
@@ -246,6 +246,324 @@ angular.module('redeaux.common').
             ]
         };
     }]);
+angular.module('redeaux.common').
+
+    directive('preloadHandlerZ', ['$q',
+        function( $q ){
+
+            function processPreloadCollection(mainDefer, list){
+                var promises = [];
+
+                angular.forEach(list, function( data ){
+                    var nodeDefer = $q.defer(),
+                        nodeType  = data.element.tagName.toLowerCase();
+
+                    if( nodeType === 'video' ){
+                        angular.element(data.element).on('canplaythrough', function(){
+                            data.loaded = true;
+                            mainDefer.notify(data);
+                            nodeDefer.resolve();
+                        });
+
+                    }else{
+                        var img = new Image();
+                        img.onload = function(){
+                            if( nodeType === 'img' ){
+                                data.element.setAttribute('src', data.element.getAttribute('preload'));
+                            }else{
+                                data.element.style.backgroundImage = 'url('+data.element.getAttribute('preload')+')';
+                            }
+                            data.loaded = true;
+                            mainDefer.notify(data);
+                            nodeDefer.resolve();
+                        };
+                        img.onerror = function(){
+                            data.loaded = false;
+                            mainDefer.notify(data);
+                            mainDefer.reject();
+                        };
+                        img.src = data.element.getAttribute('preload');
+                    }
+
+                    if( data.blocking === true ){
+                        promises.push(nodeDefer.promise);
+                    }
+                });
+
+                $q.all(promises).then(function(){
+                    mainDefer.resolve();
+                });
+            }
+
+
+            function _link( scope, $element, attrs, CtrlPreloadHandler ){
+
+                function onSuccess(){
+                    CtrlPreloadHandler.toggleLoading(false);
+                }
+
+                function onFailure(){
+                    CtrlPreloadHandler.toggleLoading(false);
+                }
+
+                function onNotify( data ){
+                    if( ! data.loaded ){
+                        console.log('ERROR LOADING: ', data);
+                        return;
+                    }
+                    scope.preloadData.currentDefer.notifications++;
+                    scope.preloadData.progress = Math.round((scope.preloadData.currentDefer.notifications / scope.preloadData.currentDefer.listLength) * 100);
+                    console.log(scope.preloadData.progress, scope.preloadData.currentDefer.notifications + '/' + scope.preloadData.currentDefer.listLength, data);
+                }
+
+//                scope.$watchCollection('preloadData.collection', function( list ){
+//                    if( list.length ){
+//                        CtrlPreloadHandler.toggleLoading(true);
+//                        scope.preloadData.currentDefer               = $q.defer();
+//                        scope.preloadData.currentDefer.notifications = 0;
+//                        scope.preloadData.currentDefer.listLength    = list.length;
+//                        scope.preloadData.currentDefer.promise.then(
+//                            onSuccess, onFailure, onNotify
+//                        );
+//                        processPreloadCollection(scope.preloadData.currentDefer, list);
+//                    }
+//                }, true);
+            }
+
+            return {
+                restrict: 'A',
+                link: _link,
+                scope: false,
+                controller: ['$rootScope', '$scope', '$q',
+                    function( $rootScope, $scope, $q ){
+                        var instanceCount = 1;
+
+                        $scope.testable = $q.defer();
+                        $scope.testable._count = instanceCount++;
+
+                        $rootScope.$on('$routeChangeStart', function(){
+                            $scope.testable = $q.defer();
+                            $scope.testable._count = instanceCount++;
+                            console.log($scope.testable);
+                        });
+
+                        this.getSomething = function(){
+                            console.log($scope.testable);
+                        };
+
+
+                        $scope.preloadData = {
+                            collection: [],
+                            progress: null,
+                            currentDefer: null
+                        };
+
+                        $scope.$watchCollection('preloadData.collection', function( list ){
+                            if( list.length ){
+                                console.log(list);
+                            }
+                        });
+
+                        $rootScope.$on('$routeChangeSuccess', function(){
+                            $scope.preloadData.collection   = [];
+                            $scope.preloadData.progress     = 0;
+                            $scope.preloadData.currentDefer = null;
+                        });
+
+                        this.pushToCollection = function( element ){
+                            $scope.preloadData.collection.push(element);
+                        };
+
+                        this.toggleLoading = function( bool ){
+                            $rootScope.$applyAsync(function(){
+                                $rootScope.bodyClasses.loading = angular.isDefined(bool) ? bool : !($rootScope.bodyClasses.loading);
+                            });
+                        };
+
+                        this.bindToPromise = function( _callback ){
+                            _callback.apply(this, [$scope.preloadData.currentDefer.promise]);
+                        };
+                    }
+                ]
+            };
+        }
+    ]).
+
+    directive('preloadZ', [function(){
+
+        function _link( scope, $element, attrs, CtrlPreloadHandler ){
+            CtrlPreloadHandler.pushToCollection({
+                element: $element[0],
+                blocking: angular.isDefined(attrs.blocking)
+            });
+        }
+
+        return {
+            restrict: 'A',
+            link: _link,
+            scope: false,
+            require: '^preloadHandler'
+        };
+    }]);
+
+//    directive('preloadable', ['$q',
+//        function( $q ){
+//
+//            function _link( scope, $element, attrs ){
+//                var promises = [],
+//                    preloads = $element[0].querySelectorAll('[preload]');
+//
+//                if( preloads.length ){
+//                    angular.forEach(preloads, function( node ){
+//                        var defer = $q.defer();
+//
+//                        switch( node.tagName.toLowerCase() ){
+//                            case 'video':
+//                                angular.element(node).on('canplaythrough', function(){
+//                                    defer.resolve();
+//                                });
+//                                break;
+//
+//                            case 'img':
+//                                var img = new Image();
+//                                img.onload = function(){
+//                                    node.setAttribute('src', node.getAttribute('data-src'));
+//                                    defer.resolve();
+//                                };
+//                                img.src = node.getAttribute('data-src');
+//                                break;
+//
+//                            default:
+//                                var img2 = new Image();
+//                                img2.onload = function(){
+//                                    node.style.backgroundImage = 'url('+node.getAttribute('data-src')+')';
+//                                    defer.resolve();
+//                                };
+//                                img2.src = node.getAttribute('data-src');
+//                        }
+//
+//                        promises.push(defer.promise);
+//                    });
+//                }
+//
+//                $q.all(promises).then(function(){
+//                    scope.status.resolve();
+//                });
+//            }
+//
+//            return {
+//                restrict: 'A',
+//                link: _link,
+//                controller: ['$scope', '$q', function( $scope, $q ){
+//                    $scope.status = $q.defer();
+//                    this.promise  = $scope.status.promise;
+//                }]
+//            };
+//        }
+//    ]);
+angular.module('redeaux.common').
+
+    factory('Preloader', ['$rootScope', '$q', function( $rootScope, $q ){
+
+        var staticID = 0;
+
+        $rootScope.preload = {};
+
+        function toggleLoading( bool ){
+            $rootScope.$applyAsync(function(){
+                $rootScope.bodyClasses.loading = angular.isDefined(bool) ? bool : !($rootScope.bodyClasses.loading);
+            });
+        }
+
+        function _onSuccess(){
+            console.log('success');
+        }
+
+        function _onFailure(){
+            console.log('failure');
+        }
+
+        function _onNotify(){
+            $rootScope.preload.completed++;
+            $rootScope.preload.progress = Math.round(($rootScope.preload.completed / $rootScope.preload.collection.length) * 100);
+        }
+
+        function _reset(){
+            $rootScope.preload.progress     = 0;
+            $rootScope.preload.completed    = 0;
+            $rootScope.preload.collection   = [];
+            $rootScope.preload.deferred     = $q.defer();
+            $rootScope.preload.deferred._id = staticID++;
+            $rootScope.preload.deferred.promise.then(_onSuccess, _onFailure, _onNotify);
+        }
+        _reset();
+
+        $rootScope.$on('$routeChangeStart', _reset);
+
+        $rootScope.$watchCollection('preload.collection', function( list ){
+            if( angular.isArray(list) && list.length ){
+                toggleLoading(true);
+                $q.all( list ).then(function(){
+                    toggleLoading(false);
+                    $rootScope.preload.deferred.resolve();
+                });
+            }
+        });
+
+        return {
+            toggleLoading: toggleLoading,
+            pushToCollection: function( promise ){
+                $rootScope.preload.collection.push(promise);
+            },
+            queue: function( _callback ){
+                _callback.apply($rootScope, [$rootScope.preload.deferred]);
+            },
+            promise: function(){
+                return $rootScope.preload.deferred.promise;
+            }
+        };
+    }]).
+
+    directive('preload', ['$q', 'Preloader', function( $q, Preloader ){
+
+        function _link( scope, $element, attrs ){
+
+            Preloader.queue(function( deferQueue ){
+                var deferInstance = $q.defer(),
+                    elementType   = $element[0].tagName.toLowerCase();
+
+                if( elementType === 'video' ){
+                    $element.on('canplaythrough', function(){
+                        deferQueue.notify();
+                        deferInstance.resolve();
+                    });
+
+                }else{
+                    var image = new Image();
+                    image.onload = function(){
+                        if( elementType === 'img' ){
+                            $element.attr('src', attrs.preload);
+                        }else{
+                            $element.css('backgroundImage', 'url('+attrs.preload+')');
+                        }
+                        deferQueue.notify();
+                        deferInstance.resolve();
+                    };
+                    image.src = attrs.preload;
+                }
+
+                if( angular.isDefined(attrs.blocking) ){
+                    Preloader.pushToCollection(deferInstance.promise);
+                }
+            });
+        }
+
+        return {
+            restrict:   'A',
+            link:       _link,
+            scope:      false
+        };
+    }]);
 /* global Modernizr */
 /* global TimelineLite */
 /* global TimelineMax */
@@ -348,8 +666,8 @@ angular.module('redeaux.common').
     /**
      * @returns {{parseRule: Function, determineBodyScrollElement: Function}}
      */
-    factory('Utilities', [
-        function(){
+    factory('Utilities', ['$q', '$timeout',
+        function( $q, $timeout ){
 
             /**
              * Get the value of a property defined in a stylesheet for a given selector.
@@ -379,15 +697,21 @@ angular.module('redeaux.common').
              * test that will return the proper element to bind listeners to.
              * @note Always use this inside of a timeout() with at least 15ms to ensure
              * that DOM rendering is complete before running this test!
-             * @returns {HTMLElement}
-             * @private
              * @ref: https://bugs.webkit.org/show_bug.cgi?id=106133
+             * @returns {promise|*|Function|*|promise|Function|promise|promise|promise|promise|promise}
+             * @private
              */
             function _bodyScrollingElement(){
-                if( document.body.scrollHeight > document.body.clientHeight ){
-                    return document.body;
-                }
-                return document.documentElement;
+                var defer = $q.defer();
+
+                $timeout(function(){
+                    if( document.body.scrollHeight > document.body.clientHeight ){
+                        defer.resolve(document.body);
+                    }
+                    defer.resolve(document.documentElement);
+                }, 100);
+
+                return defer.promise;
             }
 
             return {
@@ -595,15 +919,12 @@ angular.module('redeaux.pages').
     /**
      * @description Template handler
      * @param $document
-     * @param $animate
      * @param ApplicationPaths
      * @param Breakpoints
      * @returns {{restrict: string, link: Function, scope: boolean, controller: Array}}
      */
-    directive('tplAbout', ['$document', '$animate', 'Breakpoints',
-        function( $document, $animate, Breakpoints ){
-
-            var ANIMATION_CLASS = 'anim-about';
+    directive('tplAbout', ['$document', 'Breakpoints',
+        function( $document, Breakpoints ){
 
             /**
              * Directive linker.
@@ -612,13 +933,6 @@ angular.module('redeaux.pages').
              * @private
              */
             function _link( scope, $element ){
-                // Trigger addClass animations
-                $animate.enter($element[0].parentNode, $element[0].parentNode.parentNode).then(function(){
-                    scope.$apply(function(){
-                        scope.animClass = ANIMATION_CLASS;
-                    });
-                });
-
                 // On window resize event callback, to adjust instagram include
                 function onWindowResize(){
                     scope.$apply(function(){
@@ -651,20 +965,7 @@ angular.module('redeaux.pages').
                 }]
             };
         }
-    ]).
-
-    /**
-     * @description Animation handler
-     * @returns {{addClass: Function}}
-     */
-    animation('.anim-about', [function(){
-        return {
-            addClass: function(el, className, done){
-                console.log('about_view_ready');
-                done();
-            }
-        };
-    }]);
+    ]);
 /* global Power2 */
 angular.module('redeaux.pages').
 
@@ -677,8 +978,6 @@ angular.module('redeaux.pages').
     directive('tplContact', ['$document', '$animate',
         function( $document, $animate ){
 
-            var ANIMATION_CLASS = 'anim-contact';
-
             /**
              * Directive linker.
              * @param scope
@@ -688,13 +987,6 @@ angular.module('redeaux.pages').
              * removed though.
              */
             function _link( scope, $element ){
-                // Trigger addClass animations
-                $animate.enter($element[0].parentNode, $element[0].parentNode.parentNode).then(function(){
-                    scope.$apply(function(){
-                        scope.animClass = ANIMATION_CLASS;
-                    });
-                });
-
                 // Trigger video play
                 $element[0].querySelector('video').play();
 
@@ -773,22 +1065,6 @@ angular.module('redeaux.pages').
 
 
     /**
-     * @description Animation handler
-     * @todo: figure out why video autoplay doesn't work with animations set here
-     * @returns {{addClass: Function}}
-     */
-    animation('.anim-contact', [function(){
-        return {
-            addClass: function(el, className, done){
-                console.log('contact_view_ready');
-                //el[0].querySelector('video').play();
-                done();
-            }
-        };
-    }]).
-
-
-    /**
      * @description Animation handler for form submission
      * @param TimelineHelper
      * @returns {{addClass: Function}}
@@ -814,10 +1090,8 @@ angular.module('redeaux.pages').
      * @param $animate
      * @returns {{restrict: string, link: Function}}
      */
-    directive('tplExperiments', ['$animate',
-        function( $animate ){
-
-            var ANIMATION_CLASS = 'anim-experiments';
+    directive('tplExperiments', [
+        function(){
 
             /**
              * @param scope
@@ -825,11 +1099,7 @@ angular.module('redeaux.pages').
              * @private
              */
             function _link( scope, $element ){
-                $animate.enter($element[0].parentNode, $element[0].parentNode.parentNode).then(function(){
-                    scope.$apply(function(){
-                        scope.animClass = ANIMATION_CLASS;
-                    });
-                });
+
             }
 
             return {
@@ -1067,10 +1337,8 @@ angular.module('redeaux.pages').
      * @param $animate
      * @returns {{restrict: string, link: Function}}
      */
-    directive('tplWork', ['$animate',
-        function( $animate ){
-
-            var ANIMATION_CLASS = 'anim-work';
+    directive('tplWork', [
+        function(){
 
             /**
              * @param scope
@@ -1078,15 +1346,14 @@ angular.module('redeaux.pages').
              * @private
              */
             function _link( scope, $element ){
-                $animate.enter($element[0].parentNode, $element[0].parentNode.parentNode).then(function(){
-                    scope.$apply(function(){
-                        scope.animClass = ANIMATION_CLASS;
-                    });
-                });
-
-                angular.forEach($element[0].querySelectorAll('[data-bg]'), function( node ){
-                    node.style.backgroundImage = 'url('+node.getAttribute('data-bg')+')';
-                });
+//                var t = 150, i = 1;
+//                angular.forEach($element[0].querySelectorAll('[data-bg]'), function( node ){
+//                    node.style.backgroundImage = 'url('+node.getAttribute('data-bg')+')';
+//                    setTimeout(function(){
+//                        node.removeAttribute('data-bg');
+//                    }, (t * i));
+//                    i++;
+//                });
             }
 
             return {
@@ -1105,36 +1372,21 @@ angular.module('redeaux.pages').
                 ]
             };
         }
-    ]).
-
-
-    /**
-     * @description Animation handler
-     * @returns {{addClass: Function}}
-     */
-    animation('.anim-work', [function(){
-        return {
-            addClass: function(el, className, done){
-                console.log('work_view_ready');
-                done();
-            }
-        };
-    }]);
+    ]);
 /* global Power2 */
 /* global SteppedEase */
 angular.module('redeaux.pages').
 
     /**
      * TOJ portfolio directive.
-     * @param $window
      * @param $document
      * @param $rootScope
      * @param Timeline
      * @param Tween
      * @returns {{restrict: string, link: Function, scope: boolean, controller: Array}}
      */
-    directive('portfolioToj', ['$window', '$document', '$rootScope', 'Timeline', 'Tween', 'TimelineHelper', 'Utilities',
-        function( $window, $document, $rootScope, Timeline, Tween, TimelineHelper, Utilities ){
+    directive('portfolioToj', ['$document', '$rootScope', 'Timeline', 'Tween',
+        function( $document, $rootScope, Timeline, Tween ){
 
             function _link( scope, $element ){
 
@@ -1204,26 +1456,14 @@ angular.module('redeaux.pages').
                     });
                 }
 
-//                var canvas  = document.querySelector('canvas'),
-//                    context = canvas.getContext('2d');
-//                canvas.width = canvas.clientWidth;
-//                canvas.height = canvas.clientHeight;
-//                canvas._useFrame = 0;
-
                 /**
                  * Animation loop function, called on every tick
                  * @return void
                  */
                 function _animationLoop(){
-                    scrollPercent = _scrollPosition() / (scrollableHeight - document.body.clientHeight); //element.scrollTop / (element.scrollHeight - element.clientHeight)
+                    scrollPercent = _scrollPosition() / (scrollableHeight - document.body.clientHeight);
                     masterTimeline.progress(scrollPercent);
                     Tween.to(progressBar, 0.5, {width:Math.round(masterTimeline.progress()*100)+'%', overwrite:5});
-
-//                    if( canvas._frameCollection && canvas._useFrame > 0 ){
-//                        context.clearRect(0,0,canvas.width,canvas.height);
-//                        var img = canvas._frameCollection[Math.round(canvas._useFrame)];
-//                        context.drawImage(img,0,0,canvas.width,canvas.height);
-//                    }
                 }
 
                 /**
@@ -1251,100 +1491,35 @@ angular.module('redeaux.pages').
                         });
                     };
 
-                    masterTimeline.
+                    return masterTimeline.
                         addLabel('intro').
                         to(_intro, 3, {backgroundPositionY:'100%', backgroundPositionX:'100%'}).
                         to(_intro.querySelector('small'), 2, {top:500, autoAlpha:0, ease:Power2.easeIn}, '-=2.5').
                         to(_intro.querySelector('h1'), 2, {y:'-200%', autoAlpha:0, ease:Power2.easeOut}, '-=2').
                         to(_intro, 2, {top:'-50%'},'-=1.5').
 
-                        addLabel('textual').
                         to([_intro.querySelector('.textual'),_screens], 2, {top:'50%'}, '-=2').
                         fromTo(_intro.querySelector('h3'), 1, {y:300}, {y:0}).
+                        addLabel('textual').
                         staggerTo(_intro.querySelectorAll('h2, h3'), 1, {y:300, autoAlpha:0}, 0.5).
                         to([_intro, _screens], 1, {y:'-50%'}, '-=1').
 
-                        addLabel('screens').
                         to(_screensImgs[0], 1, {x:'-80%'}).
                         to(_screensImgs[1], 1, {y:'-56%'}, '-=1').
                         to(_screensImgs[2], 1, {x:'-20%',y:'-53%'}, '-=1').
                         to(_screensSpans[0], 1, {x:'-30%',y:-20}, '-=1').
                         to(_screensSpans[2], 1, {x:'30%',y:-20}, '-=1').
                         fromTo(_screens.querySelector('.phonerize'), 0.5, {scale:0.8}, {scale:1, rotationY:30}, '-=1').
+                        addLabel('screens').
                         staggerTo(_screensImgs, 1.5, {left:0,autoAlpha:0}, 0.5).
                         staggerTo(_screensSpans, 1.5, {y:200,autoAlpha:0}, 0.5, '-=2.5').
                         to(_screens.querySelector('.bg'), 4, {autoAlpha:1}, '-=3').
 
-                        addLabel('about').
                         to(_about, 1, {y:'-100%'}, '-=2').
+                        addLabel('about').
 
-                        addLabel('video').
-                        to(_video, 1, {y:'-100%'});
-                        //to(_video, 1, {autoAlpha:1});
-                        //to(_video, 1, {y:'-100%'}, '-=1');
-
-//                    var imgCollection = [];
-//                    (function loadFrames( frame, totalFrames, path ){
-//                        var img = new Image();
-//                        img.onload = function(){
-//                            imgCollection.push(this);
-//                            frame++;
-//                            if(frame <= totalFrames){
-//                                loadFrames(frame,totalFrames,path);
-//                            }else{
-//                                canvas._frameCollection = imgCollection;
-//                            }
-//                        };
-//                        img.src = path.replace('%s',frame);
-//                    })(0, 26, '/packages/redeaux/_scratch/frames5/%s.jpg');
-//
-//                    masterTimeline.fromTo(canvas, 2, {_useFrame:0}, {_useFrame: 26, ease:SteppedEase.config(26)}, '-=1');
-
-                    return masterTimeline;
-
-//                    var timeline = new Timeline({paused:true, useFrames:false}),
-//                        frame0   = linkedEl.querySelector('.frame-0'),
-//                        frame1   = linkedEl.querySelector('.frame-1'),
-//                        device   = frame1.querySelector('.device'),
-//                        deviceIn = device.querySelector('.inner-l1'),
-//                        frame2   = linkedEl.querySelector('.frame-2'),
-//                        frame3   = linkedEl.querySelector('.frame-3');
-//
-//                    timeline._playByScroll = function( _label ){
-//                        var labelPoint = this._labels[_label] / this.totalDuration();
-//                        // Tween to
-//                        Tween.to(scrollElement, 2, {
-//                            scrollTo: {y:((scrollableHeight - scrollElement.clientHeight) * labelPoint), autoKill:true},
-//                            ease: Power2.easeOut,
-//                            overwrite: 5
-//                        });
-//                    };
-//
-//                    return timeline.
-//                        add('start').
-//                        to(frame0, 15, {backgroundPositionY:'100%', backgroundPositionX:'100%'}).
-//                        to(frame0.querySelector('small'), 2, {top:500, autoAlpha:0, ease:Power2.easeIn}, '-=14').
-//                        to(frame0.querySelector('h1'), 2, {y:'-200%', autoAlpha:0, ease:Power2.easeOut}, '-=12').
-//                        add('frame1').
-//                        to(frame1, 2, {y:'-100%'}, '-=11.5').
-//                        to(deviceIn, 2, {css:{className:'inner-l1 desktop'}}, '-=8').
-//                        to(deviceIn, 2, {css:{className:'inner-l1 laptop'}}, '-=6').
-//                        to(deviceIn, 2, {css:{className:'inner-l1 tablet'}}, '-=4').
-//                        to(deviceIn, 2, {css:{className:'inner-l1 phone'}}, '-=2').
-//                        to(device, 2, {rotationZ:-15, x:'-100%'}).
-//                        staggerFromTo(frame1.querySelectorAll('.copy *'), 2.5, {autoAlpha:0,y:200}, {autoAlpha:1,y:0}, 0.65).
-//                        to(frame1, 4, {}).
-//                        to(frame1.querySelectorAll('.device, .copy'), 2, {y:'-75%', autoAlpha:0}).
-//                        add('frame2').
-//                        to(frame2, 2, {top:'-=100%'}, '-=2').
-//                        to(frame2, 11, {backgroundPositionY:'100%', backgroundSize:'300% 300%', ease:Power2.easeOut}).
-//                        fromTo(frame2.querySelector('img'), 3, {y:-1000}, {y:0}, '-=11').
-//                        fromTo(frame2.querySelector('.col-sm-4'), 3, {x:800}, {x:0}, '-=9').
-//                        to(frame2, 2, {}).
-//                        add('frame3').
-//                        set(frame3, {top:0}).
-//                        fromTo(frame3, 2, {x:1000}, {x:0}).
-//                        fromTo(frame3.querySelector('img'), 2, {x:-1500,autoAlpha:0}, {x:0,autoAlpha:1});
+                        to(_video, 1, {y:'-100%'}).
+                        addLabel('video');
                 }
 
                 /**
@@ -1361,8 +1536,8 @@ angular.module('redeaux.pages').
                     smoothWheelTime     = 0.65;
                     smoothWheelDist     = 325;
                     masterTimeline      = window['tl'] = _buildTimeline($element[0]);
-                    progressBar         = $element[0].querySelector('.progress > .value');
-                    $markers            = angular.element($element[0].querySelectorAll('.progress > .marker'));
+                    progressBar         = $element[0].querySelector('.timeline-progress > .value');
+                    $markers            = angular.element($element[0].querySelectorAll('.timeline-progress > .marker'));
 
                     // Set marker locations
                     angular.forEach($markers, function( node ){
@@ -1384,7 +1559,7 @@ angular.module('redeaux.pages').
 
                     // "Autoplay"
                     scope.autoplay = function(){
-                        masterTimeline._playByScroll('about', 12);
+                        masterTimeline._playByScroll('video', 12);
                     };
 
                     // Kickoff events n' shit
@@ -1410,43 +1585,40 @@ angular.module('redeaux.pages').
                 scope.linkTearDown = function(){
                     $document.off('mousewheel DOMMouseScroll', _onWheel);
                     Tween.ticker.removeEventListener('tick', _animationLoop);
-                    masterTimeline.kill();
+                    if( angular.isObject(masterTimeline) ){
+                        masterTimeline.kill();
+                    }
                 };
             }
 
             return {
                 restrict: 'A',
                 link: _link,
-                scope:true,
-                controller: ['$rootScope', '$timeout', '$scope', function( $rootScope, $timeout, $scope ){
-                    $rootScope.bodyClasses['fixed-max'] = true;
+                scope: true,
+                controller: ['$rootScope', '$scope', '$q', 'Preloader', 'Utilities',
+                    function( $rootScope, $scope, $q, Preloader, Utilities ){
+                        $rootScope.bodyClasses['fixed-max'] = true;
 
-                    $scope.tlProgress = 0;
+                        /**
+                         * @see: See Utilities.determineScrollElement (determines where mousehweel event should be bound
+                         * as there are inconsistencies b/w webkit and everything else).
+                         */
+                        $q.all([
+                            Utilities.determineBodyScrollElement(),
+                            Preloader.promise()
+                        ]).then(function( resolved ){
+                            $scope._scrollTarget= resolved[0];
+                        });
 
-                    /**
-                     * On view content loaded, do a quick timeout (to allow for render update) and
-                     * test differences b/w "...scrollHeight" and "...clientHeight" on doc.body; this
-                     * is a quick way to tell where the mouseWheel event should be bound as there are
-                     * inconsistencies b/w webkit and everyone else.
-                     * @type {*|function()|$on|$on|$on|$on}
-                     * @todo: more bullet-proof implementation of determining/waiting to init so the scroll
-                     * bug error doesn't get caught
-                     */
-                    var $unregister = $rootScope.$on('$viewContentLoaded', function(){
-                        $timeout(function(){
-                            $scope._scrollTarget = Utilities.determineBodyScrollElement();
-                        }, 100);
-                    });
-
-                    /**
-                     * On scope destroy, clean errrthang up.
-                     */
-                    $scope.$on('$destroy', function(){
-                        $rootScope.bodyClasses['fixed-max'] = false;
-                        $unregister();
-                        $scope.linkTearDown();
-                    });
-                }]
+                        /**
+                         * On scope destroy, clean errrthang up.
+                         */
+                        $scope.$on('$destroy', function(){
+                            $rootScope.bodyClasses['fixed-max'] = false;
+                            $scope.linkTearDown();
+                        });
+                    }
+                ]
             };
         }
     ]);

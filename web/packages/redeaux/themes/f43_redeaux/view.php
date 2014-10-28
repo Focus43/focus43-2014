@@ -17,7 +17,7 @@
                 <?php echo $innerContent; ?>
             </main>
         </div>
-        <div class="spinnable"></div>
+        <?php Loader::packageElement('theme/loader', RedeauxPackage::PACKAGE_HANDLE); ?>
     </div>
 
 <?php Loader::element('footer_required'); // REQUIRED BY C5 // ?>

@@ -1,4 +1,4 @@
-<div class="page-content" tpl-contact ng-class="animClass">
+<div class="page-content" tpl-contact>
     <video autoplay loop>
         <source src="/packages/redeaux/_scratch/handwriting.mp4" type="video/mp4" />
     </video>
