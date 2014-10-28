@@ -33,11 +33,12 @@
          * @return void
          */
         public function on_start(){
-            $headers = getallheaders();
-            if( $headers['x-angularized'] ){
-                $v = View::getInstance();
-                //$v->setThemeByPath('/' . Request::get()->getRequestPath(), 'angularized');
-                $v->setThemeByPath($this->getCollectionObject()->getCollectionPath(), 'angularized');
+            //$headers = getallheaders();
+            //if( $headers['x-angularized'] ){
+            $headers = $this->normalizedRequestHeaders();
+            if( $headers['HTTP_X_ANGULARIZED'] ){
+                //View::getInstance()->setThemeByPath('/' . Request::get()->getRequestPath(), 'angularized');
+                View::getInstance()->setThemeByPath($this->getCollectionObject()->getCollectionPath(), 'angularized');
             }
 
             $this->_canEdit     = $this->pagePermissionObject()->canWrite();
@@ -50,6 +51,19 @@
             if( $this->_canEdit ){ array_push($classes, 'cms-admin'); }
             if( $this->_isEditMode ){ array_push($classes, 'cms-editing'); }
             $this->set('cmsClasses', join(' ', $classes));
+        }
+
+
+        /**
+         * getallheaders() is unreliable across environments (eg. w/ FastCGI in production on
+         * Pagodabox, unless its running PHP 5.4.x, it fails) - so to better parse the
+         * incoming HTTP request headers, use the $_SERVER variable here...
+         */
+        function normalizedRequestHeaders(){
+            $httpKeys = array_filter(array_keys($_SERVER), function($k){
+                return (bool) (strpos($k,'HTTP',0) !== false);
+            });
+            return array_intersect_key($_SERVER, array_flip($httpKeys));
         }
 
 

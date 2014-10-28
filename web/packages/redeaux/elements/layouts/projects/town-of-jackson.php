@@ -15,13 +15,13 @@
         </div>
     </aside>
 
-    <div class="tabular intro" preload="/packages/redeaux/_scratch/snake_river.jpg" data-blocking>
+    <div class="tabular intro" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/snake_river.jpg" data-blocking>
         <div class="cellular">
             <h1>Town Of Jackson</h1>
             <small class="instruct">Scroll <i class="fa fa-angle-down"></i></small>
             <p ng-click="autoplay()">Or autoplay...</p>
         </div>
-        <div class="textual" preload="/packages/redeaux/_scratch/toj/antlersblur.jpg" data-blocking>
+        <div class="textual" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/antlers.jpg" data-blocking>
             <div class="tabular">
                 <div class="cellular">
                     <h2>Design. Development. SEO Roadmap. Management Planning.</h2>
@@ -33,11 +33,11 @@
 
     <div class="tabular screens">
         <div class="cellular">
-            <div class="bg" preload="/packages/redeaux/_scratch/toj/bg_blue_abstract.jpg" data-blocking></div>
+            <div class="bg" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/blue_abstract.jpg" data-blocking></div>
             <div class="phonerize">
-                <img preload="/packages/redeaux/_scratch/toj/phone1.png" data-blocking />
-                <img preload="/packages/redeaux/_scratch/toj/phone2.png" data-blocking />
-                <img preload="/packages/redeaux/_scratch/toj/phone3.png" data-blocking />
+                <img preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/phone_r1.png" data-blocking />
+                <img preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/phone_r2.png" data-blocking />
+                <img preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/phone_r3.png" data-blocking />
                 <span class="shadower"></span>
                 <span class="shadower"></span>
                 <span class="shadower"></span>
@@ -50,10 +50,11 @@
             <div class="container">
                 <div class="row">
                     <div class="col-sm-5">
-                        <h4>Award-Winning Municipal Design</h4>
+                        <?php $a = new Area('Col:Left'); $a->display($c); ?>
                     </div>
                     <div class="col-sm-7">
-                        <img preload="/packages/redeaux/_scratch/toj/phone_round2.png" data-blocking style="max-height:750px;" />
+                        <?php $a = new Area('Col:Right'); $a->display($c); ?>
+                        <!--<img preload="/packages/redeaux/_scratch/toj/phone_round2.png" data-blocking style="max-height:750px;" />-->
                     </div>
                 </div>
             </div>
@@ -61,10 +62,13 @@
     </div>
 
     <div class="tabular video">
-        <video autoplay loop preload data-blocking>
+        <!--<video autoplay loop preload>
             <source src="/packages/redeaux/_scratch/timelapse_blur.mp4" type="video/mp4" />
-        </video>
-        <div class="cellular">
+        </video>-->
+        <div style="position:absolute;top:0;left:0;width:100%;height:100%;">
+            <?php $a = new Area('Section'); $a->display($c); ?>
+        </div>
+        <div class="cellular" style="position:relative;z-index:1;">
             <h1>Get In Touch</h1>
         </div>
     </div>
