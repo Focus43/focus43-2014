@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12">
-                <a class="item tabular" href="/work/town_of_jackson" preload="/packages/redeaux/_scratch/toj/antlersblur.jpg" data-blocking>
+                <a class="item tabular" href="/work/town_of_jackson" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/antlers.jpg" data-blocking>
                     <div class="cellular">Town Of Jackson</div>
                 </a>
             </div>
@@ -30,7 +30,7 @@
                 </div>
             </div>
             <div class="col-sm-6">
-                <a class="item item-2x tabular" preload="/packages/redeaux/_scratch/road_trip.jpg" data-blocking>
+                <a class="item item-2x tabular" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/trip_trax/road_trip.jpg" data-blocking>
                     <div class="cellular">TripTrax</div>
                 </a>
             </div>
