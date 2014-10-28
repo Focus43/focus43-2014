@@ -1,7 +1,14 @@
 <?php
 
     // SECRETS
-    require_once(dirname(__FILE__) . '/_settings.php');
+    //require_once(dirname(__FILE__) . '/_settings.php');
+
+    // Concrete5
+    define('PASSWORD_SALT', '6NVukfgwAgqaOi3SMlsWwEqURSe4Xh8pBApvhOauP7blC2kx1FKsHxcjGSXMqP3N');
+
+    // InstagramAPI
+    define('INSTAGRAM_CLIENT_ID', 'cb7fdefb22934501a5ea0b28852efaac');
+    define('INSTAGRAM_CLIENT_SECRET', '16477c60eefb43ee9debb6a052459c0c');
 	
 	/**
 	 * PAGODABOX PRODUCTION SETTINGS
