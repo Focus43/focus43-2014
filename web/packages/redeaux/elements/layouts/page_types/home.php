@@ -14,10 +14,13 @@
     <div class="page-content">
         <div class="tabular">
             <div class="cellular">
-                <div class="grouper">
+                <div class="grouper hidden-xs hidden-sm">
                     <span>Hi, we're</span>
                     <span>Focus43</span>
                     <span>web &amp; iOS <i class="fa fa-code"></i>s</span>
+                </div>
+                <div class="grouper visible-xs visible-sm" style="text-align:center;">
+                    <img src="<?php echo REDEAUX_IMAGE_PATH; ?>logo.png" alt="Logo" style="max-height:345px;" />
                 </div>
             </div>
         </div>
