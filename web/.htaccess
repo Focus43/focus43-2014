@@ -8,8 +8,8 @@
 
         #-- REDIRECT ANY DOMAINS THAT ARENT: test.org, lo.cal:**** (vagrant ssl), --#
         #-- or localhost:**** (vagrant normal) to "test.org" --#
-        RewriteCond %{HTTP_HOST} !^((focus-43\.com)|(lo\.cal(.*))|localhost(.*))$ [NC]
-        RewriteRule ^ http://focus-43.com%{REQUEST_URI} [L,R=301]
+        #RewriteCond %{HTTP_HOST} !^((focus-43\.com)|(lo\.cal(.*))|localhost(.*)|(10\.(.*))|(192\.(.*)))$ [NC]
+        #RewriteRule ^ http://focus-43.com%{REQUEST_URI} [L,R=301]
 
         #-- FORCE SITEWIDE HTTPS (UNCOMMENT BELOW) --#
         #RewriteCond %{HTTP:X-Forwarded-Proto} !https

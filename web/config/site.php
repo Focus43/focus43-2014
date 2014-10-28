@@ -1,4 +1,14 @@
 <?php
+
+    // SECRETS
+    //require_once(dirname(__FILE__) . '/_settings.php');
+
+    // Concrete5
+    define('PASSWORD_SALT', '6NVukfgwAgqaOi3SMlsWwEqURSe4Xh8pBApvhOauP7blC2kx1FKsHxcjGSXMqP3N');
+
+    // InstagramAPI
+    define('INSTAGRAM_CLIENT_ID', 'cb7fdefb22934501a5ea0b28852efaac');
+    define('INSTAGRAM_CLIENT_SECRET', '16477c60eefb43ee9debb6a052459c0c');
 	
 	/**
 	 * PAGODABOX PRODUCTION SETTINGS
@@ -19,7 +29,7 @@
 		// the following depend on the constant REDIS_CONNECTION_HANDLE being defined
 		if( defined('REDIS_CONNECTION_HANDLE') ){
 			// use Redis as the page cache library
-			define('PAGE_CACHE_LIBRARY', 'Redis');
+			define('PAGE_CACHE_LIBRARY', 'Angular');
 		
 			// if using the FluidDNS package
 			define('PAGE_TITLE_FORMAT', '%2$s');
@@ -58,7 +68,7 @@
             // the following depend on the constant REDIS_CONNECTION_HANDLE being defined
             if( defined('REDIS_CONNECTION_HANDLE') ){
                 // use Redis as the page cache library
-                define('PAGE_CACHE_LIBRARY', 'Redis');
+                define('PAGE_CACHE_LIBRARY', 'Angular');
                 // if using the FluidDNS package
                 define('PAGE_TITLE_FORMAT', '%2$s');
             }
@@ -93,7 +103,6 @@
     define('DB_USERNAME',   $_SERVER['DB1_USER']);
     define('DB_PASSWORD',   $_SERVER['DB1_PASS']);
 	define('DB_DATABASE',   $_SERVER['DB1_NAME']);
-	define('PASSWORD_SALT', '6NVukfgwAgqaOi3SMlsWwEqURSe4Xh8pBApvhOauP7blC2kx1FKsHxcjGSXMqP3N');
 	
 	// Sitemap.xml file
 	define('SITEMAPXML_FILE', 'files/sitemap.xml');

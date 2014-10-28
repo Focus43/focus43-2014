@@ -1,0 +1,10 @@
+.page-content[tpl-work]{background:#dbecf3;
+  .container-fluid {padding:$grid-gutter-width;}
+
+  $item-height-base:  250px;
+  $item-height-2x:    ($item-height-base * 2) + $grid-gutter-width;
+  .item {opacity:1;font-size:2.8rem;font-family:$font-family-grunge;min-height:$item-height-base;background-size:cover;background-position:50% 50%;margin-bottom:$grid-gutter-width;@include text-shadow(0 1px 0 #000);@include box-shadow(0 0 4px rgba(0,0,0,0.4));@include transform(translateY(0));@include transition(all 0.5s ease);
+    &.item-2x {min-height:$item-height-2x;}
+    &[data-bg] {opacity:0;@include transform(translateY(100px));}
+  }
+}

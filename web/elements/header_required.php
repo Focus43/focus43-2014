@@ -62,7 +62,7 @@ else {
     //echo '<meta name="generator" content="concrete5" />';
 }
 ?>
-<?php $u = new User(); if($u->isLoggedIn()): ?>
+<?php $u = new User(); if($u->isLoggedIn() || $c->getCollectionPath() === '/login'): ?>
 <script type="text/javascript">
 <?php
 	echo("var CCM_DISPATCHER_FILENAME = '" . DIR_REL . '/' . DISPATCHER_FILENAME . "';\r");
@@ -84,8 +84,6 @@ $html = Loader::helper('html');
 $this->addHeaderItem($html->css('ccm.base.css'), 'CORE');
 $this->addHeaderItem($html->javascript('jquery.js'), 'CORE');
 $this->addHeaderItem($html->javascript('ccm.base.js', false, true), 'CORE');
-else: // close conditional "if user is logged in stuff"
-$this->addFooterItem(Loader::helper('html')->javascript('jquery.js'), 'CORE');
 endif;
 
 $favIconFID=intval(Config::get('FAVICON_FID'));

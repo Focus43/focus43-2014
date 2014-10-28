@@ -1,0 +1,91 @@
+// Basics
+* {-webkit-font-smoothing:antialiased;}
+html, body {font-size:$font-size-base;height:100%;/*overflow:hidden;*/}
+body {overflow:hidden;}
+input, textarea, button, a {&:focus, &:active {outline:0 !important;@include box-shadow(none !important);}}
+a, a:hover, a:active {cursor:pointer;text-decoration:none !important;}
+img {@extend .img-responsive;display:inline-block;}
+.tabular {width:100%;height:100%;display:table;
+  .cellular {width:100%;height:100%;display:table-cell;vertical-align:middle;text-align:center;}
+}
+@include scrollbars(#153e4d, 8px);
+
+
+// headers
+header {
+  h1,h2,h3,h4,h5,h6 {text-align:center;}
+}
+
+#level-1, #level-2, .page-body, .page-content {width:100%;height:100%;position:relative;}
+
+#level-1 {background:url('#{$image-path}logo.png') no-repeat 25px 25px;background-size:70px;
+  &::after {color:#4a4a4a;text-transform:uppercase;content:'Web and iOS Development, Handmade In Wyoming';position:absolute;bottom:0;left:0;width:100%;display:block;text-align:center;padding:1rem;z-index:0;}
+}
+
+#level-2 {z-index:1;@include transform(translateZ(0) translateX(0));@include transition(all $sidebar-animate-time ease);
+  &::after {display:block;content:'';background:rgba(0,0,0,0.8);position:absolute;top:0;left:0;right:-3rem;bottom:0;z-index:9;visibility:hidden;opacity:0;@include transform(translateZ(0));@include transition(all $mask-animate-time ease);}
+}
+
+// Animations for <main> element (angular requires to be on a class)
+.page-body {position:absolute;top:0;left:0;}
+
+  .trnztn-1 {@include transform(translateY(0));@include transition(all 0.35s ease);
+    &.ng-leave {opacity:1;@include transform(translateY(0));
+      &.ng-leave-active {opacity:0;@include transform(translateY(100%));}
+    }
+    &.ng-enter {opacity:0;@include transform(translateY(-100%));
+      &.ng-enter-active {opacity:1;@include transform(translateY(0));}
+    }
+  }
+
+  .trnztn-2 {@include transform(translateY(0));@include transition(all 0.35s ease);
+    &.ng-leave {opacity:1;@include transform(translateY(0));
+      &.ng-leave-active {opacity:0;@include transform(translateY(100%));}
+    }
+    &.ng-enter {opacity:0;@include transform(translateY(100%));
+      &.ng-enter-active {opacity:1;@include transform(translateY(0));}
+    }
+  }
+
+  .trnztn-3 {@include transform(translateX(0));@include transition(all 0.35s ease);
+    &.ng-leave {opacity:1;@include transform(translateX(0));
+      &.ng-leave-active {opacity:0;@include transform(translateX(100%));}
+    }
+    &.ng-enter {opacity:0;@include transform(translateX(-100%));
+      &.ng-enter-active {opacity:1;@include transform(translateX(0));}
+    }
+  }
+
+  .trnztn-4 {@include transform(translateX(0));@include transition(all 0.35s ease);
+    &.ng-leave {opacity:1;@include transform(translateX(0));
+      &.ng-leave-active {opacity:0;@include transform(translateX(100%));}
+    }
+    &.ng-enter {opacity:0;@include transform(translateX(100%));
+      &.ng-enter-active {opacity:1;@include transform(translateX(0));}
+    }
+  }
+
+  .trnztn-5 {@include transform(scale(1));@include transition(all 0.35s ease);
+    &.ng-leave {opacity:1;@include transform(scale(1));
+      &.ng-leave-active {opacity:0;@include transform(scale(2));}
+    }
+    &.ng-enter {opacity:0;@include transform(scale(2));
+      &.ng-enter-active {opacity:1;@include transform(scale(1));}
+    }
+  }
+
+// main.page-body > .page-content
+.page-content {@include scrollOverflow;z-index:1;}
+
+// When viewing work projects, or specific pages where the content should be the
+// entire width, no navigation visible, and we control scrolling and such with
+// TweenLite/TimelineLite
+body.fixed-max {overflow:auto;
+  &::after {display:block;height:700%;width:1px;content:'';position:absolute;top:0;left:0;z-index:-1;}
+  #level-1 {position:fixed;padding:0;z-index:2;}
+  nav {right:-100%;opacity:0;visibility:hidden;}
+  .page-content {overflow:hidden;}
+}
+
+// Fix scroll overflow while in edit mode
+html.cms-admin .page-body {height:calc(100% - 49px);}

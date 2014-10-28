@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
 
   # Machine config
   box_settings[:vm_config] = {
-      :memory_cap => '384',
+      :memory_cap => '800',
       :port_forwards => {
           80 => 8080, # Apache (ie, :80 in the VM -> :8080 on your machine)
           443 => 4433, # SSL
@@ -58,7 +58,7 @@ Vagrant.configure("2") do |config|
               :version => '2.1.0',
               :gems => [# just examples...
                   {:name => 'bundler'},
-                  {:name => 'compass'}
+                  {:name => 'compass', :version => '~> 1.0.1'}
               ]
           }
       }
@@ -91,7 +91,10 @@ Vagrant.configure("2") do |config|
   # Memory usage cap
   begin
     config.vm.provider "virtualbox" do |v|
-      v.customize ['modifyvm', :id, '--memory', box_settings[:vm_config][:memory_cap]]
+      v.memory = 1024
+      v.cpus   = 1
+      v.customize ['modifyvm', :id, '--cpuexecutioncap', '50']
+      #v.customize ['modifyvm', :id, '--memory', box_settings[:vm_config][:memory_cap]]
     end
   rescue
     $stdout.puts "Unable to set resource usage for VirtualBox; proceeding with defaults..."

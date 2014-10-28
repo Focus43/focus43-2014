@@ -1,0 +1,34 @@
+// Cubed styles; by default, includes a dark magenta cube w/ *no* background settings
+.cubify {margin-bottom:16px;@include cubify(darken($magenta,30%),($grid-gutter-width/4));@include box-shadow(0 10px 20px rgba(0,0,0,.5));
+  &.cubify-magenta {background:$magenta;@include cubify(darken($magenta,30%),($grid-gutter-width/4));}
+  &.cubify-blue {background:$light-blue;@include cubify(darken($light-blue,20%),($grid-gutter-width/4));}
+  &.cubify-green {background:$lime-green;@include cubify(darken($lime-green,20%),($grid-gutter-width/4));}
+  &.cubify-orange {background:#df8505;@include cubify(darken(#df8505,20%),($grid-gutter-width/4));}
+}
+
+.page-content[tpl-contact]{
+  video {position:absolute;top:0;left:0;min-width:100%;min-height:100%;width:auto;height:auto;z-index:0;}
+
+  .tabular {position:relative;z-index:1;color:#1d1d1d;
+    form {max-width:$screen-sm;text-align:left;
+      .subheader {color:#fff;background:$magenta-step-up7_5;
+        h2 {margin:0;padding:1rem 1rem 0.8rem;text-align:center;background:$magenta-step-down15;}
+        p {text-align:left;margin:0;padding:$grid-gutter-width/2;}
+      }
+      .form-body {padding:0 $grid-gutter-width/2;margin:0;margin-left:-($grid-gutter-half);margin-right:-($grid-gutter-half);
+        .btn {@include button-variant(#fff, $magenta-step-up7_5, $magenta-step-up7_5);padding-left:0.5rem;padding-right:0.5rem;white-space:normal;
+          i {display:none;}
+          &.processing i {display:inline-block;}
+        }
+        &.sent {overflow:hidden;}
+      }
+    }
+  }
+
+  .map-instance {height:80%;
+    .map-info-window {color:#1a1a1a;text-align:center;
+      h1 {margin-top:0;}
+      h3 {margin-top:0;}
+    }
+  }
+}
