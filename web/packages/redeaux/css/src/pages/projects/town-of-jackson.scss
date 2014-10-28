@@ -21,7 +21,7 @@
   .tabular {position:absolute;top:100%;overflow:hidden;}
 
   .intro {top:0;background-position:50% 50%;background-size:auto 150%;
-    h1 {padding:0 2rem;margin:0;text-transform:uppercase;font-weight:900;font-size:8rem;line-height:7rem;@include text-shadow(0 1px 1px #000);}
+    h1 {padding:0 2rem;margin:0;text-transform:uppercase;font-weight:900;font-size:6rem;line-height:7rem;@include text-shadow(0 1px 1px #000);}
     .instruct {position:relative;color:darken($light-blue,25%);display:inline-block;margin-top:2rem;text-transform:uppercase;padding:0.4rem 0.8rem;font-size:15px;font-weight:500;font-family:$font-family-sans-serif;background:rgba($light-blue,0.8);@include text-shadow(0 1px 0 #fff);@include border-radius(24px);@include animation(bob 2s infinite);
       i {line-height:0;font-size:30px;position:relative;top:4px;}
     }

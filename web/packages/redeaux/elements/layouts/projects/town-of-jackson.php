@@ -17,6 +17,7 @@
 
     <div class="tabular intro" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/snake_river.jpg" data-blocking>
         <div class="cellular">
+            <img src="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/toj_logo.png" />
             <h1>Town Of Jackson</h1>
             <small class="instruct">Scroll <i class="fa fa-angle-down"></i></small>
             <p ng-click="autoplay()">Or autoplay...</p>
