@@ -18,7 +18,10 @@
     }
   }
 
-  .tabular {position:absolute;top:100%;overflow:hidden;}
+  .dock {position:absolute;top:100%;overflow:hidden;}
+  //.tabular {position:absolute;top:100%;overflow:hidden;}
+
+  .group-1 {position:absolute;top:0;width:100%;height:100%;z-index:2;}
 
   .intro {top:0;background-position:50% 50%;background-size:auto 150%;
     h1 {padding:0 2rem;margin:0;text-transform:uppercase;font-weight:900;font-size:6rem;line-height:7rem;@include text-shadow(0 1px 1px #000);}
@@ -26,12 +29,15 @@
       i {line-height:0;font-size:30px;position:relative;top:4px;}
     }
     p {background:#000;display:inline-block;margin:0 auto;padding:10px;margin:1rem;}
-    .textual {position:absolute;top:100%;left:0;width:100%;height:50%;background-position:50% 50%;background-size:cover;@include text-shadow(0 1px 0 #000);
-      .tabular {top:0;position:relative;}
-      h2 {font-size:400%;padding:0 2rem;font-family:$font-family-grunge;}
-      h3 {max-width:75%;margin:0 auto;}
-    }
   }
+
+  .brief {position:absolute;top:100%;left:0;width:100%;height:75%;background-position:50% 50%;background-size:cover;@include text-shadow(0 1px 0 #000);
+    .tabular {top:0;position:relative;}
+    h2 {font-size:400%;padding:0 2rem;font-family:$font-family-grunge;}
+    h3 {max-width:75%;margin:0 auto;}
+  }
+
+  .group-2 {width:100%;height:100%;}
 
   .screens {@include background-image(linear-gradient(#f1f1f1, #c1c1c1 65%, #f1f1f1));
     .bg {opacity:0;position:absolute;top:0;right:0;bottom:0;left:0;background-position:50% 50%;background-size:cover;}
@@ -42,6 +48,19 @@
       &:nth-of-type(3) {z-index:1;}
     }
     .shadower {display:none;width:30%;height:25px;position:absolute;top:105%;left:50%;margin-left:-15%;background:#000;@include filter(blur(20px));@include transform(rotateZ(6deg) translateZ(0));}
+  }
+
+  .trips {position:relative;width:100%;height:100%;
+    .holder {position:absolute;top:0;left:0;width:200%;height:100%;font-size:0;line-height:0;
+      .frame {display:inline-block;width:calc(100% * 1/4);height:100%;
+        &:nth-of-type(1){background:#0f0f0f;}
+        &:nth-of-type(2){background:#00ffff;}
+        &:nth-of-type(3){background:#280b0b;}
+        &:nth-of-type(4){background:#0000FF;}
+        .tabular {height:50%;}
+
+      }
+    }
   }
 
   .about {

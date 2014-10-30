@@ -15,38 +15,94 @@
         </div>
     </aside>
 
-    <div class="tabular intro" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/snake_river.jpg" data-blocking>
-        <div class="cellular">
-            <img src="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/toj_logo.png" />
-            <h1>Town Of Jackson</h1>
-            <small class="instruct">Scroll <i class="fa fa-angle-down"></i></small>
-            <p ng-click="autoplay()">Or autoplay...</p>
+    <div class="group-1">
+        <div class="tabular intro" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/snake_river.jpg" data-blocking>
+            <div class="cellular">
+                <img src="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/toj_logo.png" />
+                <h1>Town Of Jackson</h1>
+                <small class="instruct">Scroll <i class="fa fa-angle-down"></i></small>
+                <p ng-click="autoplay()">Or autoplay...</p>
+            </div>
         </div>
-        <div class="textual" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/antlers.jpg" data-blocking>
-            <div class="tabular">
-                <div class="cellular">
-                    <h2>Design. Development. SEO Roadmap. Management Planning.</h2>
-                    <h3>Focus43 was hired to lead all project phases: discovery, planning, design and implementation.</h3>
+
+        <div class="tabular brief" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/antlers.jpg" data-blocking>
+            <div class="cellular">
+                <h2>Design. Development. SEO Roadmap. Management Planning.</h2>
+                <h3>Focus43 was hired to lead all project phases: discovery, planning, design and implementation.</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="group-2 dock">
+        <div class="tabular screens">
+            <div class="cellular">
+                <div class="bg" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/blue_abstract.jpg" data-blocking></div>
+                <div class="phonerize">
+                    <img preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/phone_r1.png" data-blocking />
+                    <img preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/phone_r2.png" data-blocking />
+                    <img preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/phone_r3.png" data-blocking />
+                    <span class="shadower"></span>
+                    <span class="shadower"></span>
+                    <span class="shadower"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="trips">
+            <div class="holder">
+                <div class="frame">
+                    <div class="tabular" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/antlers.jpg" data-blocking>
+                        <div class="cellular">
+                            <h3>Say something mother fucker</h3>
+                        </div>
+                    </div>
+                    <div class="tabular">
+                        <div class="cellular">
+                            THis is a slide with content
+                        </div>
+                    </div>
+                </div>
+                <div class="frame">
+                    <div class="tabular" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/blue_abstract.jpg" data-blocking>
+                        <div class="cellular">
+                            <h3>Say something mother fucker</h3>
+                        </div>
+                    </div>
+                    <div class="tabular">
+                        <div class="cellular">
+                            THis is a slide with content
+                        </div>
+                    </div>
+                </div>
+                <div class="frame">
+                    <div class="tabular" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/antlers.jpg" data-blocking>
+                        <div class="cellular">
+                            <h3>Say something mother fucker</h3>
+                        </div>
+                    </div>
+                    <div class="tabular">
+                        <div class="cellular">
+                            THis is a slide with content
+                        </div>
+                    </div>
+                </div>
+                <div class="frame">
+                    <div class="tabular" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/blue_abstract.jpg" data-blocking>
+                        <div class="cellular">
+                            <h3>Say something mother fucker</h3>
+                        </div>
+                    </div>
+                    <div class="tabular">
+                        <div class="cellular">
+                            THis is a slide with content
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="tabular screens">
-        <div class="cellular">
-            <div class="bg" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/blue_abstract.jpg" data-blocking></div>
-            <div class="phonerize">
-                <img preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/phone_r1.png" data-blocking />
-                <img preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/phone_r2.png" data-blocking />
-                <img preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/phone_r3.png" data-blocking />
-                <span class="shadower"></span>
-                <span class="shadower"></span>
-                <span class="shadower"></span>
-            </div>
-        </div>
-    </div>
-
-    <div class="tabular about">
+    <div class="tabular about dock">
         <div class="cellular">
             <div class="container">
                 <div class="row">
@@ -62,7 +118,7 @@
         </div>
     </div>
 
-    <div class="tabular video">
+    <div class="tabular video dock">
         <!--<video autoplay loop preload>
             <source src="/packages/redeaux/_scratch/timelapse_blur.mp4" type="video/mp4" />
         </video>-->

@@ -3725,22 +3725,6 @@ header h1, header h2, header h3, header h4, header h5, header h6 {
   height: 100%;
   position: relative; }
 
-#level-1 {
-  background: url("/packages/redeaux/images/logo.png") no-repeat 25px 25px;
-  background-size: 70px; }
-  #level-1::after {
-    color: #4a4a4a;
-    text-transform: uppercase;
-    content: 'Web and iOS Development, Handmade In Wyoming';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    display: block;
-    text-align: center;
-    padding: 1rem;
-    z-index: 0; }
-
 #level-2 {
   z-index: 1;
   -moz-transform: translateZ(0) translateX(0);
@@ -4853,10 +4837,16 @@ body.loading .spinnable {
       -ms-transform: translateX(0) translateY(-50%);
       -webkit-transform: translateX(0) translateY(-50%);
       transform: translateX(0) translateY(-50%); }
-.page-content[portfolio-toj] .tabular {
+.page-content[portfolio-toj] .dock {
   position: absolute;
   top: 100%;
   overflow: hidden; }
+.page-content[portfolio-toj] .group-1 {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2; }
 .page-content[portfolio-toj] .intro {
   top: 0;
   background-position: 50% 50%;
@@ -4898,25 +4888,28 @@ body.loading .spinnable {
     margin: 0 auto;
     padding: 10px;
     margin: 1rem; }
-  .page-content[portfolio-toj] .intro .textual {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    height: 50%;
-    background-position: 50% 50%;
-    background-size: cover;
-    text-shadow: 0 1px 0 #000; }
-    .page-content[portfolio-toj] .intro .textual .tabular {
-      top: 0;
-      position: relative; }
-    .page-content[portfolio-toj] .intro .textual h2 {
-      font-size: 400%;
-      padding: 0 2rem;
-      font-family: "Permanent Marker", "Rokkitt", serif; }
-    .page-content[portfolio-toj] .intro .textual h3 {
-      max-width: 75%;
-      margin: 0 auto; }
+.page-content[portfolio-toj] .brief {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 75%;
+  background-position: 50% 50%;
+  background-size: cover;
+  text-shadow: 0 1px 0 #000; }
+  .page-content[portfolio-toj] .brief .tabular {
+    top: 0;
+    position: relative; }
+  .page-content[portfolio-toj] .brief h2 {
+    font-size: 400%;
+    padding: 0 2rem;
+    font-family: "Permanent Marker", "Rokkitt", serif; }
+  .page-content[portfolio-toj] .brief h3 {
+    max-width: 75%;
+    margin: 0 auto; }
+.page-content[portfolio-toj] .group-2 {
+  width: 100%;
+  height: 100%; }
 .page-content[portfolio-toj] .screens {
   background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgeDE9IjAuNSIgeTE9IjAuMCIgeDI9IjAuNSIgeTI9IjEuMCI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2YxZjFmMSIvPjxzdG9wIG9mZnNldD0iNjUlIiBzdG9wLWNvbG9yPSIjYzFjMWMxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZjFmMWYxIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmFkKSIgLz48L3N2Zz4g');
   background-size: 100%;
@@ -4968,6 +4961,32 @@ body.loading .spinnable {
     -ms-transform: rotateZ(6deg) translateZ(0);
     -webkit-transform: rotateZ(6deg) translateZ(0);
     transform: rotateZ(6deg) translateZ(0); }
+.page-content[portfolio-toj] .trips {
+  position: relative;
+  width: 100%;
+  height: 100%; }
+  .page-content[portfolio-toj] .trips .holder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200%;
+    height: 100%;
+    font-size: 0;
+    line-height: 0; }
+    .page-content[portfolio-toj] .trips .holder .frame {
+      display: inline-block;
+      width: calc(100% * 1/4);
+      height: 100%; }
+      .page-content[portfolio-toj] .trips .holder .frame:nth-of-type(1) {
+        background: #0f0f0f; }
+      .page-content[portfolio-toj] .trips .holder .frame:nth-of-type(2) {
+        background: #00ffff; }
+      .page-content[portfolio-toj] .trips .holder .frame:nth-of-type(3) {
+        background: #280b0b; }
+      .page-content[portfolio-toj] .trips .holder .frame:nth-of-type(4) {
+        background: #0000FF; }
+      .page-content[portfolio-toj] .trips .holder .frame .tabular {
+        height: 50%; }
 .page-content[portfolio-toj] .video {
   background: #0f0f0f; }
   .page-content[portfolio-toj] .video video {

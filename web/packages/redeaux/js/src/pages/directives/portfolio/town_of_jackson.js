@@ -1,3 +1,4 @@
+/* global Linear */
 /* global Power2 */
 /* global SteppedEase */
 angular.module('redeaux.pages').
@@ -88,7 +89,7 @@ angular.module('redeaux.pages').
                 function _animationLoop(){
                     scrollPercent = _scrollPosition() / (scrollableHeight - document.body.clientHeight);
                     masterTimeline.progress(scrollPercent);
-                    Tween.to(progressBar, 0.5, {width:Math.round(masterTimeline.progress()*100)+'%', overwrite:5});
+                    //Tween.to(progressBar, 0.5, {width:Math.round(masterTimeline.progress()*100)+'%', overwrite:5});
                 }
 
                 /**
@@ -100,6 +101,7 @@ angular.module('redeaux.pages').
                 function _buildTimeline( linkedEl ){
                     var masterTimeline  = new Timeline({paused:true, useFrames:false, smoothChildTiming:true}),
                         _intro          = linkedEl.querySelector('.intro'),
+                        _brief          = linkedEl.querySelector('.brief'),
                         _screens        = linkedEl.querySelector('.screens'),
                         _screensImgs    = _screens.querySelectorAll('img'),
                         _screensSpans   = _screens.querySelectorAll('span'),
@@ -116,35 +118,55 @@ angular.module('redeaux.pages').
                         });
                     };
 
+                    var g1 = linkedEl.querySelector('.group-1'),
+                        g2 = linkedEl.querySelector('.group-2');
+
                     return masterTimeline.
-                        addLabel('intro').
-                        to(_intro, 3, {backgroundPositionY:'100%', backgroundPositionX:'100%'}).
-                        to(_intro.querySelector('small'), 2, {top:500, autoAlpha:0, ease:Power2.easeIn}, '-=2.5').
-                        to(_intro.querySelector('h1'), 2, {y:'-200%', autoAlpha:0, ease:Power2.easeOut}, '-=2').
-                        to(_intro, 2, {top:'-50%'},'-=1.5').
+                        to([g1, _brief, g2], 2, {y:'-50%'}).
 
-                        to([_intro.querySelector('.textual'),_screens], 2, {top:'50%'}, '-=2').
-                        fromTo(_intro.querySelector('h3'), 1, {y:300}, {y:0}).
-                        addLabel('textual').
-                        staggerTo(_intro.querySelectorAll('h2, h3'), 1, {y:300, autoAlpha:0}, 0.5).
-                        to([_intro, _screens], 1, {y:'-50%'}, '-=1').
+                        to([g1, _brief, g2], 2, {y:'-100%'}).
 
-                        to(_screensImgs[0], 1, {x:'-80%'}).
-                        to(_screensImgs[1], 1, {y:'-56%'}, '-=1').
-                        to(_screensImgs[2], 1, {x:'-20%',y:'-53%'}, '-=1').
-                        to(_screensSpans[0], 1, {x:'-30%',y:-20}, '-=1').
-                        to(_screensSpans[2], 1, {x:'30%',y:-20}, '-=1').
-                        fromTo(_screens.querySelector('.phonerize'), 0.5, {scale:0.8}, {scale:1, rotationY:30}, '-=1').
-                        addLabel('screens').
-                        staggerTo(_screensImgs, 1.5, {left:0,autoAlpha:0}, 0.5).
-                        staggerTo(_screensSpans, 1.5, {y:200,autoAlpha:0}, 0.5, '-=2.5').
-                        to(_screens.querySelector('.bg'), 4, {autoAlpha:1}, '-=3').
+                        to([g2.querySelector('.screens'), g2.querySelector('.trips')], 2, {y:'-100%'}).
 
-                        to(_about, 1, {y:'-100%'}, '-=2').
-                        addLabel('about').
+                        to(linkedEl.querySelector('.trips'), 2, {scale:0.8}).
+                        to(linkedEl.querySelector('.holder'), 2, {x:'-50%'}, '-=2').
 
-                        to(_video, 1, {y:'-100%'}).
-                        addLabel('video');
+                        to(g2, 2, {y:'-200%'}).
+                        to([_about], 2, {y:'-100%'}, '-=2');
+
+                        //to([linkedEl.querySelector('.group-1'), _brief, _screens], 2, {y:'-100%'});
+//                        to(linkedEl.querySelector('.trips'), 2, {y:'-100%'}).
+//                        to(linkedEl.querySelector('.holder'), 2, {x:'-75%'});
+
+                        //to([_screens, _about], 2, {y:'-100%'});
+//                        addLabel('intro').
+//                        to(_intro, 3, {backgroundPositionY:'100%', backgroundPositionX:'100%'}).
+//                        to(_intro.querySelector('small'), 2, {top:500, autoAlpha:0, ease:Power2.easeIn}, '-=2.5').
+//                        to(_intro.querySelector('h1'), 2, {y:'-200%', autoAlpha:0, ease:Power2.easeOut}, '-=2').
+//                        to(_intro, 2, {top:'-50%'},'-=1.5').
+
+//                        to([_intro.querySelector('.textual'),_screens], 2, {top:'50%'}, '-=2').
+//                        fromTo(_intro.querySelector('h3'), 1, {y:300}, {y:0}).
+//                        addLabel('textual').
+//                        staggerTo(_intro.querySelectorAll('h2, h3'), 1, {y:300, autoAlpha:0}, 0.5).
+//                        to([_intro, _screens], 1, {y:'-50%'}, '-=1').
+
+//                        to(_screensImgs[0], 1, {x:'-80%'}).
+//                        to(_screensImgs[1], 1, {y:'-56%'}, '-=1').
+//                        to(_screensImgs[2], 1, {x:'-20%',y:'-53%'}, '-=1').
+//                        to(_screensSpans[0], 1, {x:'-30%',y:-20}, '-=1').
+//                        to(_screensSpans[2], 1, {x:'30%',y:-20}, '-=1').
+//                        fromTo(_screens.querySelector('.phonerize'), 0.5, {scale:0.8}, {scale:1, rotationY:30}, '-=1').
+//                        addLabel('screens').
+//                        staggerTo(_screensImgs, 1.5, {left:0,autoAlpha:0}, 0.5).
+//                        staggerTo(_screensSpans, 1.5, {y:200,autoAlpha:0}, 0.5, '-=2.5').
+//                        to(_screens.querySelector('.bg'), 4, {autoAlpha:1}, '-=3').
+//
+//                        to(_about, 1, {y:'-100%'}, '-=2').
+//                        addLabel('about').
+//
+//                        to(_video, 1, {y:'-100%'}).
+//                        addLabel('video');
                 }
 
                 /**
