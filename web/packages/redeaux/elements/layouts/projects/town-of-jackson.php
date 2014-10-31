@@ -49,13 +49,9 @@
         </div>
 
         <div class="trips">
+            <div class="bg-lax" preload="http://www.liftopia.com/media/product/47/101677_Jackson-Hole.jpeg" data-blocking></div>
             <div class="holder">
                 <div class="frame">
-                    <div class="tabular" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/antlers.jpg" data-blocking>
-                        <div class="cellular">
-                            <h3>Say something mother fucker</h3>
-                        </div>
-                    </div>
                     <div class="tabular">
                         <div class="cellular">
                             THis is a slide with content
@@ -63,11 +59,6 @@
                     </div>
                 </div>
                 <div class="frame">
-                    <div class="tabular" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/blue_abstract.jpg" data-blocking>
-                        <div class="cellular">
-                            <h3>Say something mother fucker</h3>
-                        </div>
-                    </div>
                     <div class="tabular">
                         <div class="cellular">
                             THis is a slide with content
@@ -75,11 +66,6 @@
                     </div>
                 </div>
                 <div class="frame">
-                    <div class="tabular" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/antlers.jpg" data-blocking>
-                        <div class="cellular">
-                            <h3>Say something mother fucker</h3>
-                        </div>
-                    </div>
                     <div class="tabular">
                         <div class="cellular">
                             THis is a slide with content
@@ -87,11 +73,6 @@
                     </div>
                 </div>
                 <div class="frame">
-                    <div class="tabular" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/blue_abstract.jpg" data-blocking>
-                        <div class="cellular">
-                            <h3>Say something mother fucker</h3>
-                        </div>
-                    </div>
                     <div class="tabular">
                         <div class="cellular">
                             THis is a slide with content
@@ -102,7 +83,7 @@
         </div>
     </div>
 
-    <div class="tabular about dock">
+    <div class="tabular about dock" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/blue_abstract.jpg" data-blocking>
         <div class="cellular">
             <div class="container">
                 <div class="row">

@@ -1286,10 +1286,20 @@ angular.module('redeaux.pages').
 
                         to([g1, _brief, g2], 2, {y:'-100%'}).
 
-                        to([g2.querySelector('.screens'), g2.querySelector('.trips')], 2, {y:'-100%'}).
 
-                        to(linkedEl.querySelector('.trips'), 2, {scale:0.8}).
-                        to(linkedEl.querySelector('.holder'), 2, {x:'-50%'}, '-=2').
+//                        to([g2, linkedEl.querySelector('.trips')], 2, {y:'-100%'}).
+//                        to([g2.querySelector('.screens')], 2, {y:'-75%'}).
+//                        to(g2.querySelector('.trips'), 2, {y:'-100%'}, '-=2.5').
+
+                        to(g2, 2, {y:'-200%'}).
+                        //fromTo(g2.querySelector('.trips'), 2, {x:'-100%'}, {x:0}).
+
+                        fromTo(linkedEl.querySelectorAll('.frame')[0], 1, {y:300}, {y:0}).
+                        to(linkedEl.querySelector('.bg-lax'), 2, {x:'-5%'}).
+                        to(linkedEl.querySelector('.holder'), 2, {x:'-25%'}, '-=2').
+
+//                        to(linkedEl.querySelector('.bg-lax'), 2, {x:'-25%'}).
+//                        to(linkedEl.querySelector('.holder'), 2, {x:'-75%'}, '-=2').
 
                         to(g2, 2, {y:'-200%'}).
                         to([_about], 2, {y:'-100%'}, '-=2');
