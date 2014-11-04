@@ -33,11 +33,8 @@
          * @return void
          */
         public function on_start(){
-            //$headers = getallheaders();
-            //if( $headers['x-angularized'] ){
             $headers = $this->normalizedRequestHeaders();
             if( $headers['HTTP_X_ANGULARIZED'] ){
-                //View::getInstance()->setThemeByPath('/' . Request::get()->getRequestPath(), 'angularized');
                 View::getInstance()->setThemeByPath($this->getCollectionObject()->getCollectionPath(), 'angularized');
             }
 
@@ -74,8 +71,9 @@
          */
         public function attachThemeAssets( Controller $pageController ){
             // CSS
+            $pageController->addHeaderItem('<link href="http://fonts.googleapis.com/css?family=Permanent+Marker|Rokkitt:400,700|Roboto+Slab:400,100,300|Sanchez:400italic,400|Enriqueta:400,700|Nothing+You+Could+Do" rel="stylesheet" type="text/css">');
+            $pageController->addHeaderItem( $this->getHelper('html')->css('core.css', RedeauxPackage::PACKAGE_HANDLE) );
             $pageController->addHeaderItem( $this->getHelper('html')->css('app.css', RedeauxPackage::PACKAGE_HANDLE) );
-            //$pageController->addHeaderItem('<link rel="stylesheet" type="text/css" href="/packages/redeaux/css/app.css" title="appstyles" />');
             // JS
             $pageController->addFooterItem( $this->getHelper('html')->javascript('core.js', RedeauxPackage::PACKAGE_HANDLE) );
             $pageController->addFooterItem( $this->getHelper('html')->javascript('app.js', RedeauxPackage::PACKAGE_HANDLE) );

@@ -13,12 +13,15 @@ module.exports = function( gulp ){
         concat  = require('gulp-concat'),
         uglify  = require('gulp-uglify'),
         sass    = require('gulp-ruby-sass'),
-        jshint  = require('gulp-jshint'),
-        livereload = require('gulp-livereload');
+        jshint  = require('gulp-jshint');
+//        livereload = require('gulp-livereload');
 
 
     var sourcePaths = {
-        css: _packagePath('css/src/app.scss'),
+        css: {
+            core: _packagePath('css/src/core.scss'),
+            app: _packagePath('css/src/app.scss')
+        },
         js: {
             core: [
                 _packagePath('bower_components/fastclick/lib/fastclick.js'),
@@ -26,13 +29,11 @@ module.exports = function( gulp ){
                 _packagePath('bower_components/angular-resource/angular-resource.js'),
                 _packagePath('bower_components/angular-route/angular-route.js'),
                 _packagePath('bower_components/angular-animate/angular-animate.js'),
-                _packagePath('bower_components/gsap/src/uncompressed/TweenLite.js'),
-                _packagePath('bower_components/gsap/src/uncompressed/TimelineLite.js'),
+                _packagePath('bower_components/gsap/src/uncompressed/TweenMax.js'),
+                _packagePath('bower_components/gsap/src/uncompressed/TimelineMax.js'),
                 _packagePath('bower_components/gsap/src/uncompressed/easing/EasePack.js'),
                 _packagePath('bower_components/gsap/src/uncompressed/plugins/CSSPlugin.js'),
                 _packagePath('bower_components/gsap/src/uncompressed/plugins/ScrollToPlugin.js'),
-//                _packagePath('bower_components/gsap/src/uncompressed/plugins/RoundPropsPlugin.js'),
-//                _packagePath('bower_components/gsap/src/uncompressed/utils/Draggable.js'),
                 _packagePath('js/3rd_party/*.js')
             ],
             app: [
@@ -47,10 +48,10 @@ module.exports = function( gulp ){
      * @param _style
      * @returns {*|pipe|pipe}
      */
-    function runSass( _style ){
-        return gulp.src(sourcePaths.css)
-            .pipe(sass({sourcemap:false, compass:true, style:(_style || 'nested')}))
-            .on('error', function( err ){ // prevent gulp.watch from exiting on error...
+    function runSass( files, _style ){
+        return gulp.src(files)
+            .pipe(sass({compass:true, style:(_style || 'nested')}))
+            .on('error', function( err ){
                 utils.log(utils.colors.red(err.toString()));
                 this.emit('end');
             })
@@ -88,8 +89,10 @@ module.exports = function( gulp ){
     /**
      * Individual tasks
      */
-    gulp.task('sass:dev', function(){ return runSass(); });
-    gulp.task('sass:prod', function(){ return runSass('compressed'); });
+    gulp.task('sass:core:dev', function(){ return runSass(sourcePaths.css.core); });
+    gulp.task('sass:core:prod', function(){ return runSass(sourcePaths.css.core, 'compressed'); });
+    gulp.task('sass:app:dev', function(){ return runSass(sourcePaths.css.app); });
+    gulp.task('sass:app:prod', function(){ return runSass(sourcePaths.css.app, 'compressed'); });
     gulp.task('jshint', function(){ return runJsHint(sourcePaths.js.app); });
     gulp.task('js:core:dev', function(){ return runJs(sourcePaths.js.core, 'core.js') });
     gulp.task('js:core:prod', function(){ return runJs(sourcePaths.js.core, 'core.js', true) });
@@ -100,11 +103,11 @@ module.exports = function( gulp ){
     /**
      * Grouped tasks (by environment target)
      */
-    gulp.task('build:dev', ['sass:dev', 'js:core:dev', 'js:app:dev'], function(){
+    gulp.task('build:dev', ['sass:core:dev', 'sass:app:dev', 'js:core:dev', 'js:app:dev'], function(){
         utils.log(utils.colors.bgGreen('Dev build OK'));
     });
 
-    gulp.task('build:prod', ['sass:prod', 'js:core:prod', 'js:app:prod'], function(){
+    gulp.task('build:prod', ['sass:core:prod', 'sass:app:prod', 'js:core:prod', 'js:app:prod'], function(){
         utils.log(utils.colors.bgGreen('Prod build OK'));
     });
 
@@ -114,8 +117,8 @@ module.exports = function( gulp ){
      */
     gulp.task('watch', function(){
         //livereload.listen();
-        gulp.watch(_packagePath('css/src/**/*.scss'), ['sass:dev']);
-        gulp.watch(_packagePath('js/src/**/*.js'), ['js:app:dev']);
+        gulp.watch(_packagePath('css/src/**/*.scss'), {interval:1000}, ['sass:app:dev']);
+        gulp.watch(_packagePath('js/src/**/*.js'), {interval:1000}, ['js:app:dev']);
 
         // Livereload only on *.css (NOT .scss) file changes!
 //        gulp.watch(_packagePath('css/*.css')).on('change', function(file){

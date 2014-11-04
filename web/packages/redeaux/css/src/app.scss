@@ -1,5 +1,7 @@
-@import 'base';
-@import 'common';
+@import 'required';
+
+// common
+@import 'common/base';
 
 // components
 @import 'elements/nav';

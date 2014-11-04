@@ -4,9 +4,12 @@ html, body {font-size:$font-size-base;height:100%;/*overflow:hidden;*/}
 body {overflow:hidden;}
 input, textarea, button, a {&:focus, &:active {outline:0 !important;@include box-shadow(none !important);}}
 a, a:hover, a:active {cursor:pointer;text-decoration:none !important;}
-img {@extend .img-responsive;display:inline-block;}
+img {@include img-responsive(inline-block);}
 .tabular {width:100%;height:100%;display:table;
   .cellular {width:100%;height:100%;display:table-cell;vertical-align:middle;text-align:center;}
+}
+blockquote {position:relative;border:0;
+  &::before {line-height:0;content:'"';font-family:$font-family-grunge;font-size:70px;position:absolute;top:30px;left:0;opacity:0.5;}
 }
 @include scrollbars(#153e4d, 8px);
 
@@ -81,7 +84,7 @@ header {
 // entire width, no navigation visible, and we control scrolling and such with
 // TweenLite/TimelineLite
 body.fixed-max {overflow:auto;
-  &::after {display:block;height:700%;width:1px;content:'';position:absolute;top:0;left:0;z-index:-1;}
+  &::after {display:block;height:1000%;width:1px;content:'';position:absolute;top:0;left:0;z-index:-1;}
   #level-1 {position:fixed;padding:0;z-index:2;}
   nav {right:-100%;opacity:0;visibility:hidden;}
   .page-content {overflow:hidden;}

@@ -1,11 +1,7 @@
 <div class="page-content" portfolio-toj>
     <div class="timeline-progress">
         <span class="value"></span>
-        <a class="marker" data-label="intro">1</a>
-        <a class="marker" data-label="textual">2</a>
-        <a class="marker" data-label="screens">3</a>
-        <a class="marker" data-label="about">4</a>
-        <a class="marker" data-label="video">5</a>
+        <!-- markers generated via directive -->
     </div>
 
     <aside>
@@ -19,16 +15,33 @@
         <div class="tabular intro" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/snake_river.jpg" data-blocking>
             <div class="cellular">
                 <img src="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/toj_logo.png" />
-                <h1>Town Of Jackson</h1>
+                <h1><span>Town</span> <span>Of</span> <span>Jackson</span></h1>
                 <small class="instruct">Scroll <i class="fa fa-angle-down"></i></small>
-                <p ng-click="autoplay()">Or autoplay...</p>
             </div>
         </div>
 
-        <div class="tabular brief" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/antlers.jpg" data-blocking>
-            <div class="cellular">
-                <h2>Design. Development. SEO Roadmap. Management Planning.</h2>
-                <h3>Focus43 was hired to lead all project phases: discovery, planning, design and implementation.</h3>
+        <div class="brief" preload="<?php echo REDEAUX_IMAGE_PATH; ?>textures/dark_wall.png" data-blocking>
+            <div class="vert-track">
+                <div class="tabular">
+                    <div class="cellular">
+                        <h2>Background</h2>
+                        <p>Want to know what's really fun for a development team? Scratching your own itch. As residents ourselves of lovely Jackson, WY, F43 had used the Town Of Jackson's previous website frequently. Even more frequently we said "man, we could do this better". We got the chance.</p>
+                    </div>
+                </div>
+                <div class="tabular">
+                    <div class="cellular">
+                        <h2>Brief</h2>
+                        <p>On its seventh year when F43 was approached, the Town Of Jackson's website was long in the tooth, ineffectively serving the myriad audiences of a municipal website. F43 was challenged to provide discovery, planning, design and implementation of a completely new, mobile-first site, built from the ground up.</p>
+                    </div>
+                </div>
+                <div class="tabular approach">
+                    <div class="cellular">
+                        <p>Our approach from the start:</p>
+                        <h2>Municipal Sites Are Boring</h2>
+                        <h2>Hard To Navigate</h2>
+                        <h2>Overloaded</h2>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -36,78 +49,47 @@
     <div class="group-2 dock">
         <div class="tabular screens">
             <div class="cellular">
-                <div class="bg" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/blue_abstract.jpg" data-blocking></div>
-                <div class="phonerize">
+                <div class="mobiles">
                     <img preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/phone_r1.png" data-blocking />
                     <img preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/phone_r2.png" data-blocking />
                     <img preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/phone_r3.png" data-blocking />
-                    <span class="shadower"></span>
-                    <span class="shadower"></span>
-                    <span class="shadower"></span>
+                    <h3>F43 delivered a truly mobile-first design...</h3>
                 </div>
-            </div>
-        </div>
 
-        <div class="trips">
-            <div class="bg-lax" preload="http://www.liftopia.com/media/product/47/101677_Jackson-Hole.jpeg" data-blocking></div>
-            <div class="holder">
-                <div class="frame">
+                <div class="large-format">
                     <div class="tabular">
                         <div class="cellular">
-                            THis is a slide with content
-                        </div>
-                    </div>
-                </div>
-                <div class="frame">
-                    <div class="tabular">
-                        <div class="cellular">
-                            THis is a slide with content
-                        </div>
-                    </div>
-                </div>
-                <div class="frame">
-                    <div class="tabular">
-                        <div class="cellular">
-                            THis is a slide with content
-                        </div>
-                    </div>
-                </div>
-                <div class="frame">
-                    <div class="tabular">
-                        <div class="cellular">
-                            THis is a slide with content
+                            <img preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/ipad_desktop.png" data-blocking />
+                            <h3>with a bolstered experience on tablets and desktops</h3>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="tabular about dock" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/blue_abstract.jpg" data-blocking>
-        <div class="cellular">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-5">
-                        <?php $a = new Area('Col:Left'); $a->display($c); ?>
-                    </div>
-                    <div class="col-sm-7">
-                        <?php $a = new Area('Col:Right'); $a->display($c); ?>
-                        <!--<img preload="/packages/redeaux/_scratch/toj/phone_round2.png" data-blocking style="max-height:750px;" />-->
-                    </div>
-                </div>
+        <div class="details">
+            <div class="background" preload="<?php echo REDEAUX_IMAGE_PATH; ?>portfolio/toj/biking.jpg" data-blocking></div>
+            <div class="half design">
+                <h2>Design</h2>
+                <p>The Town of Jackson wanted a contemporary site design and told us it needed to be mobile friendly. The new design had to represent the quality and service level Jackson has to offer — a look and functionality on par with other premier resort destinations municipalities.</p>
+                <p>But, before we jumped into cranking out eye candy, we spent time analyzing the old site’s traffic. Right away we identified visitor engagement erosion that neatly correlated with the site’s growth in mobile visits. Mobile visitors were more important and growing faster than we originally suspected.</p>
+                <p>With that in mind, Focus43 delivered a responsive, mobile-first design that presented critical content navigation buttons for small screens and expanded content as a visitor’s screen allowed.</p>
+            </div>
+            <div class="half tech">
+                <h2>Tech</h2>
+                <p>The Town of Jackson wanted a contemporary site design and told us it needed to be mobile friendly. The new design had to represent the quality and service level Jackson has to offer — a look and functionality on par with other premier resort destinations municipalities.</p>
+                <p>But, before we jumped into cranking out eye candy, we spent time analyzing the old site’s traffic. Right away we identified visitor engagement erosion that neatly correlated with the site’s growth in mobile visits. Mobile visitors were more important and growing faster than we originally suspected.</p>
+                <p>With that in mind, Focus43 delivered a responsive, mobile-first design that presented critical content navigation buttons for small screens and expanded content as a visitor’s screen allowed.</p>
             </div>
         </div>
     </div>
 
     <div class="tabular video dock">
-        <!--<video autoplay loop preload>
+        <video autoplay loop preload>
             <source src="/packages/redeaux/_scratch/timelapse_blur.mp4" type="video/mp4" />
-        </video>-->
-        <div style="position:absolute;top:0;left:0;width:100%;height:100%;">
-            <?php $a = new Area('Section'); $a->display($c); ?>
-        </div>
+        </video>
         <div class="cellular" style="position:relative;z-index:1;">
-            <h1>Get In Touch</h1>
+            <?php $a = new Area('Section'); $a->display($c); ?>
         </div>
     </div>
 </div>

@@ -42,7 +42,7 @@
                 </a>
             </div>
             <div class="col-sm-4">
-                <a class="item tabular" preload="http://www.jacksonhole.com/hero_img/tram12-from-below.jpg" data-blocking>
+                <a class="item tabular">
                     <div class="cellular">Jackson Hole</div>
                 </a>
             </div>

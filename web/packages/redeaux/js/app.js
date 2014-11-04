@@ -1182,6 +1182,7 @@ angular.module('redeaux.pages').
                     smoothWheelTime,
                     smoothWheelDist,
                     masterTimeline,
+                    progressContainer,
                     progressBar,
                     $markers;
 
@@ -1249,7 +1250,7 @@ angular.module('redeaux.pages').
                 function _animationLoop(){
                     scrollPercent = _scrollPosition() / (scrollableHeight - document.body.clientHeight);
                     masterTimeline.progress(scrollPercent);
-                    //Tween.to(progressBar, 0.5, {width:Math.round(masterTimeline.progress()*100)+'%', overwrite:5});
+                    Tween.to(progressBar, 0.5, {width:Math.round(masterTimeline.progress()*100)+'%', overwrite:5});
                 }
 
                 /**
@@ -1260,12 +1261,15 @@ angular.module('redeaux.pages').
                  */
                 function _buildTimeline( linkedEl ){
                     var masterTimeline  = new Timeline({paused:true, useFrames:false, smoothChildTiming:true}),
+                        _group1         = linkedEl.querySelector('.group-1'),
+                        _group2         = linkedEl.querySelector('.group-2'),
                         _intro          = linkedEl.querySelector('.intro'),
                         _brief          = linkedEl.querySelector('.brief'),
                         _screens        = linkedEl.querySelector('.screens'),
+                        _screensMobile  = _screens.querySelector('.mobiles'),
+                        _screensLarge   = _screens.querySelector('.large-format'),
                         _screensImgs    = _screens.querySelectorAll('img'),
-                        _screensSpans   = _screens.querySelectorAll('span'),
-                        _about          = linkedEl.querySelector('.about'),
+                        _details        = linkedEl.querySelector('.details'),
                         _video          = linkedEl.querySelector('.video');
 
                     masterTimeline._playByScroll = function( _label, _duration ){
@@ -1278,65 +1282,81 @@ angular.module('redeaux.pages').
                         });
                     };
 
-                    var g1 = linkedEl.querySelector('.group-1'),
-                        g2 = linkedEl.querySelector('.group-2');
-
                     return masterTimeline.
-                        to([g1, _brief, g2], 2, {y:'-50%'}).
+                        addLabel('intro').
 
-                        to([g1, _brief, g2], 2, {y:'-100%'}).
+                        to(_intro.querySelector('img'), 2, {rotation:720, autoAlpha:0}).
+                        to(_intro.querySelector('.instruct'), 1, {autoAlpha:0}, '-=1').
+                        staggerTo(_intro.querySelectorAll('h1 span'), 1.5, {y:100,autoAlpha:0}, 0.5, '-=1.5').
+                        to([_group1, _brief, _group2], 2, {y:'-50%'}).
+                        addLabel('background').
 
+                        to(_group1.querySelector('.vert-track'), 4, {y:'-100%'}, '+=2').
+                        addLabel('brief').
 
-//                        to([g2, linkedEl.querySelector('.trips')], 2, {y:'-100%'}).
-//                        to([g2.querySelector('.screens')], 2, {y:'-75%'}).
-//                        to(g2.querySelector('.trips'), 2, {y:'-100%'}, '-=2.5').
+                        to(_group1.querySelector('.vert-track'), 4, {y:'-200%'}, '+=2').
+                        staggerTo(_group1.querySelectorAll('.approach h2'), 3.5, {className:'+=striker'}, 1.5).
+                        addLabel('approach').
 
-                        to(g2, 2, {y:'-200%'}).
-                        //fromTo(g2.querySelector('.trips'), 2, {x:'-100%'}, {x:0}).
+                        to([_group1, _brief, _group2], 2, {y:'-100%'}, '+=1').
+                        fromTo(_screensMobile, 2, {y:-700,autoAlpha:0}, {y:0,autoAlpha:1}, '-=1').
+                        fromTo(_screensMobile.querySelector('h3'), 1, {y:100,autoAlpha:0}, {y:0,autoAlpha:1}, '-=1.5').
+                        add([
+                            Tween.to(_screensImgs[0], 1, {x:'-80%'}),
+                            Tween.to(_screensImgs[1], 1, {y:'-56%'}),
+                            Tween.to(_screensImgs[2], 1, {x:'-20%',y:'-53%'}),
+                            Tween.fromTo(_screensMobile, 0.5, {scale:0.8}, {scale:1, rotationY:30})
+                        ]).
+                        addLabel('mobiles').
 
-                        fromTo(linkedEl.querySelectorAll('.frame')[0], 1, {y:300}, {y:0}).
-                        to(linkedEl.querySelector('.bg-lax'), 2, {x:'-5%'}).
-                        to(linkedEl.querySelector('.holder'), 2, {x:'-25%'}, '-=2').
+                        to(_screensMobile, 4, {x:'-100%', autoAlpha:0}, '+=2').
+                        to(_screensLarge, 3, {x:'-100%', ease:Power2.easeOut}, '-=4').
+                        fromTo(_screensLarge.querySelector('h3'), 2, {y:100,autoAlpha:0}, {y:0,autoAlpha:1}, '+=2').
+                        addLabel('larges').
 
-//                        to(linkedEl.querySelector('.bg-lax'), 2, {x:'-25%'}).
-//                        to(linkedEl.querySelector('.holder'), 2, {x:'-75%'}, '-=2').
+                        to(_group2, 2, {y:'-200%'}).
+                        add([
+                            Tween.fromTo(_details.querySelector('.background'), 2, {scale:1.4, rotation:5}, {scale:1, rotation:0}),
+                            Tween.staggerFromTo(_details.querySelectorAll('.design p'), 2, {y:50,autoAlpha:0}, {y:0,autoAlpha:1}, 1)
+                        ]).
+                        addLabel('design').
 
-                        to(g2, 2, {y:'-200%'}).
-                        to([_about], 2, {y:'-100%'}, '-=2');
+                        add([
+                            Tween.to(_details.querySelector('.design'), 2, {x:'-100%'}),
+                            Tween.to(_details.querySelector('.tech'), 2, {x:'100%'})
+                        ], '+=2').
+                        staggerFromTo(_details.querySelectorAll('.tech p'), 6, {y:50,autoAlpha:0}, {y:0,autoAlpha:1}, 2).
+                        addLabel('tech').
 
-                        //to([linkedEl.querySelector('.group-1'), _brief, _screens], 2, {y:'-100%'});
-//                        to(linkedEl.querySelector('.trips'), 2, {y:'-100%'}).
-//                        to(linkedEl.querySelector('.holder'), 2, {x:'-75%'});
+                        to([_video], 4, {y:'-100%'}, '+=2').
+                        addLabel('final');
+                }
 
-                        //to([_screens, _about], 2, {y:'-100%'});
-//                        addLabel('intro').
-//                        to(_intro, 3, {backgroundPositionY:'100%', backgroundPositionX:'100%'}).
-//                        to(_intro.querySelector('small'), 2, {top:500, autoAlpha:0, ease:Power2.easeIn}, '-=2.5').
-//                        to(_intro.querySelector('h1'), 2, {y:'-200%', autoAlpha:0, ease:Power2.easeOut}, '-=2').
-//                        to(_intro, 2, {top:'-50%'},'-=1.5').
+                /**
+                 * AFTER the masterTimeline is created, look at the labels and automatically
+                 * generate <a class="marker">{index}</a> elements for each; then position
+                 * on the timeline accordingly.
+                 * @param _timeline
+                 * @param _container
+                 * @returns {element|*}
+                 * @private
+                 */
+                function _buildAndGetMarkers( _timeline, _container ){
+                    var fragment = document.createDocumentFragment(),
+                        index    = 1;
 
-//                        to([_intro.querySelector('.textual'),_screens], 2, {top:'50%'}, '-=2').
-//                        fromTo(_intro.querySelector('h3'), 1, {y:300}, {y:0}).
-//                        addLabel('textual').
-//                        staggerTo(_intro.querySelectorAll('h2, h3'), 1, {y:300, autoAlpha:0}, 0.5).
-//                        to([_intro, _screens], 1, {y:'-50%'}, '-=1').
+                    angular.forEach(_timeline._labels, function( labelTime, key ){
+                        var el = document.createElement('a');
+                        el.className = 'marker';
+                        el.setAttribute('data-label', key);
+                        el.style.left = Math.round((labelTime/_timeline._totalDuration)*100) + '%';
+                        el.innerText = index++;
+                        fragment.appendChild(el);
+                    });
 
-//                        to(_screensImgs[0], 1, {x:'-80%'}).
-//                        to(_screensImgs[1], 1, {y:'-56%'}, '-=1').
-//                        to(_screensImgs[2], 1, {x:'-20%',y:'-53%'}, '-=1').
-//                        to(_screensSpans[0], 1, {x:'-30%',y:-20}, '-=1').
-//                        to(_screensSpans[2], 1, {x:'30%',y:-20}, '-=1').
-//                        fromTo(_screens.querySelector('.phonerize'), 0.5, {scale:0.8}, {scale:1, rotationY:30}, '-=1').
-//                        addLabel('screens').
-//                        staggerTo(_screensImgs, 1.5, {left:0,autoAlpha:0}, 0.5).
-//                        staggerTo(_screensSpans, 1.5, {y:200,autoAlpha:0}, 0.5, '-=2.5').
-//                        to(_screens.querySelector('.bg'), 4, {autoAlpha:1}, '-=3').
-//
-//                        to(_about, 1, {y:'-100%'}, '-=2').
-//                        addLabel('about').
-//
-//                        to(_video, 1, {y:'-100%'}).
-//                        addLabel('video');
+                    _container.appendChild(fragment);
+
+                    return angular.element(_container.querySelectorAll('.marker'));
                 }
 
                 /**
@@ -1353,13 +1373,9 @@ angular.module('redeaux.pages').
                     smoothWheelTime     = 0.65;
                     smoothWheelDist     = 325;
                     masterTimeline      = window['tl'] = _buildTimeline($element[0]);
-                    progressBar         = $element[0].querySelector('.timeline-progress > .value');
-                    $markers            = angular.element($element[0].querySelectorAll('.timeline-progress > .marker'));
-
-                    // Set marker locations
-                    angular.forEach($markers, function( node ){
-                        node.style.left = Math.round((masterTimeline.getLabelTime(node.getAttribute('data-label'))/masterTimeline._totalDuration)*100) + '%';
-                    });
+                    progressContainer   = $element[0].querySelector('.timeline-progress');
+                    progressBar         = progressContainer.querySelector('.value');
+                    $markers            = _buildAndGetMarkers( masterTimeline, progressContainer );
 
                     // Bind click event to markers
                     $markers.on('click', function(){
