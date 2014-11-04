@@ -1274,7 +1274,10 @@ body.loading .spinnable {
     position: relative;
     height: 80%;
     min-width: 20%;
-    z-index: 1; }
+    z-index: 1;
+    -moz-transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d; }
     .page-content[portfolio-toj] .screens .mobiles img {
       max-height: 100%;
       position: absolute;
@@ -1283,7 +1286,10 @@ body.loading .spinnable {
       -moz-transform: translate3d(-50%, -50%, 0);
       -ms-transform: translate3d(-50%, -50%, 0);
       -webkit-transform: translate3d(-50%, -50%, 0);
-      transform: translate3d(-50%, -50%, 0); }
+      transform: translate3d(-50%, -50%, 0);
+      -webkit-backface-visibility: hidden;
+      -moz-backface-visibility: hidden;
+      backface-visibility: hidden; }
       .page-content[portfolio-toj] .screens .mobiles img:nth-of-type(1) {
         z-index: 3; }
       .page-content[portfolio-toj] .screens .mobiles img:nth-of-type(2) {

@@ -1302,34 +1302,34 @@ angular.module('redeaux.pages').
                         fromTo(_screensMobile, 2, {y:-700,autoAlpha:0}, {y:0,autoAlpha:1}, '-=1').
                         fromTo(_screensMobile.querySelector('h3'), 1, {y:100,autoAlpha:0}, {y:0,autoAlpha:1}, '-=1.5').
                         add([
-                            Tween.to(_screensImgs[0], 1, {x:'-80%'}),
-                            Tween.to(_screensImgs[1], 1, {y:'-56%'}),
-                            Tween.to(_screensImgs[2], 1, {x:'-20%',y:'-53%'}),
-                            Tween.fromTo(_screensMobile, 0.5, {scale:0.8}, {scale:1, rotationY:30})
+                            Tween.to(_screensImgs[0], 3, {x:'-80%',z:3}),
+                            Tween.to(_screensImgs[1], 3, {y:'-56%',z:2}),
+                            Tween.to(_screensImgs[2], 3, {x:'-20%',y:'-53%',z:1}),
                         ]).
+                        //fromTo(_screensMobile, 0.5, {scale:0.8}, {scale:1, rotationY:30}, '-=1').
                         addLabel('mobiles').
 
                         to(_screensMobile, 4, {x:'-100%', autoAlpha:0}, '+=2').
                         to(_screensLarge, 3, {x:'-100%', ease:Power2.easeOut}, '-=4').
-                        fromTo(_screensLarge.querySelector('h3'), 2, {y:100,autoAlpha:0}, {y:0,autoAlpha:1}, '+=2').
+                        fromTo(_screensLarge.querySelector('h3'), 2, {y:100,autoAlpha:0}, {y:0,autoAlpha:1}).
                         addLabel('larges').
 
                         add([
                             Tween.to(_group2, 3, {y:'-200%'}),
                             Tween.fromTo(_details.querySelector('.background'), 8, {scale:1.4, rotation:5}, {scale:1, rotation:0})
-                        ]).
+                        ], '+=2').
                         staggerFromTo(_details.querySelectorAll('.design p'), 2, {y:50,autoAlpha:0}, {y:0,autoAlpha:1}, 1, '-=6').
                         addLabel('design').
 
                         add([
-                            Tween.to(_details.querySelector('.background'), 4, {scale:1.4, rotation:5}, {scale:1, rotation:0}),
+                            Tween.to(_details.querySelector('.background'), 4, {scale:1.4, rotation:-5}),
                             Tween.to(_details.querySelector('.design'), 2, {x:'-100%'}),
                             Tween.to(_details.querySelector('.tech'), 2, {x:'100%'})
                         ]).
                         staggerFromTo(_details.querySelectorAll('.tech p'), 4, {y:50,autoAlpha:0}, {y:0,autoAlpha:1}, 2, '-=1').
                         addLabel('tech').
 
-                        fromTo(_video, 3, {scale:2,opacity:0,y:'-100%'}, {scale:1,opacity:1}, '+=2').
+                        fromTo(_video, 3, {scale:2,autoAlpha:0,y:'-100%'}, {scale:1,autoAlpha:1}, '+=2').
                         addLabel('final');
                 }
 
