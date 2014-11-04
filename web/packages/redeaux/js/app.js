@@ -1314,21 +1314,22 @@ angular.module('redeaux.pages').
                         fromTo(_screensLarge.querySelector('h3'), 2, {y:100,autoAlpha:0}, {y:0,autoAlpha:1}, '+=2').
                         addLabel('larges').
 
-                        to(_group2, 2, {y:'-200%'}).
                         add([
-                            Tween.fromTo(_details.querySelector('.background'), 2, {scale:1.4, rotation:5}, {scale:1, rotation:0}),
-                            Tween.staggerFromTo(_details.querySelectorAll('.design p'), 2, {y:50,autoAlpha:0}, {y:0,autoAlpha:1}, 1)
+                            Tween.to(_group2, 3, {y:'-200%'}),
+                            Tween.fromTo(_details.querySelector('.background'), 8, {scale:1.4, rotation:5}, {scale:1, rotation:0})
                         ]).
+                        staggerFromTo(_details.querySelectorAll('.design p'), 2, {y:50,autoAlpha:0}, {y:0,autoAlpha:1}, 1, '-=6').
                         addLabel('design').
 
                         add([
+                            Tween.to(_details.querySelector('.background'), 4, {scale:1.4, rotation:5}, {scale:1, rotation:0}),
                             Tween.to(_details.querySelector('.design'), 2, {x:'-100%'}),
                             Tween.to(_details.querySelector('.tech'), 2, {x:'100%'})
-                        ], '+=2').
-                        staggerFromTo(_details.querySelectorAll('.tech p'), 6, {y:50,autoAlpha:0}, {y:0,autoAlpha:1}, 2).
+                        ]).
+                        staggerFromTo(_details.querySelectorAll('.tech p'), 4, {y:50,autoAlpha:0}, {y:0,autoAlpha:1}, 2, '-=1').
                         addLabel('tech').
 
-                        to([_video], 4, {y:'-100%'}, '+=2').
+                        fromTo(_video, 3, {scale:2,opacity:0,y:'-100%'}, {scale:1,opacity:1}, '+=2').
                         addLabel('final');
                 }
 
@@ -1343,15 +1344,17 @@ angular.module('redeaux.pages').
                  */
                 function _buildAndGetMarkers( _timeline, _container ){
                     var fragment = document.createDocumentFragment(),
-                        index    = 1;
+                        index    = 0,
+                        length   = Object.keys(_timeline._labels).length - 1;
 
                     angular.forEach(_timeline._labels, function( labelTime, key ){
                         var el = document.createElement('a');
                         el.className = 'marker';
                         el.setAttribute('data-label', key);
-                        el.style.left = Math.round((labelTime/_timeline._totalDuration)*100) + '%';
-                        el.innerText = index++;
+                        el.style.left = Math.round(index/length*100) + '%'; //Math.round((labelTime/_timeline._totalDuration)*100) + '%';
+                        el.innerText = index + 1;
                         fragment.appendChild(el);
+                        index++;
                     });
 
                     _container.appendChild(fragment);

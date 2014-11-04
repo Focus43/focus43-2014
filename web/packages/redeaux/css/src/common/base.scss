@@ -84,7 +84,7 @@ header {
 // entire width, no navigation visible, and we control scrolling and such with
 // TweenLite/TimelineLite
 body.fixed-max {overflow:auto;
-  &::after {display:block;height:1000%;width:1px;content:'';position:absolute;top:0;left:0;z-index:-1;}
+  &::after {display:block;height:800%;width:1px;content:'';position:absolute;top:0;left:0;z-index:-1;}
   #level-1 {position:fixed;padding:0;z-index:2;}
   nav {right:-100%;opacity:0;visibility:hidden;}
   .page-content {overflow:hidden;}

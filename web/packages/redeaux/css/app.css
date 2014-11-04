@@ -281,7 +281,7 @@ body.fixed-max {
   overflow: auto; }
   body.fixed-max::after {
     display: block;
-    height: 1000%;
+    height: 800%;
     width: 1px;
     content: '';
     position: absolute;
