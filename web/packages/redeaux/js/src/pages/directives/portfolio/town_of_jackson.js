@@ -110,6 +110,7 @@ angular.module('redeaux.pages').
                             Utilities.determineBodyScrollElement(),
                             Preloader.promise()
                         ]);
+
                     }
                 ]
             };

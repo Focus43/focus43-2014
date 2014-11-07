@@ -83,6 +83,8 @@
             // Initialize FastClick right out of the gate
             if( angular.isDefined($window['FastClick']) ){
                 FastClick.attach(document.body);
+            }else{
+                console.log('FASTCLICK not defined!');
             }
 
             // List of available body classes
@@ -1482,6 +1484,7 @@ angular.module('redeaux.pages').
                             Utilities.determineBodyScrollElement(),
                             Preloader.promise()
                         ]);
+
                     }
                 ]
             };

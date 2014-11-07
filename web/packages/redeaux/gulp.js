@@ -24,7 +24,7 @@ module.exports = function( gulp ){
         },
         js: {
             core: [
-                _packagePath('bower_components/fastclick/lib/fastclick.js'),
+                //_packagePath('bower_components/fastclick/lib/fastclick.js'),
                 _packagePath('bower_components/angular/angular.js'),
                 _packagePath('bower_components/angular-resource/angular-resource.js'),
                 _packagePath('bower_components/angular-route/angular-route.js'),
