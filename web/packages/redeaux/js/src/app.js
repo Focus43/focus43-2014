@@ -19,32 +19,14 @@
          * @param GoogleMapsAPIProvider
          * @todo: implement error message displaying instead of just hiding the loading animation
          */
-        config(['$provide', '$routeProvider', '$locationProvider', '$httpProvider', 'GoogleMapsAPIProvider',
-            function( $provide, $routeProvider, $locationProvider, $httpProvider, GoogleMapsAPIProvider ){
+        config(['$provide', '$routeProvider', '$locationProvider', '$httpProvider', '$compileProvider', 'GoogleMapsAPIProvider',
+            function( $provide, $routeProvider, $locationProvider, $httpProvider, $compileProvider, GoogleMapsAPIProvider ){
+//                angular.module('redeaux').lazyProvider = function( _callback ){
+//                    _callback.apply($compileProvider, []);
+//                };
+
                 // Http config
                 $httpProvider.defaults.headers.common['x-angularized'] = true;
-
-                // AJAX request interceptor to show loading icon
-//                $httpProvider.interceptors.push(['$rootScope', function( $rootScope ){
-//                    return {
-//                        request: function( _passthrough ){
-//                            $rootScope.bodyClasses.loading = true;
-//                            return _passthrough;
-//                        },
-//                        response: function( _passthrough ){
-//                            $rootScope.bodyClasses.loading = false;
-//                            return _passthrough;
-//                        },
-//                        requestError: function( _passthrough ){
-//                            $rootScope.bodyClasses.loading = false;
-//                            return _passthrough;
-//                        },
-//                        responseError: function( _passthrough ){
-//                            $rootScope.bodyClasses.loading = false;
-//                            return _passthrough;
-//                        }
-//                    };
-//                }]);
 
                 // Enable HTML5 location mode
                 $locationProvider.html5Mode(true).hashPrefix('!');
@@ -59,6 +41,9 @@
                                 defer.resolve();
                                 return defer.promise;
                             }
+                        }],
+                        preloader: ['Preloader', function( Preloader ){
+                            Preloader.reset();
                         }]
                     },
                     templateUrl: function(params){

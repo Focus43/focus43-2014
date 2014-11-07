@@ -1067,7 +1067,7 @@ body.loading .spinnable {
     .page-content[tpl-contact] .map-instance .map-info-window h3 {
       margin-top: 0; }
 
-.page-content[portfolio-toj] .timeline-progress {
+.page-content[portfolio-toj] .progress-bar {
   line-height: 1;
   position: fixed;
   top: 0;
@@ -1088,7 +1088,7 @@ body.loading .spinnable {
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
   backface-visibility: hidden; }
-  .page-content[portfolio-toj] .timeline-progress::after {
+  .page-content[portfolio-toj] .progress-bar::after {
     opacity: 0.4;
     display: block;
     content: '';
@@ -1098,12 +1098,12 @@ body.loading .spinnable {
     height: 10px;
     background: transparent url("/packages/redeaux/images//timeline-notches.png") repeat-x;
     background-position: 0 100%; }
-  .page-content[portfolio-toj] .timeline-progress .value {
+  .page-content[portfolio-toj] .progress-bar .bar {
     width: 0;
     height: 100%;
     background: #c7254e;
     display: block; }
-  .page-content[portfolio-toj] .timeline-progress .marker {
+  .page-content[portfolio-toj] .progress-bar .marker {
     text-align: center;
     line-height: 0;
     padding-top: 20px;
@@ -1123,7 +1123,7 @@ body.loading .spinnable {
     -webkit-transition: all 0.2s ease;
     -o-transition: all 0.2s ease;
     transition: all 0.2s ease; }
-    .page-content[portfolio-toj] .timeline-progress .marker:hover, .page-content[portfolio-toj] .timeline-progress .marker.active {
+    .page-content[portfolio-toj] .progress-bar .marker:hover, .page-content[portfolio-toj] .progress-bar .marker.active {
       color: #0e3e29;
       -moz-transform: scale(1.3) translateY(4px);
       -ms-transform: scale(1.3) translateY(4px);

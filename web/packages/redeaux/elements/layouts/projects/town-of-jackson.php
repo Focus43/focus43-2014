@@ -1,6 +1,6 @@
 <div class="page-content" portfolio-toj>
-    <div class="timeline-progress">
-        <span class="value"></span>
+    <div class="progress-bar">
+        <span class="bar"></span>
         <!-- markers generated via directive -->
     </div>
 

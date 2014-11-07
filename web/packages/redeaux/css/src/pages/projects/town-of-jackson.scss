@@ -1,12 +1,12 @@
 .page-content[portfolio-toj]{
-//  .timeline-progress {padding:8px;line-height:1;position:fixed;top:50%;right:0;width:auto;z-index:9;background:rgba(0,0,0,0.3);@include transform(translateY(-50%));
+//  .progress-bar {padding:8px;line-height:1;position:fixed;top:50%;right:0;width:auto;z-index:9;background:rgba(0,0,0,0.3);@include transform(translateY(-50%));
 //    .marker {text-align:center;margin:8px 0;display:block;width:20px;height:20px;background:transparent url('#{$image-path}svg/rounded_hex.svg') no-repeat 50% 50%;background-size:contain;opacity:0.75;@include transform(scale(1) rotate(0));@include transition(all 0.2s ease);
 //      &:hover, &.active {opacity:1;@include transform(scale(1.3) rotate(180deg));}
 //    }
 //  }
-  .timeline-progress {line-height:1;position:fixed;top:0;left:20%;right:20%;width:auto;height:5px;z-index:9;display:block;background:rgba($magenta, 0.45);@include border-radius(0);@include transform(translateZ(0));@include backface-visibility(hidden);
+  .progress-bar {line-height:1;position:fixed;top:0;left:20%;right:20%;width:auto;height:5px;z-index:9;display:block;background:rgba($magenta, 0.45);@include border-radius(0);@include transform(translateZ(0));@include backface-visibility(hidden);
     &::after {opacity:0.4;display:block;content:'';width:100%;top:100%;left:0;height:10px;background:transparent url('#{$image-path}/timeline-notches.png') repeat-x;background-position:0 100%;}
-    .value {width:0;height:100%;background:$magenta;display:block;}
+    .bar {width:0;height:100%;background:$magenta;display:block;}
     .marker {text-align:center;line-height:0;padding-top:20px;margin-top:15px;display:inline-block;position:absolute;top:100%;width:40px;height:40px;margin-left:-20px;background:transparent url('#{$image-path}svg/rounded_hex.svg') no-repeat 50% 50%;background-size:contain;@include transform(scale(1) translateY(0));@include transition(all 0.2s ease);
       &:hover, &.active {color:darken($lime-green, 20%);@include transform(scale(1.3) translateY(4px));}
     }

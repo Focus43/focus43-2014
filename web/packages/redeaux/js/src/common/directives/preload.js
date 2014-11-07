@@ -26,6 +26,7 @@ angular.module('redeaux.common').
             }
 
             function _reset(){
+                //toggleLoading(true);
                 $rootScope.preload.progress     = 0;
                 $rootScope.preload.completed    = 0;
                 $rootScope.preload.collection   = [];
@@ -35,7 +36,6 @@ angular.module('redeaux.common').
             }
 
             _reset();
-            $rootScope.$on('$routeChangeStart', _reset);
 
             $rootScope.$watchCollection('preload.collection', function( list ){
                 if( angular.isArray(list) && list.length ){
@@ -48,6 +48,7 @@ angular.module('redeaux.common').
 
             return {
                 toggleLoading: toggleLoading,
+                reset: _reset,
                 pushToCollection: function( promise ){
                     $rootScope.preload.collection.push(promise);
                 },

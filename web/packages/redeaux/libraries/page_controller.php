@@ -82,7 +82,7 @@
             $test2 = (bool) $_SERVER['VAGRANT_VM'];
             $test3 = (bool) (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false);
             if( $test1 && $test2 && $test3 ){
-                $pageController->addFooterItem('<script src="//localhost:35729/livereload.js"></script>');
+                //$pageController->addFooterItem('<script src="//localhost:35729/livereload.js"></script>');
             }
         }
 

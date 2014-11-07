@@ -19,32 +19,14 @@
          * @param GoogleMapsAPIProvider
          * @todo: implement error message displaying instead of just hiding the loading animation
          */
-        config(['$provide', '$routeProvider', '$locationProvider', '$httpProvider', 'GoogleMapsAPIProvider',
-            function( $provide, $routeProvider, $locationProvider, $httpProvider, GoogleMapsAPIProvider ){
+        config(['$provide', '$routeProvider', '$locationProvider', '$httpProvider', '$compileProvider', 'GoogleMapsAPIProvider',
+            function( $provide, $routeProvider, $locationProvider, $httpProvider, $compileProvider, GoogleMapsAPIProvider ){
+//                angular.module('redeaux').lazyProvider = function( _callback ){
+//                    _callback.apply($compileProvider, []);
+//                };
+
                 // Http config
                 $httpProvider.defaults.headers.common['x-angularized'] = true;
-
-                // AJAX request interceptor to show loading icon
-//                $httpProvider.interceptors.push(['$rootScope', function( $rootScope ){
-//                    return {
-//                        request: function( _passthrough ){
-//                            $rootScope.bodyClasses.loading = true;
-//                            return _passthrough;
-//                        },
-//                        response: function( _passthrough ){
-//                            $rootScope.bodyClasses.loading = false;
-//                            return _passthrough;
-//                        },
-//                        requestError: function( _passthrough ){
-//                            $rootScope.bodyClasses.loading = false;
-//                            return _passthrough;
-//                        },
-//                        responseError: function( _passthrough ){
-//                            $rootScope.bodyClasses.loading = false;
-//                            return _passthrough;
-//                        }
-//                    };
-//                }]);
 
                 // Enable HTML5 location mode
                 $locationProvider.html5Mode(true).hashPrefix('!');
@@ -59,6 +41,9 @@
                                 defer.resolve();
                                 return defer.promise;
                             }
+                        }],
+                        preloader: ['Preloader', function( Preloader ){
+                            Preloader.reset();
                         }]
                     },
                     templateUrl: function(params){
@@ -165,6 +150,31 @@ angular.module('redeaux.common').
             });
         }
     ]);
+/* global $script */
+angular.module('redeaux.common').
+
+    directive('lazyCompile', ['$http', '$compile', function factory( $http, $compile ){
+
+        function _link( scope, $element, attrs ){
+            //$http.get(attrs.lazyCompile);
+            $script('/packages/redeaux/js/test.js', function(){
+                $compile($element.contents())(scope);
+                scope.lazily.resolve();
+            });
+
+        }
+
+
+        return {
+            restrict: 'A',
+            link: _link,
+            scope: true,
+            controller: ['$scope', '$q', function( $scope, $q ){
+                $scope.lazily = $q.defer();
+                this.promise  = $scope.lazily.promise;
+            }]
+        };
+    }]);
 angular.module('redeaux.common').
 
     /**
@@ -274,6 +284,7 @@ angular.module('redeaux.common').
             }
 
             function _reset(){
+                //toggleLoading(true);
                 $rootScope.preload.progress     = 0;
                 $rootScope.preload.completed    = 0;
                 $rootScope.preload.collection   = [];
@@ -283,7 +294,6 @@ angular.module('redeaux.common').
             }
 
             _reset();
-            $rootScope.$on('$routeChangeStart', _reset);
 
             $rootScope.$watchCollection('preload.collection', function( list ){
                 if( angular.isArray(list) && list.length ){
@@ -296,6 +306,7 @@ angular.module('redeaux.common').
 
             return {
                 toggleLoading: toggleLoading,
+                reset: _reset,
                 pushToCollection: function( promise ){
                     $rootScope.preload.collection.push(promise);
                 },
@@ -1158,6 +1169,207 @@ angular.module('redeaux.pages').
             };
         }
     ]);
+/* global Power2 */
+angular.module('redeaux.pages').
+
+    /**
+     * new'able PortfolioTimeline; handles setting up all event bindings for portfolio items
+     * and makes it super easy to create timelines.
+     * @param $document
+     * @param Timeline
+     * @param Tween
+     * @returns {Function} reference to CustomTimeline
+     */
+    factory('PortfolioTimeline', ['$document', 'Timeline', 'Tween',
+        function( $document, Timeline, Tween ){
+
+            /**
+             * CustomTimeline class constructor. HAVE to pass in the following arguments and
+             * they're added as properties to 'this' via the constructor. To override the
+             * defaults; you can just pass in the {propName:value}.
+             *
+             * @param _required
+             * {
+             *  element: node,
+             *  scrollTarget: node,
+             *  $progressContainer: jqLite,
+             *  $progressBar: jqLite
+             * }
+             * @constructor
+             */
+            function CustomTimeline( _required ){
+                // Defaults
+                this.scrollPercent      = 0;
+                this.scrollHeight       = 0;
+                this.smoothWheelTime    = 0.65;
+                this.smoothWheelDist    = 325;
+                this.timeline           = new Timeline({paused:true, smoothChildTiming:true});
+
+                // Merge _required into class properties.
+                angular.extend(this, (_required || {}));
+
+                // Store LOCALLY SCOPED references to the event handlers (so we can properly unbind)
+                var wheelEvent        = this._onWheelHandler.bind(this),
+                    animFrameEvent    = this._onAnimationFrameHandler.bind(this),
+                    markerClickEvent  = this._onMarkerClickHandler.bind(this);
+
+                // Should be recreated every time CustomTimeline is instantiated
+                this._bindEvents = function(){
+                    $document.on('mousewheel DOMMouseScroll', wheelEvent);
+                    this.$progressContainer.on('click', markerClickEvent);
+                    Tween.ticker.addEventListener('tick', animFrameEvent);
+                };
+
+                // Same as above...
+                this._unbindEvents = function(){
+                    $document.off('mousewheel DOMMouseScroll', wheelEvent);
+                    this.$progressContainer.off('click', markerClickEvent);
+                    Tween.ticker.removeEventListener('tick', animFrameEvent);
+                };
+            }
+
+
+            /**
+             * animationFrame event handler
+             * @private
+             */
+            CustomTimeline.prototype._onAnimationFrameHandler = function(){
+                this.scrollPercent = this._getScrollPosition() / (this._getScrollHeight() - document.body.clientHeight);
+                this.timeline.progress(this.scrollPercent);
+                Tween.to(this.$progressBar, 0.5, {width:Math.round(this.timeline.progress()*100)+'%', overwrite:5});
+            };
+
+
+            /**
+             * on(mousewheel || DOMMouseScroll) event handler
+             * @param event
+             * @private
+             */
+            CustomTimeline.prototype._onWheelHandler = function( event ){
+                event.preventDefault();
+                // Normalize mousewheel speed for consistency
+                this._normalizeMousewheel(event);
+                // Tween the scrollbar to specific location, implicitly tweening the timeline
+                Tween.to(this.scrollTarget, this.smoothWheelTime, {
+                    scrollTo: {y:(this._getScrollPosition() - parseInt(event.delta * this.smoothWheelDist)), autoKill:true},
+                    ease: Power2.easeOut,
+                    overwrite: 5
+                });
+            };
+
+
+            /**
+             * onClick handler for marker items in the progress bar
+             * @param event
+             * @private
+             */
+            CustomTimeline.prototype._onMarkerClickHandler = function( event ){
+                if( event.target.tagName === 'A' ){
+                    angular.element(this.$progressContainer[0].querySelectorAll('.marker')).removeClass('active');
+                    event.target.className += ' active';
+                    var labelTime = this.timeline.getLabelTime(event.target.getAttribute('data-label'));
+                    Tween.to(this.scrollTarget, 2, {
+                        scrollTo: {y: (labelTime/this.timeline._totalDuration) * (this._getScrollHeight() - this.scrollTarget.clientHeight), autoKill:true },
+                        ease: Power2.easeOut,
+                        overwrite: 5
+                    });
+                }
+            };
+
+
+            /**
+             * Take the scrollWheel event and normalize it across browsers.
+             * @param event
+             * @private
+             */
+            CustomTimeline.prototype._normalizeMousewheel = function( event ){
+                var o = event,
+                    d = o.detail, w = o.wheelDelta,
+                    n = 225, n1 = n- 1, f;
+                // Normalize delta
+                d = d ? w && (f = w/d) ? d/f : -d/1.35 : w/120;
+                // Quadratic scale if |d| > 1
+                d = d < 1 ? d < -1 ? (-Math.pow(d, 2) - n1) / n : d : (Math.pow(d, 2) + n1) / n;
+                // Delta *should* not be greater than 2...
+                event.delta = Math.min(Math.max(d / 2, -1), 1);
+            };
+
+
+            /**
+             * Create the progress markers according to the labels in the timeline.
+             * @private
+             */
+            CustomTimeline.prototype._buildMarkers = function(){
+                var fragment = document.createDocumentFragment(),
+                    index    = 0,
+                    length   = Object.keys(this.timeline._labels).length - 1;
+
+                angular.forEach(this.timeline._labels, function( labelTime, key ){
+                    var el = document.createElement('a');
+                    el.className = 'marker';
+                    el.setAttribute('data-label', key);
+                    el.style.left = Math.round(index / length*100) + '%';
+                    el.innerText = index + 1;
+                    fragment.appendChild(el);
+                    index++;
+                });
+
+                this.$progressContainer.append(fragment);
+            };
+
+
+            /**
+             * document.body.scrollHeight computes inconsistently b/w chrome, firefox, and IE. This
+             * will inspect the actual source height from the stylesheet directly and then compute
+             * it against the body height.
+             * @note body.fixed-max::after {height:{xx}%;} (MUST be percentage!)
+             * @returns {number}
+             * @private
+             */
+            CustomTimeline.prototype._getScrollHeight = function(){
+                return this.scrollTarget.scrollHeight;
+            };
+
+
+            /**
+             * Get the position from top of the scrollElement.
+             * * @note: (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
+             * @returns {scrollTop|*|number|scrollTop|scrollTop|Function}
+             * @private
+             */
+            CustomTimeline.prototype._getScrollPosition = function(){
+                return this.scrollTarget.scrollTop;
+            };
+
+
+            /**
+             * After instantiation, call this method to add things to the timeline instance
+             * @usage: instance.build(function( tl ){ tl.to().addLabel()... })
+             * @param _callback
+             */
+            CustomTimeline.prototype.build = function( _callback ){
+                _callback.apply(this, [this.timeline]);
+                this._buildMarkers();
+                this._bindEvents();
+            };
+
+
+            /**
+             * Destroy the instance, and more importantly all references within to mark
+             * for garbage collection.
+             */
+            CustomTimeline.prototype.destroy = function(){
+                this.timeline.kill();
+                this._unbindEvents();
+                Object.keys(this).forEach(function( k ){
+                    this[k] = null;
+                });
+            };
+
+
+            return CustomTimeline;
+        }
+    ]);
 /* global Linear */
 /* global Power2 */
 /* global SteppedEase */
@@ -1169,290 +1381,107 @@ angular.module('redeaux.pages').
      * @param $rootScope
      * @param Timeline
      * @param Tween
+     * @param PortfolioTimeline
      * @returns {{restrict: string, link: Function, scope: boolean, controller: Array}}
      */
-    directive('portfolioToj', ['$document', '$rootScope', 'Timeline', 'Tween',
-        function( $document, $rootScope, Timeline, Tween ){
+    directive('portfolioToj', ['$document', '$rootScope', 'Timeline', 'Tween', 'PortfolioTimeline',
+        function( $document, $rootScope, Timeline, Tween, PortfolioTimeline ){
 
             function _link( scope, $element ){
+                // set body class
+                $rootScope.bodyClasses['fixed-max'] = true;
 
-                var scrollElement,
-                    scrollPercent,
-                    scrollableHeight,
-                    smoothWheelTime,
-                    smoothWheelDist,
-                    masterTimeline,
-                    progressContainer,
-                    progressBar,
-                    $markers;
+                var _timeline;
 
-                /**
-                 * document.body.scrollHeight computes inconsistently b/w chrome, firefox, and IE. This
-                 * will inspect the actual source height from the stylesheet directly and then compute
-                 * it against the body height
-                 * @note body.fixed-max::after {height:{xx}%;} (MUST be percentage!)
-                 * @returns {number}
-                 * @private
-                 */
-                function _scrollableHeight(){
-                    return scrollElement.scrollHeight;
-                }
-
-                /**
-                 * Get the position from top of the scrollElement
-                 * @returns {scrollTop|*|number|scrollTop|scrollTop|Function}
-                 * @private
-                 * @note: (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop;
-                 */
-                function _scrollPosition(){
-                    return scrollElement.scrollTop;
-                }
-
-                /**
-                 * Normalize mousewheel (and especially OXS trackpad momentum scrolling)
-                 * http://stackoverflow.com/questions/5527601/normalizing-mousewheel-speed-across-browsers
-                 * @param e
-                 */
-                function normalizeMousewheel(e){
-                    var o = e,
-                        d = o.detail, w = o.wheelDelta,
-                        n = 225, n1 = n- 1, f;
-
-                    // Normalize delta
-                    d = d ? w && (f = w/d) ? d/f : -d/1.35 : w/120;
-                    // Quadratic scale if |d| > 1
-                    d = d < 1 ? d < -1 ? (-Math.pow(d, 2) - n1) / n : d : (Math.pow(d, 2) + n1) / n;
-                    // Delta *should* not be greater than 2...
-                    e.delta = Math.min(Math.max(d / 2, -1), 1);
-                }
-
-                /**
-                 * Smooth scrolling: http://blog.bassta.bg/2013/05/smooth-page-scrolling-with-tweenmax/
-                 * @param event
-                 * @return void
-                 */
-                function _onWheel(event){
-                    event.preventDefault();
-                    // Normalize mousewheel speed for consistency
-                    normalizeMousewheel(event);
-                    // Tween the scrollbar to specific location, implicitly tweening the timeline
-                    Tween.to(scrollElement, smoothWheelTime, {
-                        scrollTo: {y:(_scrollPosition() - parseInt(event.delta * smoothWheelDist)), autoKill:true},
-                        ease: Power2.easeOut,
-                        overwrite: 5
-                    });
-                }
-
-                /**
-                 * Animation loop function, called on every tick
-                 * @return void
-                 */
-                function _animationLoop(){
-                    scrollPercent = _scrollPosition() / (scrollableHeight - document.body.clientHeight);
-                    masterTimeline.progress(scrollPercent);
-                    Tween.to(progressBar, 0.5, {width:Math.round(masterTimeline.progress()*100)+'%', overwrite:5});
-                }
-
-                /**
-                 * Build the timeline.
-                 * @param linkedEl
-                 * @returns TimelineMax | TimelineLite
-                 * @private
-                 */
-                function _buildTimeline( linkedEl ){
-                    var masterTimeline  = new Timeline({paused:true, useFrames:false, smoothChildTiming:true}),
-                        _group1         = linkedEl.querySelector('.group-1'),
-                        _group2         = linkedEl.querySelector('.group-2'),
-                        _intro          = linkedEl.querySelector('.intro'),
-                        _brief          = linkedEl.querySelector('.brief'),
-                        _screens        = linkedEl.querySelector('.screens'),
-                        _screensMobile  = _screens.querySelector('.mobiles'),
-                        _screensLarge   = _screens.querySelector('.large-format'),
-                        _screensImgs    = _screens.querySelectorAll('img'),
-                        _details        = linkedEl.querySelector('.details'),
-                        _video          = linkedEl.querySelector('.video');
-
-                    masterTimeline._playByScroll = function( _label, _duration ){
-                        var labelPoint = this._labels[_label] / this.totalDuration();
-                        // Tween to
-                        Tween.to(scrollElement, (_duration || 2), {
-                            scrollTo: {y:((scrollableHeight - scrollElement.clientHeight) * labelPoint), autoKill:true},
-                            ease: Power2.easeOut,
-                            overwrite: 5
-                        });
-                    };
-
-                    return masterTimeline.
-                        addLabel('intro').
-
-                        to(_intro.querySelector('img'), 2, {rotation:720, autoAlpha:0}).
-                        to(_intro.querySelector('.instruct'), 1, {autoAlpha:0}, '-=1').
-                        staggerTo(_intro.querySelectorAll('h1 span'), 1.5, {y:100,autoAlpha:0}, 0.5, '-=1.5').
-                        to([_group1, _brief, _group2], 2, {y:'-50%'}).
-                        addLabel('background').
-
-                        to(_group1.querySelector('.vert-track'), 4, {y:'-100%'}, '+=2').
-                        addLabel('brief').
-
-                        to(_group1.querySelector('.vert-track'), 4, {y:'-200%'}, '+=2').
-                        staggerTo(_group1.querySelectorAll('.approach h2'), 3.5, {className:'+=striker'}, 1.5).
-                        addLabel('approach').
-
-                        to([_group1, _brief, _group2], 2, {y:'-100%'}, '+=1').
-                        fromTo(_screensMobile, 2, {y:-700,autoAlpha:0}, {y:0,autoAlpha:1}, '-=1').
-                        fromTo(_screensMobile.querySelector('h3'), 1, {y:100,autoAlpha:0}, {y:0,autoAlpha:1}, '-=1.5').
-                        add([
-                            Tween.to(_screensImgs[0], 3, {x:'-80%',z:3}),
-                            Tween.to(_screensImgs[1], 3, {y:'-56%',z:2}),
-                            Tween.to(_screensImgs[2], 3, {x:'-20%',y:'-53%',z:1}),
-                        ]).
-                        //fromTo(_screensMobile, 0.5, {scale:0.8}, {scale:1, rotationY:30}, '-=1').
-                        addLabel('mobiles').
-
-                        to(_screensMobile, 4, {x:'-100%', autoAlpha:0}, '+=2').
-                        to(_screensLarge, 3, {x:'-100%', ease:Power2.easeOut}, '-=4').
-                        fromTo(_screensLarge.querySelector('h3'), 2, {y:100,autoAlpha:0}, {y:0,autoAlpha:1}).
-                        addLabel('larges').
-
-                        add([
-                            Tween.to(_group2, 3, {y:'-200%'}),
-                            Tween.fromTo(_details.querySelector('.background'), 8, {scale:1.4, rotation:5}, {scale:1, rotation:0})
-                        ], '+=2').
-                        staggerFromTo(_details.querySelectorAll('.design p'), 2, {y:50,autoAlpha:0}, {y:0,autoAlpha:1}, 1, '-=6').
-                        addLabel('design').
-
-                        add([
-                            Tween.to(_details.querySelector('.background'), 4, {scale:1.4, rotation:-5}),
-                            Tween.to(_details.querySelector('.design'), 2, {x:'-100%'}),
-                            Tween.to(_details.querySelector('.tech'), 2, {x:'100%'})
-                        ]).
-                        staggerFromTo(_details.querySelectorAll('.tech p'), 4, {y:50,autoAlpha:0}, {y:0,autoAlpha:1}, 2, '-=1').
-                        addLabel('tech').
-
-                        fromTo(_video, 3, {scale:2,autoAlpha:0,y:'-100%'}, {scale:1,autoAlpha:1}, '+=2').
-                        addLabel('final');
-                }
-
-                /**
-                 * AFTER the masterTimeline is created, look at the labels and automatically
-                 * generate <a class="marker">{index}</a> elements for each; then position
-                 * on the timeline accordingly.
-                 * @param _timeline
-                 * @param _container
-                 * @returns {element|*}
-                 * @private
-                 */
-                function _buildAndGetMarkers( _timeline, _container ){
-                    var fragment = document.createDocumentFragment(),
-                        index    = 0,
-                        length   = Object.keys(_timeline._labels).length - 1;
-
-                    angular.forEach(_timeline._labels, function( labelTime, key ){
-                        var el = document.createElement('a');
-                        el.className = 'marker';
-                        el.setAttribute('data-label', key);
-                        el.style.left = Math.round(index/length*100) + '%'; //Math.round((labelTime/_timeline._totalDuration)*100) + '%';
-                        el.innerText = index + 1;
-                        fragment.appendChild(el);
-                        index++;
+                scope.ready.then(function( _resolved ){
+                    _timeline = new PortfolioTimeline({
+                        element             : $element[0],
+                        scrollTarget        : _resolved[0],
+                        $progressContainer  : angular.element($element[0].querySelector('.progress-bar')),
+                        $progressBar        : angular.element($element[0].querySelector('.progress-bar > .bar'))
                     });
 
-                    _container.appendChild(fragment);
+                    _timeline.build(function( timeline ){
+                        var _group1         = this.element.querySelector('.group-1'),
+                            _group2         = this.element.querySelector('.group-2'),
+                            _intro          = this.element.querySelector('.intro'),
+                            _brief          = this.element.querySelector('.brief'),
+                            _screens        = this.element.querySelector('.screens'),
+                            _screensMobile  = _screens.querySelector('.mobiles'),
+                            _screensLarge   = _screens.querySelector('.large-format'),
+                            _screensImgs    = _screens.querySelectorAll('img'),
+                            _details        = this.element.querySelector('.details'),
+                            _video          = this.element.querySelector('.video');
 
-                    return angular.element(_container.querySelectorAll('.marker'));
-                }
+                        timeline.
+                            addLabel('intro').
 
-                /**
-                 * Init function once everything is ready to roll
-                 */
-                function init(){
-                    // Try to unbind any previous event listeners if they stuck around
-                    $document.off('mousewheel DOMMouseScroll', _onWheel);
-                    Tween.ticker.removeEventListener('tick', _animationLoop);
+                            to(_intro.querySelector('img'), 2, {rotation:720, autoAlpha:0}).
+                            to(_intro.querySelector('.instruct'), 1, {autoAlpha:0}, '-=1').
+                            staggerTo(_intro.querySelectorAll('h1 span'), 1.5, {y:100,autoAlpha:0}, 0.5, '-=1.5').
+                            to([_group1, _brief, _group2], 2, {y:'-50%'}).
+                            addLabel('background').
 
-                    scrollElement       = scope._scrollTarget;
-                    scrollPercent       = 0;
-                    scrollableHeight    = _scrollableHeight();
-                    smoothWheelTime     = 0.65;
-                    smoothWheelDist     = 325;
-                    masterTimeline      = window['tl'] = _buildTimeline($element[0]);
-                    progressContainer   = $element[0].querySelector('.timeline-progress');
-                    progressBar         = progressContainer.querySelector('.value');
-                    $markers            = _buildAndGetMarkers( masterTimeline, progressContainer );
+                            to(_group1.querySelector('.vert-track'), 4, {y:'-100%'}, '+=2').
+                            addLabel('brief').
 
-                    // Bind click event to markers
-                    $markers.on('click', function(){
-                        $markers.removeClass('active');
-                        angular.element(this).addClass('active');
-                        var labelTime = masterTimeline.getLabelTime(this.getAttribute('data-label'));
-                        Tween.to(scrollElement, 2, {
-                            //scrollTo: {y:(scrollableHeight - scrollElement.clientHeight) * (+(this.getAttribute('data-percent'))/100), autoKill:true},
-                            scrollTo: {y: (labelTime/masterTimeline._totalDuration) * (scrollableHeight - scrollElement.clientHeight), autoKill:true },
-                            ease: Power2.easeOut,
-                            overwrite: 5
-                        });
+                            to(_group1.querySelector('.vert-track'), 4, {y:'-200%'}, '+=2').
+                            staggerTo(_group1.querySelectorAll('.approach h2'), 3.5, {className:'+=striker'}, 1.5).
+                            addLabel('approach').
+
+                            to([_group1, _brief, _group2], 2, {y:'-100%'}, '+=1').
+                            fromTo(_screensMobile, 2, {y:-700,autoAlpha:0}, {y:0,autoAlpha:1}, '-=1').
+                            fromTo(_screensMobile.querySelector('h3'), 1, {y:100,autoAlpha:0}, {y:0,autoAlpha:1}, '-=1.5').
+                            add([
+                                Tween.to(_screensImgs[0], 3, {x:'-80%',z:3}),
+                                Tween.to(_screensImgs[1], 3, {y:'-56%',z:2}),
+                                Tween.to(_screensImgs[2], 3, {x:'-20%',y:'-53%',z:1}),
+                            ]).
+                            addLabel('mobiles').
+
+                            to(_screensMobile, 4, {x:'-100%', autoAlpha:0}, '+=2').
+                            to(_screensLarge, 3, {x:'-100%', ease:Power2.easeOut}, '-=4').
+                            fromTo(_screensLarge.querySelector('h3'), 2, {y:100,autoAlpha:0}, {y:0,autoAlpha:1}).
+                            addLabel('larges').
+
+                            add([
+                                Tween.to(_group2, 3, {y:'-200%'}),
+                                Tween.fromTo(_details.querySelector('.background'), 8, {scale:1.4, rotation:5}, {scale:1, rotation:0})
+                            ], '+=2').
+                            staggerFromTo(_details.querySelectorAll('.design p'), 2, {y:50,autoAlpha:0}, {y:0,autoAlpha:1}, 1, '-=6').
+                            addLabel('design').
+
+                            add([
+                                Tween.to(_details.querySelector('.background'), 4, {scale:1.4, rotation:-5}),
+                                Tween.to(_details.querySelector('.design'), 2, {x:'-100%'}),
+                                Tween.to(_details.querySelector('.tech'), 2, {x:'100%'})
+                            ]).
+                            staggerFromTo(_details.querySelectorAll('.tech p'), 4, {y:50,autoAlpha:0}, {y:0,autoAlpha:1}, 2, '-=1').
+                            addLabel('tech').
+
+                            fromTo(_video, 3, {scale:2,autoAlpha:0,y:'-100%'}, {scale:1,autoAlpha:1}, '+=2').
+                            addLabel('final');
                     });
-
-                    // "Autoplay"
-                    scope.autoplay = function(){
-                        masterTimeline._playByScroll('video', 12);
-                    };
-
-                    // Kickoff events n' shit
-                    $document.on('mousewheel DOMMouseScroll', _onWheel);
-                    Tween.ticker.addEventListener('tick', _animationLoop);
-                }
-
-                /**
-                 * Watch _scrollTarget property on scope, and when its set to
-                 * an element, initialize this mofo.
-                 */
-                scope.$watch('_scrollTarget', function( target ){
-                    if( angular.isElement(target) ){
-                        init();
-                    }
                 });
 
-                /**
-                 * Tear down event bindings; used in the controller's scope.$destroy
-                 * event listener.
-                 * @return void
-                 */
-                scope.linkTearDown = function(){
-                    $document.off('mousewheel DOMMouseScroll', _onWheel);
-                    Tween.ticker.removeEventListener('tick', _animationLoop);
-                    if( angular.isObject(masterTimeline) ){
-                        masterTimeline.kill();
+                scope.$on('$destroy', function(){
+                    $rootScope.bodyClasses['fixed-max'] = false;
+                    if( angular.isObject(_timeline) ){
+                        _timeline.destroy();
                     }
-                };
+                });
             }
 
             return {
                 restrict: 'A',
                 link: _link,
                 scope: true,
-                controller: ['$rootScope', '$scope', '$q', 'Preloader', 'Utilities',
-                    function( $rootScope, $scope, $q, Preloader, Utilities ){
-                        $rootScope.bodyClasses['fixed-max'] = true;
-
-                        /**
-                         * @see: See Utilities.determineScrollElement (determines where mousehweel event should be bound
-                         * as there are inconsistencies b/w webkit and everything else).
-                         */
-                        $q.all([
+                controller: ['$scope', '$q', 'Preloader', 'Utilities',
+                    function( $scope, $q, Preloader, Utilities ){
+                        $scope.ready = $q.all([
                             Utilities.determineBodyScrollElement(),
                             Preloader.promise()
-                        ]).then(function( resolved ){
-                            $scope._scrollTarget= resolved[0];
-                        });
-
-                        /**
-                         * On scope destroy, clean errrthang up.
-                         */
-                        $scope.$on('$destroy', function(){
-                            $rootScope.bodyClasses['fixed-max'] = false;
-                            $scope.linkTearDown();
-                        });
+                        ]);
                     }
                 ]
             };
